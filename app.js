@@ -2587,11 +2587,11 @@ function switchBasemap(to) {
   activeBasemap = to;
   try { localStorage.setItem(BASEMAP_KEY, to); } catch (_) {}
 
-  if (to === "dark") {
+  if (to === "voyager") {
     if (baseTileLayer) map.removeLayer(baseTileLayer);
     if (!cartoLayer) {
       cartoLayer = L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
         {
           pane: "imagePane",
           subdomains: "abcd",
@@ -2683,7 +2683,7 @@ if (config.mapMode === "tiles") {
   const _savedBasemap = (() => {
     try { return localStorage.getItem(BASEMAP_KEY); } catch (_) { return null; }
   })();
-  if (_savedBasemap === "dark") switchBasemap("dark");
+  if (_savedBasemap === "voyager") switchBasemap("voyager");
 
   document.querySelectorAll(".basemap-opt").forEach((btn) => {
     btn.addEventListener("click", () => switchBasemap(btn.dataset.basemap));
