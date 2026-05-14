@@ -443,7 +443,9 @@ function hoverStyleFor(kind) {
    ----------------------------------------------------------- */
 let imageBounds     = null; // still used as campus bounds by reset/fit helpers
 let imageOverlay    = null; // old single-image mode only
-let baseTileLayer   = null; // new tile mode
+let baseTileLayer   = null; // local satellite XYZ tiles
+let cartoLayer      = null; // CartoDB Dark Matter
+let activeBasemap   = "satellite"; // "satellite" | "dark"
 let dataBounds      = null;
 let buildingsLayer  = null;
 let toursLayer      = null;
@@ -2573,6 +2575,46 @@ function addBaseTileLayer() {
     attribution: t.attribution || "Created by QGIS"
   }).addTo(map);
 }
+/* -----------------------------------------------------------
+   Basemap switcher — toggles between the local satellite tiles
+   and CartoDB Dark Matter at runtime. Preference is persisted
+   in localStorage so it survives page reloads.
+   ----------------------------------------------------------- */
+const BASEMAP_KEY = "scsu-map.basemap.v1";
+
+function switchBasemap(to) {
+  if (to === activeBasemap) return;
+  activeBasemap = to;
+  try { localStorage.setItem(BASEMAP_KEY, to); } catch (_) {}
+
+  if (to === "dark") {
+    if (baseTileLayer) map.removeLayer(baseTileLayer);
+    if (!cartoLayer) {
+      cartoLayer = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+          pane: "imagePane",
+          subdomains: "abcd",
+          minZoom: 0,
+          maxZoom: 20,
+          noWrap: true,
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
+            '&copy; <a href="https://carto.com/attributions">CARTO</a>'
+        }
+      );
+    }
+    cartoLayer.addTo(map);
+  } else {
+    if (cartoLayer) map.removeLayer(cartoLayer);
+    if (baseTileLayer) baseTileLayer.addTo(map);
+  }
+
+  document.querySelectorAll(".basemap-opt").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.basemap === to);
+  });
+}
+
 async function boot() {
   // If the sync UA check missed but the WebXR API confirms an
   // XR device, switch to the VR profile *before* preloading the
@@ -2636,6 +2678,16 @@ if (config.mapMode === "tiles") {
   } else {
     resetCampusView(false);
   }
+
+  // Restore saved basemap preference, then wire the toggle buttons.
+  const _savedBasemap = (() => {
+    try { return localStorage.getItem(BASEMAP_KEY); } catch (_) { return null; }
+  })();
+  if (_savedBasemap === "dark") switchBasemap("dark");
+
+  document.querySelectorAll(".basemap-opt").forEach((btn) => {
+    btn.addEventListener("click", () => switchBasemap(btn.dataset.basemap));
+  });
 
   refreshMapConstraints({ recenterIfNeeded: false });
 } else {
