@@ -2598,6 +2598,7 @@ function switchBasemap(to) {
           minZoom: 0,
           maxZoom: 20,
           noWrap: true,
+          className: "mid-tone-map",
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
             '&copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -2679,11 +2680,20 @@ if (config.mapMode === "tiles") {
     resetCampusView(false);
   }
 
-  // Restore saved basemap preference, then wire the toggle buttons.
+  // Default basemap is "voyager" (Basic). Switch to satellite only if
+  // the user previously saved that preference.
   const _savedBasemap = (() => {
     try { return localStorage.getItem(BASEMAP_KEY); } catch (_) { return null; }
   })();
-  if (_savedBasemap === "voyager") switchBasemap("voyager");
+  if (_savedBasemap === "satellite") {
+    // satellite layer is already on the map from addBaseTileLayer(); just sync UI
+    activeBasemap = "satellite";
+    document.querySelectorAll(".basemap-opt").forEach((btn) => {
+      btn.classList.toggle("is-active", btn.dataset.basemap === "satellite");
+    });
+  } else {
+    switchBasemap("voyager");
+  }
 
   document.querySelectorAll(".basemap-opt").forEach((btn) => {
     btn.addEventListener("click", () => switchBasemap(btn.dataset.basemap));

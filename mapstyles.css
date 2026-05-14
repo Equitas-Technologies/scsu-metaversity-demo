@@ -942,6 +942,11 @@ img    { user-select: none; -webkit-user-drag: none; }
   background: var(--fog);
 }
 
+/* Dims Voyager to a mid-tone without going full Dark Matter */
+.mid-tone-map {
+  filter: brightness(0.65) contrast(1.1) saturate(0.7);
+}
+
 /* ===========================================================
    DETAILS PANEL (right side on desktop) — dark theme
    =========================================================== */
