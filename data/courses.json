@@ -1,0 +1,56 @@
+{
+  "$schema": "scsu-courses-v1",
+  "generatedAt": "2026-05-21",
+  "courses": [
+    {
+      "id": "nrm-342",
+      "code": "NRM 342",
+      "title": "Agronomy & Soils",
+      "image": "assets/courses/nrm-342.webp",
+      "credits": "3 Course Credits",
+      "lastUpdated": "1 OCTOBER, 2026",
+      "lede": "Soil is the living foundation of agriculture; a dynamic system shaped by climate, parent material, organisms, and time. This course builds the conceptual and practical skills needed to read a field, diagnose its constraints, and design nutrient programs that sustain yield while protecting soil and water quality. Through immersive case fields, lab simulations, and decision exercises, students move from soil chemistry and physics to in-season fertility decisions and 4Rs stewardship.",
+      "overview": "Beginning with soil-forming processes, horizon development, and the physical and chemical properties that govern water, air, and nutrient behavior, students learn to connect soil conditions to crop response. The course then moves through the nitrogen cycle, phosphorus and potassium dynamics, and the secondary and micronutrients that shape plant health. Students develop fluency with the diagnostic toolkit of modern agronomy: soil sampling protocols, lab extractants, tissue analysis, and soil health indices, and learn to translate test results into site-specific nutrient plans across diverse cropping systems and fields.",
+      "curriculum": [
+        "Soil formation, horizon development, and physical-chemical properties that govern nutrient retention and crop response",
+        "Nitrogen, phosphorus, and potassium cycling, availability, and loss pathways in soils",
+        "Secondary and micronutrient diagnostics, deficiencies, toxicities, and nutrient balance",
+        "Soil sampling, lab interpretation, tissue analysis, and soil health indices",
+        "Site-specific nutrient management, fertilizer programs, and precision application technologies",
+        "Field case studies, cost-benefit analysis, and communicating site-specific nutrient plans"
+      ],
+      "eon": {
+        "desktopUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/341-11599",
+        "vrUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/341-11599"
+      },
+      "immersive": {
+        "note": "In your headset, sign in to EON Reality to enter the immersive case fields and lab simulations for this course."
+      }
+    },
+    {
+      "id": "nrm-431",
+      "code": "NRM 431",
+      "title": "Soil Fertility",
+      "image": "assets/courses/nrm-431.webp",
+      "credits": "3 Course Credits",
+      "lastUpdated": "1 OCTOBER, 2026",
+      "lede": "This course moves from the science of soil chemistry, water, and biology into the applied work of designing, implementing, and adjusting nutrient management programs across diverse cropping systems. Students engage with crop-specific requirements, organic and sustainable practices, environmental compliance, and emerging precision technologies to manage fertility as a dynamic, real-world farm system.",
+      "overview": "Building from root-zone chemistry, cation exchange, and buffering capacity, the course turns to the systems that shape fertility in practice: soil structure and water, pH and salinity, and the role of organic matter and microbial cycling in supplying nutrients to crops across seasons. Students then move into the decision space of nutrient management: defining yield goals, building budgets, tailoring fertilizer programs to crop demand, and navigating environmental audits, certifications, and emerging precision and climate-adaptation technologies.",
+      "curriculum": [
+        "Soil physical health, water management, irrigation efficiency, and moisture conservation strategies",
+        "Soil pH management, liming strategies, salinity, and sodicity in nutrient dynamics",
+        "Crop-specific nutrient requirements, growth stage timing, and nutrient antagonisms",
+        "Organic and sustainable systems: composting, legumes, green manures, and certification",
+        "Environmental audits, regulatory compliance, and cost-benefit decision support tools",
+        "Precision agriculture, nutrient recycling, and climate-resilient management strategies"
+      ],
+      "eon": {
+        "desktopUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/325-11396",
+        "vrUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/325-11396"
+      },
+      "immersive": {
+        "note": "In your headset, sign in to EON Reality to enter the immersive case fields and lab simulations for this course."
+      }
+    }
+  ]
+}

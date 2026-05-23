@@ -1,6 +1,20 @@
 /* ============================================================
-   SCSU METAVERSITY — Course catalog (Learn mode)
+   SCSU METAVERSITY — Course catalog (Learn mode) (FALLBACK SHIM)
    ------------------------------------------------------------
+   ⚠️  EDITORS: this file is no longer the source of truth.
+   The canonical data lives in data/courses.json. This shim is
+   kept so the page still works when opened directly from disk
+   (file:// origin), where fetch() can't read JSON files.
+
+   When served over http/https, js/00-data-adapter.js fetches
+   data/courses.json and overwrites whatever this shim set, so
+   any edits made here are silently ignored in production.
+
+   To regenerate this file from the JSON, run:
+       node scripts/extract.js     (JSON → fresh shim)
+
+   --- legacy header continues below ---
+
    Loaded via <script>, just like data/buildings.js — assigns
    into the global SCSU_DATA namespace so app.js can read it
    without a fetch (works over file:// as well as http://).
@@ -15,9 +29,23 @@
        lede:        "…",                // 1–2 sentence dek under the title
        overview:    "…",                // long-form paragraph
        curriculum:  [ "…", … ],         // bullets in the right column
-       immersive: {                     // omit / null if not VR-enabled
-         vrUrl: "https://www.#",
-         note:  "In your headset, navigate to [ … ] and …"
+
+       // EON Reality launch targets. Begin Course hands off to one
+       // of these (whichever matches the current device) so EON's
+       // own login wall catches the user and redirects them into
+       // the course after auth. Omit / null if the course doesn't
+       // have an EON build yet — Begin Course then shows disabled.
+       eon: {
+         desktopUrl: "https://login.eonreality.com/…",  // browser / iPad / phone
+         vrUrl:      "https://login.eonreality.com/…"   // Meta Quest / Pico
+       },
+
+       // Optional VR-Enabled chip + tooltip copy. Independent of
+       // `eon` — a course can have an EON desktop build only and
+       // omit this block; or have both an EON VR build *and* this
+       // block, in which case the prose here drives the tooltip.
+       immersive: {
+         note: "In your headset, navigate to [ … ] and …"
        }
      }
    ============================================================ */
@@ -65,10 +93,17 @@ window.SCSU_DATA.courses = [
       "Field case studies, cost-benefit analysis, and communicating " +
         "site-specific nutrient plans"
     ],
+    // EON Reality launch targets. Replace the placeholder paths
+    // with the real EON course slugs once they're issued. The
+    // /login redirect param sends the user back to the course
+    // after auth — EON's standard pattern.
+    eon: {
+      desktopUrl: "https://customvirtualcampus.eon-xr.com/i/936/courses/341-11599",
+      vrUrl:      "https://customvirtualcampus.eon-xr.com/i/936/courses/341-11599"
+    },
     immersive: {
-      vrUrl: "https://www.#",
       note:
-        "In your headset, navigate to [ https://www.# ] to enter the " +
+        "In your headset, sign in to EON Reality to enter the " +
         "immersive case fields and lab simulations for this course."
     }
   },
@@ -112,6 +147,17 @@ window.SCSU_DATA.courses = [
       "Precision agriculture, nutrient recycling, and climate-resilient " +
         "management strategies"
     ],
-    immersive: null
+    // Desktop-only EON build for now. Omitting `vrUrl` here means
+    // a Quest user clicking Begin Course will fall back to the
+    // desktop URL (still opens in the Quest browser, no VR scene).
+    eon: {
+      desktopUrl: "https://customvirtualcampus.eon-xr.com/i/936/courses/325-11396",
+      vrUrl:      "https://customvirtualcampus.eon-xr.com/i/936/courses/325-11396"
+    },
+    immersive: {
+      note:
+        "In your headset, sign in to EON Reality to enter the " +
+        "immersive case fields and lab simulations for this course."
+    }
   }
 ];

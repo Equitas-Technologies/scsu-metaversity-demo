@@ -1,0 +1,789 @@
+/* === SCSU styles — Part 11: Learn mode (all) === */
+/* ===========================================================
+   LEARN MODE — Course catalog shell
+   -----------------------------------------------------------
+   Sits as a sibling of `.shell` (Explore) inside the .app
+   wrapper. By default Explore is visible and Learn is hidden;
+   the body class `.mode-learn` (set by the JS that already
+   handles the .mode-btn pill) swaps which shell is shown.
+
+   Visual language matches Explore: dark surfaces from the
+   palette tokens (`--sidebar-bg`, `--cell-bg`, `--brand-red`),
+   Inter throughout, brand-red chevron + CTA. No new colors are
+   introduced.
+   =========================================================== */
+
+/* ---- mode visibility swap (no animation, just a hard switch
+   so the map doesn't keep ticking in the background) ---- */
+.learn-shell { display: none; }
+
+body.mode-learn .shell                 { display: none; }
+body.mode-learn .tourbar               { display: none; }
+body.mode-learn .learn-shell           { display: grid; }
+body.mode-learn .locations-backdrop    { display: none !important; }
+body.mode-learn .map-action,
+body.mode-learn .locations-toggle      { display: none !important; }
+
+/* The map's right details panel is part of .shell so it's
+   already hidden by the rule above — but make sure the
+   global body class doesn't leave the panel marked open. */
+body.mode-learn .details               { display: none; }
+
+/* ---- Shell layout ----
+   Mirrors `.shell` (Explore):
+     • Desktop: 300px course list  | 1fr course detail
+     • Mobile : single column; the detail slides over the list. */
+.learn-shell {
+  grid-template-columns: var(--sidebar-w) 1fr;
+  /* Bound the row height so grid items get a definite height to
+     flex against. Without this the row sizes to content and
+     .course-detail's flex column has nothing to push the action
+     bar to the bottom of. `minmax(0, 1fr)` is the same trick
+     `.shell` would get from the surrounding chrome — making it
+     explicit here so it doesn't depend on auto-placement. */
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 0;
+  background: var(--header-bg);
+  position: relative;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* ===========================================================
+   COURSE LIST (left column)
+   =========================================================== */
+.courses {
+  background: var(--sidebar-bg);
+  color: var(--on-dark);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  font-family: var(--mono);
+}
+
+.courses-head {
+  padding: 18px var(--gutter) 14px;
+  flex-shrink: 0;
+
+}
+
+.courses-kicker {
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 600;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  margin-top: 8px;
+}
+
+/* Serif title, matching the Explore sidebar's `.locations-title`
+   ("Locations") so both modes share the same header rhythm. */
+.courses-title {
+  margin: 0 0 18px;
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0em;
+  color: var(--on-dark);
+  line-height: 1.5em;
+}
+
+.courses-meta {
+    font-size: 12px;
+    letter-spacing: .12em;
+    color: var(--on-dark-muted);
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--on-dark-line);
+}
+.course-list {
+  list-style: none;
+  margin: 0;
+  padding: 0px var(--gutter) 18px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;                          /* matches location-row 2px gap */
+}
+
+/* One course row — same chrome as `.location-row` so the two
+   sidebars feel like the same component family. */
+.course-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--cell-h);
+  padding: 14px 16px;
+  background: var(--cell-bg);
+  color: var(--on-dark);
+  cursor: pointer;
+  transition: background .14s, transform .08s;
+  font-family: var(--mono);
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  width: 100%;
+}
+
+.course-row:hover  { background: var(--cell-active); }
+.course-row:active { transform: translateY(1px); }
+.course-row.is-active { background: var(--cell-active); }
+
+.course-row-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--on-dark);
+}
+
+.course-row-code {
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--on-dark-muted);
+  margin-top: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.course-row-chev {
+  color: var(--brand-red);
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+.course-row.is-active .course-row-chev { color: var(--on-dark); }
+
+/* ===========================================================
+   COURSE DETAIL (right column)
+   =========================================================== */
+.course-detail {
+  background: #111111;      /* black, like the map background */
+  color: var(--on-dark);
+  position: relative;
+  /* The OUTER container is no longer the scroll element. We move
+     overflow onto .course-body so the action bar pinned below
+     stays put while the article scrolls past it. */
+  overflow: hidden;
+  font-family: var(--sans);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Empty state — shown until the user picks a course */
+.course-empty {
+  margin: auto;
+  padding: 48px 32px;
+  text-align: center;
+  max-width: 360px;
+  font-family: var(--mono);
+}
+.course-empty-kicker {
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 700;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.course-empty-msg {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--on-dark-muted);
+  margin: 0;
+}
+
+.course-body[hidden] { display: none; }
+.course-body {
+  /* This is now the scroll container. flex:1 + overflow:auto
+     means the article fills the space above the action bar and
+     scrolls independently of it. */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 32px clamp(24px, 4vw, 56px) 48px;
+  display: block;
+  /* Fill the full width of the .course-detail panel so the
+     content uses all the space available to the right of the
+     course list. No max-width cap — the panel itself is the
+     bound. The action bar below mirrors this so its buttons
+     align with the article edges. */
+  width: 100%;
+  margin: 0 auto;
+}
+
+.course-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-family: var(--mono);
+}
+
+/* Course code becomes a real kicker pill, the way .details-tag
+   works in the Explore panel — establishes the same visual
+   language across Learn and Explore. */
+.course-detail-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.course-code {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-size: 11px;
+  letter-spacing: .16em;
+  font-weight: 700;
+  color: var(--on-dark);
+  background: var(--cell-bg);
+  border: 1px solid var(--on-dark-line);
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.course-meta-sep {
+  color: var(--on-dark-muted);
+  opacity: .6;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.course-credits {
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+}
+
+.course-title {
+  font-family: var(--sans);
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--on-dark);
+  margin: 0 0 16px;
+}
+
+.course-lede {
+  font-family: var(--sans);
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.5;
+  color: var(--on-dark);
+  opacity: .92;
+  margin: 0 0 28px;
+  max-width: 70ch;
+}
+
+/* ---- Hero placeholder ----------------------------------------
+   Sits between the lede and the two-column body. Reserves real
+   visual weight so the page stops feeling empty even before
+   imagery is wired in. Uses the same dashed-X placeholder
+   idiom as the Explore panel's .details-image but at hero
+   scale, plus an oversized course-code watermark for variety
+   between courses. ----------------------------------------- */
+.course-hero {
+  position: relative;
+  margin: 0 0 36px;
+  padding: 0;
+  /* Looser ratio than before (was 16/5) so the frame can
+     accommodate the natural shape of bound artwork without
+     guillotining the composition. Combined with a max-height
+     cap so on wide viewports it still doesn't grow past a
+     sensible ceiling. */
+  aspect-ratio: 16 / 7;
+  max-height: 360px;
+  /* Soft radial vignette on top of the cell background. When
+     a bound image is letterboxed/pillarboxed by object-fit:
+     contain, the surrounding fill reads as intentional framing
+     rather than empty space. */
+  background:
+    radial-gradient(ellipse at center,
+                    rgba(255,255,255,.04),
+                    rgba(0,0,0,.35) 75%),
+    var(--cell-bg);
+  border: 1px solid var(--on-dark-line);
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+/* Subtle grid pattern so the hero reads as a designed surface,
+   not an empty rectangle. 32px squares, very low contrast. */
+.course-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right,
+      rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(to bottom,
+      rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: .9;
+}
+
+/* Course code stamped large in the upper-left as a watermark.
+   Gives each course a distinct hero even without imagery. */
+.course-hero-stamp {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  font-family: var(--mono);
+  font-size: clamp(48px, 7vw, 88px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--on-dark);
+  opacity: .07;
+  line-height: 1;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+.course-hero-cap {
+  position: relative;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 600;
+  color: var(--on-dark);
+  background: rgba(0,0,0,.55);
+  padding: 6px 10px;
+  border: 1px solid var(--on-dark-line);
+  border-radius: 3px;
+}
+
+/* When a real image is bound, .has-image hides the placeholder
+   chrome and lets the <img> fill the frame. Mirrors the
+   pattern used by .details-image.has-image in the Explore
+   panel — keeps the bind logic consistent across modes. */
+.course-hero.has-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* contain (not cover) — show the whole image, no crop.
+     The radial vignette on .course-hero shows through any
+     letterbox/pillarbox area so the frame reads as designed. */
+  object-fit: contain;
+  object-position: center;
+}
+.course-hero.has-image .course-hero-grid,
+.course-hero.has-image .course-hero-stamp,
+.course-hero.has-image .course-hero-cap { display: none; }
+
+/* Two-up layout: Overview is now weighted heavier than
+   Curriculum (prose vs scannable list). The curriculum side
+   gets its own subtle card background so it reads as a
+   "syllabus at a glance" panel. */
+.course-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(28px, 3.5vw, 52px);
+  margin-bottom: 12px;
+  padding-top: 28px;
+  border-top: 1px solid var(--on-dark-line);
+}
+
+.course-column-h {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 700;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.course-overview {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--on-dark);
+  opacity: .9;
+  margin: 0;
+}
+
+/* Curriculum column gets a card background so it reads as a
+   distinct, scannable side panel rather than a bullet list
+   floating in the void next to prose. */
+.course-column-curriculum {
+  background: var(--cell-bg);
+  border: 1px solid var(--on-dark-line);
+  border-radius: 8px;
+  padding: 20px 22px;
+  align-self: start;
+}
+.course-column-curriculum .course-column-h { margin-bottom: 16px; }
+
+/* Curriculum items become numbered rows, not bullets. Counter
+   gives each item a small index circle on the left — the kind
+   of list students think in (week 1, week 2…). */
+.course-curriculum {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--sans);
+  counter-reset: curriculum;
+}
+
+.course-curriculum li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 12px 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--on-dark);
+  border-top: 1px solid rgba(255,255,255,.04);
+  counter-increment: curriculum;
+}
+.course-curriculum li:first-child { border-top: none; }
+
+/* The index "chip" — small numbered circle in brand red. */
+.course-curriculum li::before {
+  content: counter(curriculum, decimal-leading-zero);
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--brand-red);
+  color: var(--on-dark);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0;
+  flex-shrink: 0;
+  /* Slight optical lift so the numeral aligns with the first
+     line of the item text rather than the baseline. */
+  margin-top: 1px;
+}
+
+/* ---- Persistent action bar (desktop & iPad) ------------------
+   Sits OUTSIDE .course-body so it stays pinned at the bottom of
+   .course-detail while the article scrolls. Background spans
+   the full panel width edge-to-edge; the inner content matches
+   the article's 1100px max-width so buttons line up with the
+   prose above. Mirrors the metadata-panel footer pattern. */
+.course-actions {
+  background: var(--header-bg);
+  border-top: 1px solid var(--on-dark-line);
+  flex-shrink: 0;
+}
+.course-actions[hidden] { display: none; }
+
+.course-actions-inner {
+  width: 100%;
+  margin: 0 auto;
+  padding: 18px clamp(24px, 4vw, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.course-actions-primary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.course-actions-updated {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.course-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--brand-red);
+  color: var(--on-dark);
+  border: none;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  cursor: pointer;
+  transition: background .14s, transform .08s;
+}
+.course-cta:hover  { background: var(--brand-red-2); }
+.course-cta:active { transform: translateY(1px); }
+
+/* Disabled state — shown when the course has no EON Reality
+   launch target yet. The button stays visible (so the page
+   layout doesn't shift) but signals it can't be acted on. */
+.course-cta:disabled,
+.course-cta[aria-disabled="true"] {
+  background: var(--cell-bg);
+  color: var(--on-dark-muted);
+  cursor: not-allowed;
+  opacity: .65;
+}
+.course-cta:disabled:hover,
+.course-cta[aria-disabled="true"]:hover {
+  background: var(--cell-bg);
+}
+.course-cta:disabled:active,
+.course-cta[aria-disabled="true"]:active {
+  transform: none;
+}
+
+/* VR-Enabled label + tooltip popover (THIS COURSE IS IMMERSIVE) */
+.course-vr {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  color: var(--on-dark);
+}
+.course-vr[hidden] { display: none; }
+
+.course-vr-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--on-dark);
+}
+
+.course-vr-icon { width: 22px; height: 22px; }
+
+.course-vr-help {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--on-dark-line);
+  background: transparent;
+  color: var(--on-dark-muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  transition: background .14s, color .14s;
+}
+.course-vr-help:hover {
+  background: rgba(255,255,255,.08);
+  color: var(--on-dark);
+}
+
+.course-vr-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(320px, 80vw);
+  padding: 14px 16px;
+  background: var(--cell-bg);
+  border: 1px solid var(--on-dark-line);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--on-dark);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease;
+  z-index: 5;
+}
+.course-vr-tooltip.is-open { opacity: 1; pointer-events: auto; }
+
+/* Little arrow pointing down to the (?) trigger. */
+.course-vr-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--cell-bg);
+}
+
+.course-vr-tooltip-kicker {
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  font-weight: 700;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.course-vr-tooltip p { margin: 0; }
+
+/* ---- Mobile-only "Back" button ----
+   Hidden on desktop (the list and detail are both visible at
+   the same time, so there's nothing to go back from). */
+.course-back {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--on-dark);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  padding: 10px 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.course-back svg { width: 18px; height: 18px; }
+.course-back:hover { opacity: .8; }
+
+/* ===========================================================
+   LEARN MODE — Responsive
+   =========================================================== */
+
+/* Mid-width tablet/laptop: collapse the two-column course body. */
+@media (max-width: 880px) {
+  .course-columns { grid-template-columns: 1fr; gap: 28px; }
+
+  /* On narrow screens, drop the curriculum card styling so it
+     blends with the rest of the article — saves horizontal
+     real estate for the list content itself. */
+  .course-column-curriculum {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  /* Hero gets a taller aspect on narrow screens so the bound
+     image (now contained, not cropped) has room to breathe
+     vertically instead of pillarboxing into a sliver. */
+  .course-hero {
+    aspect-ratio: 4 / 3;
+    max-height: 320px;
+  }
+}
+
+/* Mobile (≤880px) — single-pane flow.
+   The list takes the full viewport; tapping a course adds
+   `.has-detail` to .learn-shell, which slides the detail
+   panel in over the list. */
+@media (max-width: 880px) {
+  .learn-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    position: relative;
+  }
+
+  /* Both panes occupy the same grid cell; we toggle which one
+     is visible/active via the .has-detail class. */
+  .courses,
+  .course-detail {
+    grid-row: 1;
+    grid-column: 1;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
+  /* List visible by default, detail hidden. */
+  .course-detail {
+    transform: translateX(100%);
+    transition: transform .26s ease;
+    background: var(--header-bg);
+    z-index: 2;
+    pointer-events: none;
+    /* On mobile, scrolling moves back onto the outer container
+       so the inline action bar (now at the end of the article)
+       scrolls into view normally with the rest of the content. */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .learn-shell.has-detail .course-detail {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* When the detail is showing, hide the list from the a11y
+     tree and visually push it out so it doesn't render under
+     the (translucent-edged) detail. */
+  .learn-shell.has-detail .courses {
+    visibility: hidden;
+  }
+
+  .course-back {
+    display: inline-flex;
+    margin: 14px 8px 0;
+  }
+
+  /* The article no longer owns the scroll — let it grow
+     naturally and let .course-detail handle scrolling. */
+  .course-body {
+    overflow: visible;
+    flex: 0 0 auto;
+    padding: 8px 20px 28px;
+  }
+
+  .course-detail-head {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .course-title { font-size: 26px; margin-bottom: 14px; }
+  .course-lede  { font-size: 15px; margin-bottom: 22px; }
+
+  /* Action bar collapses to inline-at-end on mobile: no longer
+     a sticky footer, just sits naturally after the curriculum
+     section the way the original layout did. */
+  .course-actions {
+    background: transparent;
+    border-top: none;
+  }
+  .course-actions-inner {
+    padding: 22px 20px 56px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .course-actions-updated { align-self: flex-start; }
+
+  /* Empty state shouldn't appear on mobile — the list IS the
+     empty state on small screens until a course is picked. */
+  .course-empty { display: none; }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  .courses-head { padding: 18px 16px 12px; }
+  .course-list  { padding: 12px 16px 16px; }
+  .course-row   { padding: 12px 14px; }
+  .course-body  { padding: 8px 16px 24px; }
+}

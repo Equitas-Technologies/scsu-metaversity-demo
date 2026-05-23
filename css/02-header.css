@@ -1,0 +1,254 @@
+/* === SCSU styles — Part 2: Metabar, mode toggle, burger panel === */
+/* ===========================================================
+   METABAR (top header — black, persistent on every breakpoint)
+   Per Figma: 60px content row, 20px L/R gutters, sits below
+   a 4px brand-red flair line. Total chrome height ≈ 80px.
+   =========================================================== */
+.metabar {
+  /* Three equal flexible columns so the middle column — which holds
+     the Explore/Learn pill — is mathematically centered in the
+     viewport regardless of how wide the brand block or right-side
+     actions get. The earlier `auto 1fr auto` layout let the brand
+     block consume as much room as it needed and the middle column
+     absorbed whatever was left, which meant the pill drifted to the
+     right whenever the brand was wider than the burger.
+
+     `minmax(0, 1fr)` on every column lets each side shrink past its
+     intrinsic content width if the viewport narrows — without this,
+     a long brand string would push the middle column off-center
+     again. The brand/actions children still hug their respective
+     edges via `min-width: 0` + `justify-self`. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: 0 var(--gutter);                       /* 20px L/R per Figma */
+  padding-top: env(safe-area-inset-top);
+  height: calc(var(--topbar-h) + env(safe-area-inset-top));
+  background: var(--header-bg);
+  color: var(--on-dark);
+  font-family: var(--sans);
+  position: relative;
+  z-index: 1000;
+}
+
+/* ---- Brand block (logo + product name) ---- */
+.metabar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-logo {
+  /* 48x48 white-reversed SVG seal. No background fill — the SVG is
+     already white-on-transparent, so it sits cleanly on the black
+     header. No border-radius either; the artwork carries its own
+     circular silhouette. */
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.brand-product {
+  font-size: clamp(12px, 1.05vw, 14px);
+  font-weight: 600;
+  letter-spacing: .14em;
+  color: var(--on-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Right-side actions (burger) ---- */
+.metabar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+
+/* The actual burger trigger label.  Hidden checkbox below
+   drives the open/closed state via CSS sibling selectors. */
+.burger-toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.burger-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--on-dark);
+  background: transparent;
+  transition: background .15s, opacity .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.burger-btn:hover  { background: rgba(255,255,255,.06); }
+.burger-btn:active { background: rgba(255,255,255,.12); }
+.burger-btn img    { width: 24px; height: 24px; filter: invert(1) brightness(2); display: block; }
+.burger-btn .burger-fallback { font-size: 24px; line-height: 1; }
+
+/* Hidden utility buttons that JS still wires up */
+.hidden-utilities {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  pointer-events: none;
+}
+
+/* ===========================================================
+   MODE TOGGLE (Explore / Learn) — pill-shaped, in the header
+   =========================================================== */
+.mode-toggle {
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(255,255,255,.12);
+  border-radius: 999px;
+  /* Width is content-driven; flex children control individual size */
+}
+
+.mode-btn {
+  flex: 0 0 auto;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  padding: 9px 26px;
+  background: transparent;
+  color: var(--on-dark-muted);
+  border: none;
+  border-radius: 999px;
+  transition: background .15s, color .15s, transform .08s;
+  white-space: nowrap;
+}
+
+.mode-btn:hover  { color: var(--on-dark); }
+.mode-btn:active { transform: scale(.98); }
+
+.mode-btn.is-active {
+  background: var(--brand-red);
+  color: var(--on-dark);
+  box-shadow: 0 1px 0 rgba(0,0,0,.4);
+}
+.mode-btn.is-active:hover { background: var(--brand-red-2); }
+
+/* ===========================================================
+   BURGER SLIDE-IN PANEL (right side)
+   Pure-CSS open/close via the hidden #burgerToggle checkbox at
+   the top of .app. Per the Figma board, this is a *non-modal*
+   panel — the rest of the page stays visible and interactive
+   behind it; we don't dim a backdrop.
+   =========================================================== */
+.burger-panel {
+  position: fixed;
+  top: var(--flair-h);                /* sit below the red flair */
+  right: 0;
+  bottom: 0;
+  width: clamp(280px, 32vw, 480px);
+  background: var(--sidebar-bg);
+  color: var(--on-dark);
+  z-index: 1500;
+  transform: translateX(100%);
+  transition: transform .26s ease;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  box-shadow: -8px 0 24px rgba(0,0,0,.35);
+  font-family: var(--sans);
+  border-left: var(--border-light);
+}
+
+.burger-toggle:checked ~ .burger-panel { transform: translateX(0); }
+
+/* Backdrop kept ONLY for mobile, where the panel is full-width
+   and the user needs an obvious tap-off-to-close target. */
+.burger-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 1400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+  /* Hidden on desktop — the panel is non-modal there. */
+  display: none;
+}
+
+@media (max-width: 880px) {
+  .burger-backdrop { display: block; }
+  .burger-toggle:checked ~ .burger-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.burger-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 22px 18px;
+  border-bottom: 1px solid var(--on-dark-line);
+}
+
+.burger-panel-kicker {
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 600;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+}
+
+.burger-panel-close {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  color: var(--on-dark);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .14s;
+}
+.burger-panel-close:hover { opacity: .7; }
+.burger-panel-close svg   { width: 18px; height: 18px; }
+
+.burger-panel-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.burger-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px 22px;
+  background: transparent;
+  color: var(--on-dark);
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--on-dark-line);
+  transition: background .14s;
+}
+.burger-link:hover  { background: rgba(255,255,255,.04); }
+.burger-link:active { background: rgba(255,255,255,.08); }
+.burger-chev        { color: var(--on-dark-muted); font-size: 18px; line-height: 1; }

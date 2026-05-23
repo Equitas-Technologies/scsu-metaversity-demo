@@ -1,0 +1,549 @@
+{
+  "$schema": "scsu-treedis-sweeps-v1",
+  "generatedAt": "2026-05-21",
+  "models": {
+    "desktop": "8e4ca3fc",
+    "vr": "scsu-campus-ade0f346"
+  },
+  "sweeps": [
+    {
+      "id": "crawford-zimmerman-building",
+      "key": "crawford-zimmerman building",
+      "name": "Crawford-Zimmerman Building",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "dpbd0zqf00zr1qg5wqumx6p2c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -3.8674802731657634,
+          "y": -114.43023263065089
+        }
+      },
+      "vr": {
+        "sweepId": "dpbd0zqf00zr1qg5wqumx6p2c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -0.025693314832779427,
+          "y": -106.19951589595766
+        }
+      }
+    },
+    {
+      "id": "kirkland-w-green-student-center",
+      "key": "kirkland w. green student center",
+      "name": "Kirkland W. Green Student Center",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "itqbbw5un90s6fubay1sg9wpb",
+        "transitionTime": null,
+        "rotation": {
+          "x": -5.045205601736886,
+          "y": -73.01935857694679
+        }
+      },
+      "vr": {
+        "sweepId": "itqbbw5un90s6fubay1sg9wpb",
+        "transitionTime": null,
+        "rotation": {
+          "x": -8.908086462791735,
+          "y": -56.44339936674188
+        }
+      }
+    },
+    {
+      "id": "legacy-plaza",
+      "key": "legacy plaza",
+      "name": "Legacy Plaza",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "pfx40p9qnu4ibcpk6zkt2xdta",
+        "transitionTime": null,
+        "rotation": {
+          "x": -12.467846650109486,
+          "y": -73.5622939104859
+        }
+      },
+      "vr": {
+        "sweepId": "pfx40p9qnu4ibcpk6zkt2xdta",
+        "transitionTime": null,
+        "rotation": {
+          "x": -10.082997365430176,
+          "y": -63.402001658418165
+        }
+      }
+    },
+    {
+      "id": "nance-hall",
+      "key": "nance hall",
+      "name": "Nance Hall",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "tha74gz4z0hsxqh6e1ziudqpd",
+        "transitionTime": null,
+        "rotation": {
+          "x": 6.575815542193622,
+          "y": -95.18049943080082
+        }
+      },
+      "vr": {
+        "sweepId": "tha74gz4z0hsxqh6e1ziudqpd",
+        "transitionTime": null,
+        "rotation": {
+          "x": 5.556788914278276,
+          "y": -76.99676497350086
+        }
+      }
+    },
+    {
+      "id": "olar-demo-farm",
+      "key": "olar demo farm",
+      "name": "Olar Demo Farm",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "hnz5p2wkdqr4isd41y1z2e1kc",
+        "transitionTime": null,
+        "rotation": {
+          "x": -6.074742487063323,
+          "y": -94.63152563319096
+        }
+      },
+      "vr": {
+        "sweepId": "hnz5p2wkdqr4isd41y1z2e1kc",
+        "transitionTime": null,
+        "rotation": {
+          "x": -6.215822504455127,
+          "y": -93.42109560097343
+        }
+      }
+    },
+    {
+      "id": "olar-farm",
+      "key": "olar farm",
+      "name": "Olar Farm",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "hnz5p2wkdqr4isd41y1z2e1kc",
+        "transitionTime": null,
+        "rotation": {
+          "x": -6.074742487063323,
+          "y": -94.63152563319096
+        }
+      },
+      "vr": {
+        "sweepId": "hnz5p2wkdqr4isd41y1z2e1kc",
+        "transitionTime": null,
+        "rotation": {
+          "x": -6.215822504455127,
+          "y": -93.42109560097343
+        }
+      }
+    },
+    {
+      "id": "oliver-c-dawson-stadium",
+      "key": "oliver c. dawson stadium",
+      "name": "Oliver C. Dawson Stadium",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "a69zbymdc8gnx3nzhy7nm3rna",
+        "transitionTime": null,
+        "rotation": {
+          "x": 0,
+          "y": -89.50120756964095
+        }
+      },
+      "vr": {
+        "sweepId": "a69zbymdc8gnx3nzhy7nm3rna",
+        "transitionTime": null,
+        "rotation": {
+          "x": 22.621086451514035,
+          "y": -89.67573758863338
+        }
+      }
+    },
+    {
+      "id": "shm-memorial-square",
+      "key": "shm memorial square",
+      "name": "Shm Memorial Square",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "pfx40p9qnu4ibcpk6zkt2xdta",
+        "transitionTime": null,
+        "rotation": {
+          "x": -10.066993209030864,
+          "y": -60.01572577915264
+        }
+      },
+      "vr": {
+        "sweepId": "pfx40p9qnu4ibcpk6zkt2xdta",
+        "transitionTime": null,
+        "rotation": {
+          "x": -6.13003803406695,
+          "y": -61.000306844200416
+        }
+      }
+    },
+    {
+      "id": "street-view",
+      "key": "street view",
+      "name": "Street View",
+      "parentName": null,
+      "desktop": {
+        "sweepId": "gs6itzr7wgg9zm7iicpmf27qd",
+        "transitionTime": null,
+        "rotation": null
+      },
+      "vr": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      }
+    },
+    {
+      "id": "admissions-and-financial-aid",
+      "key": "admissions & financial aid",
+      "name": "Admissions & Financial Aid",
+      "parentName": "Crawford-Zimmerman Building",
+      "desktop": {
+        "sweepId": "br7rxxkae3inaq9cuuw2cs12a",
+        "transitionTime": null,
+        "rotation": {
+          "x": -12.838917584364898,
+          "y": -131.22476860488183
+        }
+      },
+      "vr": {
+        "sweepId": "br7rxxkae3inaq9cuuw2cs12a",
+        "transitionTime": null,
+        "rotation": {
+          "x": -9.178350717274991,
+          "y": -128.72651147955688
+        }
+      }
+    },
+    {
+      "id": "campus-bookstore",
+      "key": "campus bookstore",
+      "name": "Campus Bookstore",
+      "parentName": "Crawford-Zimmerman Building",
+      "desktop": {
+        "sweepId": "n1xw6qb7rekq3kim4dnsss68c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -19.292573028798614,
+          "y": -103.48085806032049
+        }
+      },
+      "vr": {
+        "sweepId": "n1xw6qb7rekq3kim4dnsss68c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -10.778452827629257,
+          "y": -116.97112289300262
+        }
+      }
+    },
+    {
+      "id": "crawford-zimmerman-1st-floor",
+      "key": "crawford zimmerman 1st floor",
+      "name": "Crawford Zimmerman 1st Floor",
+      "parentName": "Crawford-Zimmerman Building",
+      "desktop": {
+        "sweepId": "n1xw6qb7rekq3kim4dnsss68c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -19.292573028798614,
+          "y": -103.48085806032049
+        }
+      },
+      "vr": {
+        "sweepId": "n1xw6qb7rekq3kim4dnsss68c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -10.778452827629257,
+          "y": -116.97112289300262
+        }
+      }
+    },
+    {
+      "id": "facilities-management-and-operations",
+      "key": "facilities management & operations",
+      "name": "Facilities Management & Operations",
+      "parentName": "Crawford-Zimmerman Building",
+      "desktop": {
+        "sweepId": "w71ztkwx17guq5zwx8yk60ctb",
+        "transitionTime": null,
+        "rotation": {
+          "x": -13.846676418385572,
+          "y": -88.2009725696489
+        }
+      },
+      "vr": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      }
+    },
+    {
+      "id": "office-of-student-financial-services",
+      "key": "office of student financial services",
+      "name": "Office of Student Financial Services",
+      "parentName": "Crawford-Zimmerman Building",
+      "desktop": {
+        "sweepId": "w71ztkwx17guq5zwx8yk60ctb",
+        "transitionTime": null,
+        "rotation": {
+          "x": -13.846676418385572,
+          "y": -88.2009725696489
+        }
+      },
+      "vr": {
+        "sweepId": "w71ztkwx17guq5zwx8yk60ctb",
+        "transitionTime": null,
+        "rotation": {
+          "x": -9.543466825753555,
+          "y": -71.00390733365607
+        }
+      }
+    },
+    {
+      "id": "student-center-1st-floor",
+      "key": "student center 1st floor",
+      "name": "Student Center 1st Floor",
+      "parentName": "Kirkland W. Green Student Center",
+      "desktop": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      },
+      "vr": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      }
+    },
+    {
+      "id": "student-center-2nd-floor",
+      "key": "student center 2nd floor",
+      "name": "Student Center 2nd Floor",
+      "parentName": "Kirkland W. Green Student Center",
+      "desktop": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      },
+      "vr": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      }
+    },
+    {
+      "id": "faculty-suite",
+      "key": "faculty suite",
+      "name": "Faculty Suite",
+      "parentName": "Nance Hall",
+      "desktop": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      },
+      "vr": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      }
+    },
+    {
+      "id": "lecture-room",
+      "key": "lecture room",
+      "name": "Lecture Room",
+      "parentName": "Nance Hall",
+      "desktop": {
+        "sweepId": "uqik25u7i841yyf37nw53wnba",
+        "transitionTime": null,
+        "rotation": {
+          "x": -11.467494110408978,
+          "y": -88.61718297306204
+        }
+      },
+      "vr": {
+        "sweepId": "uqik25u7i841yyf37nw53wnba",
+        "transitionTime": null,
+        "rotation": {
+          "x": -11.383827319357279,
+          "y": -90.27528396260246
+        }
+      }
+    },
+    {
+      "id": "room-100",
+      "key": "room 100",
+      "name": "Room 100",
+      "parentName": "Nance Hall",
+      "desktop": {
+        "sweepId": "smq4rk3baq414duy3icagdidd",
+        "transitionTime": null,
+        "rotation": {
+          "x": -9.297494867085225,
+          "y": -113.23768652513726
+        }
+      },
+      "vr": {
+        "sweepId": "smq4rk3baq414duy3icagdidd",
+        "transitionTime": null,
+        "rotation": {
+          "x": -9.774468609592939,
+          "y": -116.1334759674568
+        }
+      }
+    },
+    {
+      "id": "room-110",
+      "key": "room 110",
+      "name": "Room 110",
+      "parentName": "Nance Hall",
+      "desktop": {
+        "sweepId": "seh878f3barigi91p12186a8c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -10.35426512117927,
+          "y": -92.29163820600608
+        }
+      },
+      "vr": {
+        "sweepId": "seh878f3barigi91p12186a8c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -7.063387086849155,
+          "y": -90.87034773872239
+        }
+      }
+    },
+    {
+      "id": "room-110-baby",
+      "key": "room 110 - baby",
+      "name": "Room 110 - Baby",
+      "parentName": "Nance Hall",
+      "desktop": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      },
+      "vr": {
+        "sweepId": null,
+        "transitionTime": null,
+        "rotation": null
+      }
+    },
+    {
+      "id": "bulldog-wall",
+      "key": "bulldog wall",
+      "name": "Bulldog Wall",
+      "parentName": "Oliver C. Dawson Stadium",
+      "desktop": {
+        "sweepId": "uhpx2eq3adep8nfzmwwb5utqd",
+        "transitionTime": null,
+        "rotation": {
+          "x": 0.1450587289677038,
+          "y": -83.61075957121203
+        }
+      },
+      "vr": {
+        "sweepId": "uhpx2eq3adep8nfzmwwb5utqd",
+        "transitionTime": null,
+        "rotation": {
+          "x": -9.368142352368098,
+          "y": -83.533449366017
+        }
+      }
+    },
+    {
+      "id": "gate-1",
+      "key": "gate 1",
+      "name": "Gate 1",
+      "parentName": "Oliver C. Dawson Stadium",
+      "desktop": {
+        "sweepId": "b9z6epq22rc4a3918w6bgkw8d",
+        "transitionTime": null,
+        "rotation": {
+          "x": -4.875785109580019,
+          "y": -88.75009825677934
+        }
+      },
+      "vr": {
+        "sweepId": "b9z6epq22rc4a3918w6bgkw8d",
+        "transitionTime": null,
+        "rotation": {
+          "x": -2.179720094489177,
+          "y": -95.82436955362265
+        }
+      }
+    },
+    {
+      "id": "midfield",
+      "key": "midfield",
+      "name": "Midfield",
+      "parentName": "Oliver C. Dawson Stadium",
+      "desktop": {
+        "sweepId": "2k4mat4f2ba0gca1iap2xs9md",
+        "transitionTime": null,
+        "rotation": {
+          "x": -8.93945593460425,
+          "y": -93.52687114515514
+        }
+      },
+      "vr": {
+        "sweepId": "2k4mat4f2ba0gca1iap2xs9md",
+        "transitionTime": null,
+        "rotation": {
+          "x": -16.29417295692844,
+          "y": -96.35244452221659
+        }
+      }
+    },
+    {
+      "id": "bronze-busts-monuments",
+      "key": "bronze busts/monuments",
+      "name": "Bronze Busts/monuments",
+      "parentName": "SHM Memorial Square",
+      "desktop": {
+        "sweepId": "mghxr3x2p305y5unaqk6e30ua",
+        "transitionTime": null,
+        "rotation": {
+          "x": -4.287741634450163,
+          "y": -56.26992221819853
+        }
+      },
+      "vr": {
+        "sweepId": "mghxr3x2p305y5unaqk6e30ua",
+        "transitionTime": null,
+        "rotation": {
+          "x": -2.7516061341687155,
+          "y": -57.567059361179396
+        }
+      }
+    },
+    {
+      "id": "historical-marker",
+      "key": "historical marker",
+      "name": "Historical Marker",
+      "parentName": "SHM Memorial Square",
+      "desktop": {
+        "sweepId": "nhyxqi32uey2ix9sp3zhxwm4c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -5.7041985820700125,
+          "y": -74.48094044330865
+        }
+      },
+      "vr": {
+        "sweepId": "nhyxqi32uey2ix9sp3zhxwm4c",
+        "transitionTime": null,
+        "rotation": {
+          "x": -5.478315845629449,
+          "y": -78.43629994638431
+        }
+      }
+    }
+  ]
+}

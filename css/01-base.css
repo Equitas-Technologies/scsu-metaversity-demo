@@ -1,0 +1,202 @@
+/* === SCSU styles — Part 1: Base, variables, splash, app grid === */
+/* ===========================================================
+   SCSU VIRTUAL CAMPUS — Styles (redesigned)
+   -----------------------------------------------------------
+   Dark sidebar + dark header, brand-red flair, pill toggles,
+   integrated search, Featured/All tabs, slide-in burger menu.
+   Pixel margins from the design spec are converted to clamp()
+   so the layout stays fluid across breakpoints.
+   =========================================================== */
+
+:root {
+  /* ---------- New brand palette (per design spec) ---------- */
+  --header-bg:   #000000;       /* metabar background */
+  --brand-red:   #872837;       /* header flair / Explore active state */
+  --brand-red-2: #6f1f2c;       /* hover */
+  --sidebar-bg:  #333333;       /* left/right panel surrounds */
+  --cell-bg:     #222222;       /* clickable cells inside the sidebar */
+  --cell-active: #000000;       /* hover/active cell state */
+  --cell-border: #1a1a1a;       /* hairline between cells */
+
+  /* ---------- Existing accent palette (kept) ---------- */
+  --ink:         #0b0b0b;
+  --ink-2:       #1f2937;
+  --fog:         #f5f5f4;
+  --fog-2:       #eaeaea;
+  --line:        #111111;
+  --line-soft:   #d4d4d8;
+  --paper:       #ffffff;
+  --mint:        #a7f3d0;
+  --mint-deep:   #6ee7b7;
+  --mint-glow:   #86efac;
+  --rose:        #fca5a5;
+  --alert:       #e11d48;
+
+  /* ---------- Text on dark surfaces ---------- */
+  --on-dark:        #ffffff;
+  --on-dark-muted:  rgba(255,255,255,.62);
+  --on-dark-faint:  rgba(255,255,255,.38);
+  --on-dark-line:   rgba(255,255,255,.10);
+
+  /* ---------- Typography ---------- */
+  /* `--mono` previously resolved to JetBrains Mono. Per the updated
+     Figma direction, the UI should use Inter throughout — so the
+     token now aliases the same Inter stack as `--sans`. The name is
+     kept so the many existing `font-family: var(--mono)` rules
+     across the codebase don't need touching (anything that still
+     references the token now renders Inter automatically). The
+     JetBrains Mono webfont import has also been removed from
+     map.html so the font is no longer downloaded. */
+  --mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, system-ui, sans-serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, system-ui, sans-serif;
+  /* Minion (self-host via @font-face for production). EB Garamond is
+     loaded from Google Fonts as an open-source visual fallback —
+     it's an old-style serif with proportions close to Minion. */
+  --serif: "Minion Pro", "Minion 3", "Minion",
+           "EB Garamond", "Adobe Garamond Pro",
+           Georgia, "Times New Roman", serif;
+
+  /* ---------- Structural sizes ----------
+     Per Figma:
+       • Top bar:     60px content row + 20px top pad (red flair)  = ~80px
+       • Sidebar:     300px wide, 20px inner gutters
+       • Details:     340px wide, 20px inner gutters
+       • Tour bar:    85px tall, BLACK (matches --header-bg, not --sidebar-bg)
+       • Cell height: 65px
+       • Cell gap:    2px
+     Widths use clamp() so the layout stays usable on smaller laptops,
+     but the Figma-spec value (300/340) is the upper bound. */
+  --topbar-h:      80px;
+  --tourbar-h:     85px;       /* matches the 85px sidebar tour height */
+  /* Locked to exact Figma spec on desktop. The narrower-laptop
+     breakpoint below scales them down only when the viewport
+     can no longer comfortably fit both panels at full width. */
+  --sidebar-w:     340px;      /* matches --details-w */
+  --details-w:     340px;      /* 340px per Figma */
+  --sidebar-tour-h:85px;
+  --cell-h:        65px;       /* per Figma "LOCATION CELL — 65px" */
+  --gutter:        20px;       /* per Figma — 20px inside sidebars/panels */
+
+  /* Page edge gutter — kept ultra-thin so panels read as connected
+     to the metabar, matching the Figma board. */
+  --edge-gutter:   0px;
+  --panel-gap:     0px;
+
+  /* Mobile details-panel heights */
+  --mobile-half-h: 46dvh;
+  --mobile-peek:   0px;
+
+  /* Brand red flair height */
+  --flair-h: 4px;
+
+  --border-light: 1px solid var(--on-dark-line);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--header-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button { font-family: inherit; cursor: pointer; }
+img    { user-select: none; -webkit-user-drag: none; }
+
+/* ===========================================================
+   SPLASH / TITLE SCREEN
+   Dark sidebar bg + brand-red typography to match the rest of
+   the app chrome. White is used as a secondary accent.
+   =========================================================== */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: var(--sidebar-bg);   /* #333333 */
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  transition: opacity .4s ease-out;
+}
+
+.splash.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-brand {
+  text-align: center;
+  font-family: var(--mono);
+}
+
+.splash-sc {
+  font-size: 11px;
+  letter-spacing: .2em;
+  color: var(--on-dark);           /* white kicker */
+  font-weight: 600;
+  margin-bottom: 8px;
+  opacity: .75;
+}
+
+.splash-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--brand-red);         /* #872837 */
+  margin-bottom: 28px;
+}
+
+.splash-progress {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .15em;
+  color: var(--on-dark);           /* white, dimmed */
+  opacity: .55;
+  text-transform: uppercase;
+}
+
+.splash-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, .18);
+  border-top-color: var(--brand-red);  /* spinning arc in brand red */
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===========================================================
+   APP GRID
+     row 1 — brand red flair (4px)
+     row 2 — METABAR (logo | mode toggle | burger)
+     row 3 — LOCATIONS | MAP | DETAILS
+     row 4 — TOURBAR (mobile only; hidden on desktop)
+   =========================================================== */
+.app {
+  display: grid;
+  grid-template-rows: var(--flair-h) var(--topbar-h) 1fr;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--header-bg);
+  opacity: 0;
+  transition: opacity .3s .2s;
+}
+
+.app.is-ready { opacity: 1; }
+
+/* Brand red flair line at the very top. */
+.brand-flair {
+  background: var(--brand-red);
+  height: 100%;
+}
+

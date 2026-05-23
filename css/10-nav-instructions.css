@@ -1,0 +1,178 @@
+/* === SCSU styles — Part 10: Nav instructions modal === */
+/* ===========================================================
+   NAVIGATION INSTRUCTIONS MODAL (3D street view onboarding)
+   -----------------------------------------------------------
+   Same modal pattern as the start screen, but with a dark
+   #333333 card so the white-text instructional image reads
+   correctly. Single "Got it" CTA + "Don't show again"
+   checkbox. Sits at z-index 1750 — above the start screen
+   (1700) so if both are ever queued, this one wins. In
+   practice they never overlap because street view can only
+   be opened after the start screen is dismissed.
+   =========================================================== */
+.nav-instructions {
+  position: fixed;
+  inset: 0;
+  z-index: 1750;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 48px);
+  background: rgba(0, 0, 0, .65);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .28s ease;
+}
+.nav-instructions[aria-hidden="false"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-instructions-card {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 32px);
+  background: #333333;            /* dark backdrop for the white-text image */
+  color: var(--on-dark);
+  padding: clamp(28px, 4vw, 40px) clamp(28px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+  font-family: var(--sans);
+  border-radius: 0;               /* match start-screen square corners */
+  transform: translateY(8px);
+  transition: transform .32s ease;
+  overflow: auto;
+}
+.nav-instructions[aria-hidden="false"] .nav-instructions-card {
+  transform: translateY(0);
+}
+
+.nav-instructions-title {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+  color: var(--on-dark);
+  letter-spacing: -0.01em;
+}
+
+/* The placeholder image. Stretches to fill the card width
+   and preserves aspect ratio. The image already has white
+   text on a transparent background so the dark card behind
+   it provides contrast. */
+.nav-instructions-image {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Reserve some minimum height so the modal doesn't collapse
+     awkwardly while the image is loading. */
+  min-height: 200px;
+}
+.nav-instructions-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Two-variant image swap. The .nav-instructions-image wrapper
+   holds both a desktop/mouse <img> and an XR/VR <img>. Which
+   one is shown is driven by the global `body.xr-mode` class set
+   by applyTreedisProfile() in 01-utils.js at boot — the same
+   signal the rest of the app uses to switch into VR mode. To
+   manually flip variants for testing on a regular browser, run
+   `document.body.classList.toggle('xr-mode')` in the console. */
+.nav-instructions-image .nav-instructions-img-xr { display: none; }
+body.xr-mode .nav-instructions-image .nav-instructions-img-desktop { display: none; }
+body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: block; }
+.nav-instructions-fallback {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--on-dark-muted);
+  letter-spacing: .04em;
+}
+
+/* Reuse the start-screen checkbox styling, but invert colors
+   so the white check + transparent box read on the dark card. */
+.nav-instructions-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  color: var(--on-dark-muted);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-instructions-checkbox input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.nav-instructions-checkbox-box {
+  width: 18px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid rgba(255,255,255,.5);
+  background: transparent;
+  color: transparent;
+  transition: background .14s, border-color .14s, color .14s;
+  flex-shrink: 0;
+}
+.nav-instructions-checkbox-box svg { width: 14px; height: 14px; }
+.nav-instructions-checkbox:hover .nav-instructions-checkbox-box {
+  border-color: var(--on-dark);
+}
+.nav-instructions-checkbox input:checked
+~ .nav-instructions-checkbox-box {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+  color: #fff;
+}
+.nav-instructions-checkbox input:focus-visible
+~ .nav-instructions-checkbox-box {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.nav-instructions-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.nav-instructions-btn {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 40px;
+  min-width: 180px;
+  border: none;
+  background: var(--brand-red);
+  color: #fff;
+  cursor: pointer;
+  transition: background .14s;
+}
+.nav-instructions-btn:hover {
+  background: var(--brand-red-2);
+}
+.nav-instructions-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .nav-instructions-btn { width: 100%; min-width: 0; }
+}

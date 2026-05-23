@@ -1,0 +1,107 @@
+/* === SCSU styles — Part 9: Burger panel — Settings group === */
+/* ===========================================================
+   BURGER PANEL — Settings group + toggle switch
+   -----------------------------------------------------------
+   Sits at the bottom of the burger panel, below the nav links.
+   The toggle is a styled switch (track + thumb) for a clearer
+   "setting" affordance vs. the link rows above.
+   =========================================================== */
+.burger-settings {
+  margin-top: auto;            /* pin to the bottom of the panel */
+  padding: 18px 22px 22px;
+  border-top: 1px solid var(--on-dark-line);
+  background: rgba(0,0,0,.18);
+}
+
+.burger-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Vertical spacing between stacked toggle rows. The first row
+   has no top margin so it hugs the divider above it. */
+.burger-toggle-row + .burger-toggle-row {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--on-dark-line);
+}
+
+.burger-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.burger-toggle-label {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-dark);
+  line-height: 1.3;
+}
+
+.burger-toggle-hint {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--on-dark-muted);
+  line-height: 1.35;
+}
+
+/* Switch — hidden checkbox + visible track/thumb */
+.burger-switch {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.burger-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.burger-switch-track {
+  display: inline-block;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+  transition: background .18s ease;
+}
+
+.burger-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .18s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+
+.burger-switch input:checked ~ .burger-switch-track {
+  background: var(--brand-red);
+}
+.burger-switch input:checked ~ .burger-switch-track .burger-switch-thumb {
+  transform: translateX(16px);
+}
+
+.burger-switch input:focus-visible ~ .burger-switch-track {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+

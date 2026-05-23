@@ -1,0 +1,666 @@
+/* === SCSU styles — Part 4: Map area, details panel, tourbar === */
+/* ===========================================================
+   MAP AREA
+   =========================================================== */
+.map-wrap {
+  position: relative;
+  min-height: 0;
+  background: #0e0e0e;
+  overflow: hidden;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  background: #1a1a1a;
+}
+
+.leaflet-container {
+  font-family: var(--mono);
+  background: transparent;
+}
+
+/* Mobile-only trigger to reveal the locations list */
+.locations-toggle {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 500;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+.locations-toggle .locations-toggle-icon { width: 18px; height: 18px; display: block; }
+.locations-toggle .lt-fallback           { font-size: 18px; font-weight: 600; line-height: 1; }
+.locations-toggle:active { transform: translateY(1px); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+
+.map-action {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 500;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  display: grid;
+  place-items: center;
+}
+.map-action svg     { width: 18px; height: 18px; }
+.map-action:active  { transform: translateY(1px); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+
+/* ===========================================================
+   DETAILS PANEL (right side on desktop) — dark theme
+   =========================================================== */
+.details {
+  background: var(--sidebar-bg);
+  color: var(--on-dark);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  font-family: var(--sans);
+}
+
+.shell.has-details .details {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.details-handle { display: none; }
+
+.details-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--on-dark-line);
+  background: transparent;
+  color: var(--on-dark);
+  border-radius: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+.details-close svg   { width: 14px; height: 14px; }
+.details-close:hover { background: rgba(255,255,255,.08); }
+
+.details-content {
+  /* 20px L/R gutter per Figma metadata panel. Bottom gets extra
+     room so the last block doesn't hug the panel edge.
+     On desktop/iPad we shrink the bottom padding because the
+     persistent footer below provides its own breathing room
+     (see .details-footer rules). */
+  padding: 22px var(--gutter) 24px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.details-peek,
+.details-extra { display: contents; }
+
+/* ===========================================================
+   PERSISTENT BUTTON BAR (desktop & iPad only)
+   -----------------------------------------------------------
+   Mirrors the sidebar's bottom tour-bar pattern. Stays visible
+   while the metadata content above scrolls. Hidden on mobile
+   (see mobile media query) — mobile keeps the inline Explore
+   CTA + VR row inside the scroll flow.
+   =========================================================== */
+.details-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px var(--gutter);
+  /* Match the sidebar tour bar exactly: black background (so it
+     reads as a continuation of the top metabar) and the same
+     85px height token both bars share. */
+  background: var(--header-bg);
+  border-top: var(--border-light);
+  height: var(--sidebar-tour-h);
+  flex-shrink: 0;
+}
+
+.details-footer-explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--brand-red);
+  color: var(--on-dark);
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  cursor: pointer;
+  transition: background .14s, transform .08s;
+}
+.details-footer-explore:hover  { background: var(--brand-red-2); }
+.details-footer-explore:active { transform: translateY(1px); }
+.details-footer-explore-icon   { width: 16px; height: 16px; flex-shrink: 0; }
+.details-footer-explore.is-pending { background: var(--brand-red-2); }
+
+.details-footer-vr {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--on-dark-muted);
+  text-decoration: none;
+  padding: 6px 4px;
+  border-radius: 6px;
+  transition: color .14s;
+}
+.details-footer-vr:hover,
+.details-footer-vr:focus-visible {
+  color: var(--on-dark);
+  outline: none;
+}
+.details-footer-vr-icon { width: 18px; height: 18px; flex-shrink: 0; }
+.details-footer-vr-text { white-space: nowrap; }
+.details-footer-vr-help {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--on-dark-line);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--on-dark-muted);
+  margin-left: 2px;
+}
+
+/* On desktop/iPad, the inline Explore CTA and inline VR row that
+   live inside .details-content are hidden — their roles are taken
+   by the persistent footer above. They remain in the DOM so the
+   existing JS bindings on #exploreCta / .vr-link keep functioning
+   (the footer button proxies clicks to #exploreCta).
+   Chained selector on the CTA bumps specificity above the plain
+   `.explore-cta { display: inline-flex }` rule further down. */
+
+.explore-cta.explore-cta-inline,
+.details-vr.details-vr-inline {
+  display: none;
+}
+
+/* Toggle applied by renderDetails() in 06-details-panel.js when
+   the currently-selected building has no Treedis sweep configured.
+   Hides the Explore CTA (mobile inline + desktop footer), the
+   mobile inline VR-Enabled row, and the entire desktop/iPad
+   persistent footer bar — so buildings like Staley Hall and Davis
+   Hall render as info-only cards (tag, title, description, image)
+   without advertising an immersive view that doesn't exist.
+
+   `!important` is required because several of these elements
+   have explicit `display: flex` / `display: inline-flex` rules
+   elsewhere in this file and in the responsive overrides
+   (05-leaflet-responsive.css). Plain `display: none` without
+   `!important` would lose the specificity battle to those rules,
+   especially the mobile media query that re-enables the inline
+   variants. */
+.is-hidden-no-sweep {
+  display: none !important;
+}
+
+.details-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 600;
+  color: var(--on-dark-muted);
+  padding: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.details-title {
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1.15;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  /* Minion serif per design — see --serif stack for fallbacks. */
+  font-family: var(--serif);
+  color: var(--on-dark);
+}
+
+.details-sub {
+    font-size: 12.5px;
+    color: var(--on-dark-muted);
+    margin-bottom: 16px;
+    letter-spacing: .02em;
+    line-height: 1.7em;
+}
+
+.explore-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--brand-red);
+  color: var(--on-dark);
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  margin-bottom: 18px;
+  transition: background .14s, transform .08s;
+}
+.explore-cta:hover  { background: var(--brand-red-2); }
+.explore-cta:active { transform: translateY(1px); }
+.explore-cta svg,
+.explore-cta .explore-cta-icon-fallback { width: 16px; height: 16px; }
+
+.details-image {
+  margin: 0 0 16px;
+  padding: 0;
+  aspect-ratio: 16 / 10;
+  position: relative;
+  border: 1px solid var(--on-dark-line);
+  background: var(--cell-bg);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.details-image-x {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - 0.75px),
+                    var(--alert) calc(50% - 0.75px),
+                    var(--alert) calc(50% + 0.75px),
+                    transparent calc(50% + 0.75px)),
+    linear-gradient(to top left, transparent calc(50% - 0.75px),
+                    var(--alert) calc(50% - 0.75px),
+                    var(--alert) calc(50% + 0.75px),
+                    transparent calc(50% + 0.75px));
+  opacity: .35;
+}
+
+.details-image figcaption {
+    position: relative;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: .14em;
+    font-weight: 500;
+    color: #777777;
+    background: rgba(0, 0, 0, .6);
+    padding: 4px 8px;
+    border: 1px solid var(--on-dark-line);
+    border-radius: 3px;
+}
+
+.details-body {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--on-dark);
+  margin: 0 0 22px;
+  opacity: .9;
+}
+
+.details-block { margin-bottom: 20px; }
+
+.details-block-h {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-top: 4px;
+}
+
+.chip {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: .06em;
+    font-weight: 500;
+    padding: 5px 10px;
+    border: 1px solid #222222;
+    border-radius: 4px;
+    background: var(--cell-bg);
+    color: #999999;
+    text-transform: uppercase;
+}
+
+.sub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--on-dark-line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sub-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  /* Inter (sans) per design — applies to every "Explorable Locations"
+     item (Room 110, Lecture Room, etc.) in the metadata panel. */
+  font-family: var(--sans);
+  font-size: 12px;
+  border-bottom: 1px solid var(--on-dark-line);
+  color: var(--on-dark);
+  background: var(--cell-bg);
+  transition: background .12s;
+  cursor: pointer;
+}
+.sub-list li:last-child { border-bottom: none; }
+.sub-list li:hover      { background: var(--cell-active); }
+
+.sub-list .chev { color: var(--brand-red); font-size: 16px; }
+
+.details-vr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--on-dark-line);
+}
+
+.vr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--cell-bg);
+  color: var(--on-dark);
+  border: 1px solid var(--on-dark-line);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+.vr-btn:hover { background: var(--cell-active); }
+
+/* The bottom Explore button was removed from the metadata panel.
+   The element stays in the DOM so JS keeps its click handler intact,
+   but it's visually suppressed. */
+.vr-btn-hidden {
+  display: none !important;
+}
+
+.vr-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--on-dark-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* When the VR-Enabled label is a deep-link to a Meta Quest headset,
+   give it button-like affordance: pointer cursor, subtle border,
+   and a clear hover/focus state so users know it's interactive.
+   The browser's native tooltip (from the `title` attribute) handles
+   the explanatory hover text. */
+a.vr-link {
+  text-decoration: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border: 1px solid var(--on-dark-line);
+  border-radius: 999px;
+  background: var(--cell-bg);
+  transition: background .14s, color .14s, border-color .14s, transform .08s;
+}
+a.vr-link:hover,
+a.vr-link:focus-visible {
+  background: var(--cell-active);
+  color: var(--on-dark);
+  border-color: var(--on-dark);
+  outline: none;
+}
+a.vr-link:active { transform: translateY(1px); }
+
+.vr-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--mint-deep);
+  border: 1px solid var(--on-dark-line);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ===========================================================
+   TOUR ARROW (sidebar footer + mobile tour bar)
+   =========================================================== */
+.tour-arrow {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--on-dark-line);
+  background: var(--cell-bg);
+  color: var(--on-dark);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: transform .08s, background .12s;
+  padding: 0;
+}
+.tour-arrow svg     { width: 18px; height: 18px; }
+.tour-arrow:hover   { background: var(--cell-active); }
+.tour-arrow:active  { transform: translateY(1px); }
+.tour-arrow:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  background: var(--cell-bg);
+}
+
+.tour-info {
+  text-align: center;
+  font-family: var(--sans);
+  min-width: 0;
+  color: var(--on-dark);
+}
+
+.tour-label {
+  font-size: 10px;
+  letter-spacing: .18em;
+  color: var(--on-dark-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.tour-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-dark);
+  line-height: 1.2;
+  margin: 8px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tour-count {
+  font-size: 11px;
+  color: var(--on-dark-muted);
+  letter-spacing: .06em;
+}
+
+/* ===========================================================
+   BOTTOM TOURBAR
+   Desktop: hidden (the sidebar footer takes its place)
+   Mobile : visible
+
+   Per Figma: this bar is BLACK (matches the top bar / header),
+   NOT the sidebar gray. The previous build used --sidebar-bg
+   (#333333) which made it visually disconnected from the
+   metabar; both bars should read as the same black chrome
+   bracketing the map.
+   =========================================================== */
+.tourbar {
+  display: none;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 0 var(--gutter);
+  background: var(--header-bg);    /* BLACK — matches top bar (Figma) */
+  color: var(--on-dark);
+  height: calc(var(--tourbar-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: var(--border-light);
+}
+
+
+/* -----------------------------------------------------------
+   Off-campus details panel treatment
+   -----------------------------------------------------------
+   When the user opens the details panel for an off-campus
+   tour stop (Olar Farm), the kicker tag reads OFF-CAMPUS STOP
+   in amber instead of the usual TOUR STOP, and a distance
+   chip sits next to the title so it's unambiguous that the
+   site is not visible on the campus map.
+   ----------------------------------------------------------- */
+.details-tag.is-offcampus {
+    color: #ffffff;
+    background: #872837;
+    /* border: 1px solid #FDBA74; */
+    padding: 6px 10px 5px 10px;
+    border-radius: 999px;
+    letter-spacing: .14em;
+    font-size: 10px;
+    margin-bottom: 12px;
+}
+
+.details-offcampus-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 12px;
+    padding: 12px 12px 14px 12px;
+    background: #222222;
+    /* border: 1px solid #FDBA74; */
+    /* border-left-width: 4px; */
+    border-radius: 4px;
+    color: #999999;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.details-offcampus-note .offcampus-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.details-offcampus-note strong {
+  color: #9A3412;
+  font-weight: 700;
+}
+
+/* Off-campus highlight on the tour bar — gives the current stop
+   name a subtle amber tint and trailing ↗ glyph (added in JS)
+   when the active stop is off-campus (Olar Farm). */
+.tour-name.is-offcampus {
+  color: #C2410C;            /* tailwind orange-700 */
+}
+
+/* -----------------------------------------------------------
+   Address block + "Open in Maps" links
+   -----------------------------------------------------------
+   Shown in the details panel for any location with an entry in
+   addressMap (locations.js). Used primarily for off-campus
+   locations like Olar Farm so users can launch the address in
+   their preferred map app (Google Maps everywhere, Apple Maps
+   on iOS/macOS, and a geo: URI on mobile to invoke the OS app
+   picker for Waze/OsmAnd/etc.).
+   ----------------------------------------------------------- */
+.details-address {
+  font-size: 13.5px;
+  color: var(--on-dark);
+  line-height: 1.5;
+  margin: 4px 0 10px;
+  /* Use the address font as user-selectable so copy-paste works.
+     The rest of the panel inherits its default selection behavior. */
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.details-address-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.address-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--paper, #f7f4ef);
+  border: 1px solid var(--line, #2b2b2b);
+  color: var(--ink, #111);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s ease, background .12s ease,
+              box-shadow .12s ease;
+  white-space: nowrap;
+}
+
+.address-link:hover {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  transform: translateY(-1px);
+}
+
+.address-link:active {
+  transform: translateY(0);
+}
+
+.address-link:focus-visible {
+  outline: 2px solid var(--brand-red, #B22222);
+  outline-offset: 2px;
+}
+
+.address-link-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Subtle per-provider tint on the left border — keeps the row
+   readable while still telegraphing which app will open. */
+.address-link-google { border-left: 3px solid #4285F4; }
+.address-link-apple  { border-left: 3px solid #0071E3; }
+.address-link-native { border-left: 3px solid #C2410C; }

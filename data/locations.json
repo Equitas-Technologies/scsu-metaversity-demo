@@ -1,0 +1,973 @@
+{
+  "$schema": "scsu-locations-v1",
+  "generatedAt": "2026-05-21",
+  "locations": [
+    {
+      "id": "adult-continuing-education",
+      "key": "adult continuing education",
+      "name": "Adult Continuing Education",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "belcher-hall",
+      "key": "belcher hall",
+      "name": "Belcher Hall",
+      "category": "ACADEMICS",
+      "description": "Built in 1986 and named for benefactor Algernon S. Belcher, Belcher Hall is home to the College of Business & Information Systems, the Career Center (2nd Floor, Suite 250), and the BECT Institute.",
+      "happensHere": [
+        "Business",
+        "Finance",
+        "Accounting",
+        "Career Center",
+        "BECT",
+        "Information Systems"
+      ],
+      "departments": [
+        "College of Business & Information Systems",
+        "Career Center",
+        "BECT Institute"
+      ]
+    },
+    {
+      "id": "bradham-hall",
+      "key": "bradham hall",
+      "name": "Bradham Hall",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "clyburn-center",
+      "key": "clyburn center",
+      "name": "Clyburn Center",
+      "category": "ACADEMICS",
+      "description": "The only University Transportation Center (UTC) in South Carolina and one of three at HBCUs nationally. Funded by $13 million in federal funds and a $2.6 million state match. The Clyburn Archives and Research Center is planned for the Russell Street side of campus. Designed by Perkins & Will, with construction expected in 2026.",
+      "happensHere": [
+        "Transportation",
+        "Research",
+        "Workforce Training",
+        "Federal",
+        "HBCU",
+        "UTC"
+      ],
+      "departments": [
+        "Transportation Research",
+        "Workforce Training"
+      ]
+    },
+    {
+      "id": "davis-hall",
+      "key": "davis hall",
+      "name": "Davis Hall",
+      "category": "ACADEMICS",
+      "description": "Davis Hall houses classrooms and faculty offices for the Department of Biological & Physical Sciences. Not to be confused with the Leroy Davis Sr. Science and Research Complex (the 2011 Hodge Hall annex named for SC State's 8th president).",
+      "happensHere": [
+        "Biology",
+        "Physics",
+        "Science",
+        "Classrooms",
+        "Faculty Offices"
+      ],
+      "departments": [
+        "Biological & Physical Sciences"
+      ]
+    },
+    {
+      "id": "department-of-visual-and-performing-arts",
+      "key": "department of visual & performing arts",
+      "name": "Department of Visual & Performing Arts",
+      "category": "ACADEMICS",
+      "description": "Constructed in 1999, the Fine Arts Building gave the Art and Music departments a dedicated home. It includes the Barbara A. Vaughan Recital Hall (currently undergoing seating repairs) and serves as the center for creative arts programming at SC State.",
+      "happensHere": [
+        "Art",
+        "Music",
+        "Recital Hall",
+        "Performing Arts",
+        "Gallery",
+        "Studio"
+      ],
+      "departments": [
+        "Visual & Performing Arts"
+      ]
+    },
+    {
+      "id": "engineering-and-computer-science-complex-bethea-hall",
+      "key": "engineering & computer science complex / bethea hall",
+      "name": "Engineering & Computer Science Complex / Bethea Hall",
+      "category": "ACADEMICS",
+      "description": "Opened in 2013, the four-story Engineering and Computer Science Complex — known as Bethea Hall — provides 85,400 square feet of cutting-edge STEM learning space including lecture halls, research centers, teaching and research laboratories, computer labs, and faculty offices. Designed by Evoke Studios at a cost of approximately $24.5 million. Located on Geathers Street, across from the new academic building site.",
+      "happensHere": [
+        "Engineering",
+        "Computer Science",
+        "STEM",
+        "Research Labs",
+        "Cybersecurity",
+        "Nuclear Engineering"
+      ],
+      "departments": [
+        "Engineering",
+        "Computer Science & Mathematics",
+        "Cybersecurity"
+      ]
+    },
+    {
+      "id": "felton-laboratory",
+      "key": "felton laboratory",
+      "name": "Felton Laboratory",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "felton-pre-school",
+      "key": "felton pre school",
+      "name": "Felton Pre School",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "h-d-theatre",
+      "key": "h-d theatre",
+      "name": "H-D Theatre",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "hodge-hall",
+      "key": "hodge hall",
+      "name": "Hodge Hall",
+      "category": "ACADEMICS",
+      "description": "Built in 1928 in the Palladian style by architect Miller F. Whittaker, Hodge Hall is a two-story brick science building with a full basement. Originally built for Agriculture and Home Economics (students helped construct it), it now houses the sciences. Listed individually on the National Register of Historic Places (1985), with two large modern brick rear additions.",
+      "happensHere": [
+        "Science",
+        "Biology",
+        "Physics",
+        "Chemistry",
+        "Palladian",
+        "NRHP",
+        "Historic"
+      ],
+      "departments": [
+        "Biological & Physical Sciences"
+      ]
+    },
+    {
+      "id": "manning-hall",
+      "key": "manning hall",
+      "name": "Manning Hall",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "mays-hall-1",
+      "key": "mays hall 1",
+      "name": "Mays Hall 1",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "mays-hall-2",
+      "key": "mays hall 2",
+      "name": "Mays Hall 2",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "miller-f-whittaker-library",
+      "key": "miller f. whittaker library",
+      "name": "Miller F. Whittaker Library",
+      "category": "ACADEMICS",
+      "description": "The university's main library, built with a $1 million state appropriation and dedicated in 1969. Named for SC State's third president, Miller F. Whittaker. Originally two levels; a third mezzanine level was added in 1979. A new 50,000 sq ft, $30 million replacement library is planned adjacent to Leroy Davis Hall.",
+      "happensHere": [
+        "Library",
+        "Research",
+        "Study Spaces",
+        "Circulation",
+        "Archives"
+      ],
+      "departments": [
+        "Library Services"
+      ]
+    },
+    {
+      "id": "mlk-auditorium",
+      "key": "mlk auditorium",
+      "name": "Mlk Auditorium",
+      "category": "ACADEMICS",
+      "description": "Built in 1974, the Martin Luther King Jr. Auditorium is the primary large-event venue on campus. It made national history on April 26, 2007 as the site of the first 2008 Democratic presidential primary debate, broadcast on MSNBC — the first HBCU ever to host a presidential debate.",
+      "happensHere": [
+        "Convocation",
+        "Events",
+        "Debates",
+        "Concerts",
+        "Lectures",
+        "Presidential Debate",
+        "HBCU First"
+      ],
+      "departments": [
+        "University Events",
+        "Convocation",
+        "Academic Affairs"
+      ]
+    },
+    {
+      "id": "moss-hall",
+      "key": "moss hall",
+      "name": "Moss Hall",
+      "category": "ACADEMICS",
+      "description": "Built in 1949, Moss Hall is part of the SC State College Historic District and houses the Registrar's Office (Room 202) and the Student Success Center / TRIO program. The Moss Hall Annex is being converted to a telehealth center.",
+      "happensHere": [
+        "Registrar",
+        "Student Success",
+        "TRIO",
+        "Academic Support",
+        "Telehealth"
+      ],
+      "departments": [
+        "Registrar's Office",
+        "Student Success Center",
+        "TRIO"
+      ]
+    },
+    {
+      "id": "nance-hall",
+      "key": "nance hall",
+      "name": "Nance Hall",
+      "category": "ACADEMICS",
+      "description": "Home to the College of Agriculture and the Mathematics & Science departments, Nance Hall hosts several of the USDA-aligned laboratory spaces used in the NRM curriculum. Built in 1974 and named for SC State's 5th president, M. Maceo Nance Jr. A $15 million renovation is planned with occupancy expected fall 2027.",
+      "image": "assets/locations/nance-hall.webp",
+      "happensHere": [
+        "Faculty offices",
+        "NRM Labs",
+        "USDA Research"
+      ],
+      "departments": [
+        "Mathematics & Science",
+        "College of Agriculture"
+      ],
+      "explorable": [
+        "Room 110",
+        "Lecture Room",
+        "Room 100"
+      ]
+    },
+    {
+      "id": "soldiers-hall",
+      "key": "soldiers' hall",
+      "name": "Soldiers' Hall",
+      "category": "ACADEMICS",
+      "description": "Home of the Bulldog Army ROTC Battalion and the Department of Military Science. Houses training facilities, faculty offices, and administrative operations for one of the most historically productive ROTC programs in producing Black military officers in the nation.",
+      "happensHere": [
+        "ROTC",
+        "Military Science",
+        "Army",
+        "Leadership",
+        "Training"
+      ],
+      "departments": [
+        "Military Science",
+        "ROTC"
+      ]
+    },
+    {
+      "id": "speech-hearing-center",
+      "key": "speech hearing center",
+      "name": "Speech Hearing Center",
+      "category": "ACADEMICS"
+    },
+    {
+      "id": "turner-hall-wing-a",
+      "key": "turner hall wing a",
+      "name": "Turner Hall Wing a",
+      "category": "ACADEMICS",
+      "description": "Part of Turner Hall (built 1956) — a multi-wing academic building that has housed Health Sciences, Education, and other departments, with some portions dating back nearly a century. Being replaced by a new $54.7 million, 94,000 sq ft academic building designed by Evoke Studios (groundbreaking April 2024; completion expected fall 2027).",
+      "happensHere": [
+        "Health Sciences",
+        "Education",
+        "Classrooms",
+        "Faculty Offices"
+      ],
+      "departments": [
+        "Health Sciences",
+        "Education"
+      ]
+    },
+    {
+      "id": "turner-hall-wing-b",
+      "key": "turner hall wing b",
+      "name": "Turner Hall Wing B",
+      "category": "ACADEMICS",
+      "description": "Part of Turner Hall (built 1956) — a multi-wing academic building that has housed Health Sciences, Education, and other departments, with some portions dating back nearly a century. Being replaced by a new $54.7 million, 94,000 sq ft academic building designed by Evoke Studios (groundbreaking April 2024; completion expected fall 2027).",
+      "happensHere": [
+        "Health Sciences",
+        "Education",
+        "Classrooms",
+        "Faculty Offices"
+      ],
+      "departments": [
+        "Health Sciences",
+        "Education"
+      ]
+    },
+    {
+      "id": "turner-hall-wing-d",
+      "key": "turner hall wing d",
+      "name": "Turner Hall Wing D",
+      "category": "ACADEMICS",
+      "description": "Part of Turner Hall (built 1956) — a multi-wing academic building that has housed Health Sciences, Education, and other departments, with some portions dating back nearly a century. Being replaced by a new $54.7 million, 94,000 sq ft academic building designed by Evoke Studios (groundbreaking April 2024; completion expected fall 2027).",
+      "happensHere": [
+        "Health Sciences",
+        "Education",
+        "Classrooms",
+        "Faculty Offices"
+      ],
+      "departments": [
+        "Health Sciences",
+        "Education"
+      ]
+    },
+    {
+      "id": "w-c-lewis-building",
+      "key": "w.c. lewis building",
+      "name": "W.c. Lewis Building",
+      "category": "ACADEMICS",
+      "description": "Houses the Department of Speech Pathology and Audiology, including graduate programs and clinical training facilities.",
+      "happensHere": [
+        "Speech Pathology",
+        "Audiology",
+        "Clinical Training",
+        "Graduate Programs"
+      ],
+      "departments": [
+        "Speech Pathology & Audiology"
+      ]
+    },
+    {
+      "id": "administration-building",
+      "key": "administration building",
+      "name": "Administration Building",
+      "category": "ADMINISTRATION",
+      "description": "Built in 1970, the Donma Administration Building is the central administrative hub of SC State, housing the Office of the President (Suite 210) and University Relations & Marketing (Suite 100).",
+      "happensHere": [
+        "President",
+        "Administration",
+        "University Relations",
+        "Marketing",
+        "Communications"
+      ],
+      "departments": [
+        "Office of the President",
+        "University Relations & Marketing"
+      ]
+    },
+    {
+      "id": "alumni-house",
+      "key": "alumni house",
+      "name": "Alumni House",
+      "category": "ADMINISTRATION"
+    },
+    {
+      "id": "campus-services",
+      "key": "campus services",
+      "name": "Campus Services",
+      "category": "ADMINISTRATION"
+    },
+    {
+      "id": "john-w-matthews-jr-1890-extension-center",
+      "key": "john w. matthews jr. 1890 extension center",
+      "name": "John W. Matthews Jr. 1890 Extension Center",
+      "category": "ADMINISTRATION",
+      "description": "Headquarters for the 1890 Research and Extension division of SC State's Public Service and Agriculture operation. Houses extension administrators, the Family, Nutrition and Health program, and IT support for the division.",
+      "happensHere": [
+        "Agriculture",
+        "Extension",
+        "Public Service",
+        "Research",
+        "USDA",
+        "1890 Program"
+      ],
+      "departments": [
+        "Public Service & Agriculture"
+      ]
+    },
+    {
+      "id": "lowman-hall",
+      "key": "lowman hall",
+      "name": "Lowman Hall",
+      "category": "ADMINISTRATION",
+      "description": "The oldest intact building on campus, Lowman Hall was designed by architect Miller F. Whittaker in 1917 and originally served as a men's dormitory (80 rooms across 3 stories). Restored by Watson Tate Savory 2001–2009, it now houses Administration, Institutional Research, and Institutional Advancement offices. Listed individually on the National Register of Historic Places (1985). Address: 124 Geathers St.",
+      "happensHere": [
+        "Administration",
+        "Historic",
+        "NRHP",
+        "Oldest Building",
+        "Miller F. Whittaker"
+      ],
+      "departments": [
+        "Administration",
+        "Institutional Research & Advancement"
+      ],
+      "address": "124 Geathers St, Orangeburg, SC 29117"
+    },
+    {
+      "id": "sponsored-programs-office",
+      "key": "sponsored programs office",
+      "name": "Sponsored Programs Office",
+      "category": "ADMINISTRATION"
+    },
+    {
+      "id": "wilkinson-hall",
+      "key": "wilkinson hall",
+      "name": "Wilkinson Hall",
+      "category": "ADMINISTRATION",
+      "description": "Built in 1938 with New Deal funding, Wilkinson Hall was the university's first separate library building. A 16,000 sq ft contributing property within the SC State College Historic District, it has been undergoing renovation since 2018 via National Park Service federal grants.",
+      "happensHere": [
+        "Historic",
+        "NRHP District",
+        "Under Renovation",
+        "New Deal",
+        "Former Library"
+      ],
+      "departments": [
+        "Admissions",
+        "Financial Aid"
+      ]
+    },
+    {
+      "id": "crawford-zimmerman-building",
+      "key": "crawford-zimmerman building",
+      "name": "Crawford-Zimmerman Building",
+      "category": "ADMINISTRATIVE",
+      "description": "The Crawford-Zimmerman Service Complex houses Facilities Management operations as well as the Enrollment Management suite, including Admissions, Financial Aid, and Title III Programs. It also serves as the administrative address for Residence Life & Housing. Built in 1983.",
+      "image": "assets/locations/crawford-zimmerman.webp",
+      "happensHere": [
+        "Campus Administration",
+        "Admissions Offices",
+        "Campus Bookstore"
+      ],
+      "departments": [
+        "Administration",
+        "Admissions"
+      ],
+      "explorable": [
+        "Campus Bookstore",
+        "Office of Student Financial Services",
+        "Facilities Management & Operations",
+        "Admissions & Financial Aid"
+      ]
+    },
+    {
+      "id": "kirkland-w-green-student-center",
+      "key": "kirkland w. green student center",
+      "name": "Kirkland W. Green Student Center",
+      "category": "ADMINISTRATIVE",
+      "description": "The primary hub for student life on campus, the Green Student Center houses Washington Dining Hall, \"The Pitt\" dining area, and a variety of student services. Originally built in 1954 with a major addition in 1970. Currently undergoing a $4.2 million renovation. Adjacent to the Student Center Plaza Pavilion.",
+      "image": "assets/locations/kirkland-green.webp",
+      "happensHere": [
+        "Student Union",
+        "Dining",
+        "Washington Dining Hall",
+        "The Pitt",
+        "Student Activities"
+      ],
+      "departments": [
+        "Student Affairs",
+        "Residence Life & Housing"
+      ],
+      "explorable": []
+    },
+    {
+      "id": "athletics-department-i",
+      "key": "athletics department i",
+      "name": "Athletics Department I",
+      "category": "ATHLETICS"
+    },
+    {
+      "id": "athletics-department-ii",
+      "key": "athletics department ii",
+      "name": "Athletics Department Ii",
+      "category": "ATHLETICS"
+    },
+    {
+      "id": "dukes-gymnasium",
+      "key": "dukes gymnasium",
+      "name": "Dukes Gymnasium",
+      "category": "ATHLETICS",
+      "description": "Built in 1931 from a student thesis design by John H. Blanche and funded by student recreation fees, Dukes Gymnasium is a two-story brick building with a full basement, listed individually on the National Register of Historic Places (1985). Home venue for the women's volleyball team and the Office of Intramural Sports. Contains a regulation basketball court, yoga space, and basement weight room. Became the Intramural Center after Smith-Hammond-Middleton opened in 1968.",
+      "happensHere": [
+        "Volleyball",
+        "Intramural Sports",
+        "Basketball",
+        "Historic",
+        "NRHP",
+        "Community Events"
+      ],
+      "departments": [
+        "Athletics"
+      ]
+    },
+    {
+      "id": "oliver-c-dawson-stadium",
+      "key": "oliver c. dawson stadium",
+      "name": "Oliver C. Dawson Stadium",
+      "category": "ATHLETICS",
+      "description": "Home of the SC State Bulldogs football and women's soccer teams. Built in 1955 on Buckley Street, named in 1984 for coach and AD Oliver Cromwell Dawson. Capacity raised to 22,000 in 1994 via a $4.5 million renovation. Synthetic turf and a new scoreboard were installed in 2006. Home to 16 MEAC titles.",
+      "image": "assets/locations/dawson-stadium.webp",
+      "happensHere": [
+        "Football",
+        "Soccer",
+        "MEAC Championships",
+        "Marching 101",
+        "Homecoming"
+      ],
+      "departments": [
+        "Athletics",
+        "Athletics"
+      ],
+      "explorable": [
+        "Midfield",
+        "Gate 1",
+        "Bulldog wall"
+      ]
+    },
+    {
+      "id": "smith-hammond-middleton-memorial-center",
+      "key": "smith-hammond-middleton memorial center",
+      "name": "Smith-Hammond-Middleton Memorial Center",
+      "category": "ATHLETICS",
+      "description": "Opened in 1968, the Smith-Hammond-Middleton Memorial Center is the primary Health and Physical Education facility on campus, serving both varsity athletics and general recreation. Its opening shifted Dukes Gymnasium to intramural use.",
+      "happensHere": [
+        "Athletics",
+        "PE",
+        "Recreation",
+        "Health",
+        "Physical Education",
+        "Fitness"
+      ],
+      "departments": [
+        "Athletics",
+        "Health & Physical Education",
+        "Recreation"
+      ]
+    },
+    {
+      "id": "tennis-courts",
+      "key": "tennis courts",
+      "name": "Tennis Courts",
+      "category": "ATHLETICS"
+    },
+    {
+      "id": "track-and-field-facility",
+      "key": "track & field facility",
+      "name": "Track & Field Facility",
+      "category": "ATHLETICS"
+    },
+    {
+      "id": "washington-dining-hall",
+      "key": "washington dining hall",
+      "name": "Washington Dining Hall",
+      "category": "DINING"
+    },
+    {
+      "id": "infirmary-and-cl-self-developement-center",
+      "key": "infirmary & cl. self developement center",
+      "name": "Infirmary & Cl. Self Developement Center",
+      "category": "HEALTH & WELLNESS",
+      "description": "The Infirmary & Self Development Center supports student health, wellness, and personal development on the SC State campus. More information about this location is coming soon.",
+      "happensHere": [
+        "Student Health",
+        "Wellness",
+        "Counseling",
+        "Self Development"
+      ]
+    },
+    {
+      "id": "crawford-hall-engineering-building",
+      "key": "crawford hall engineering building",
+      "name": "Crawford Hall Engineering Building",
+      "category": "HISTORIC / CULTURAL",
+      "description": "Built 1938–1942 as part of the SC State College Historic District. Originally an Industrial Arts building. Contributing property within the National Register Historic District.",
+      "happensHere": [
+        "Historic",
+        "NRHP District",
+        "Industrial Arts",
+        "Historic District"
+      ]
+    },
+    {
+      "id": "housing-office",
+      "key": "housing office",
+      "name": "Housing Office",
+      "category": "HISTORIC / CULTURAL",
+      "description": "Built in 1928 as part of the SC State College Historic District. Originally home to the College of Agriculture, Family and Consumer Sciences. Contributing property within the National Register Historic District.",
+      "happensHere": [
+        "Historic",
+        "NRHP District",
+        "Home Economics",
+        "Historic District"
+      ]
+    },
+    {
+      "id": "y-hut",
+      "key": "y-hut",
+      "name": "Y-Hut",
+      "category": "HISTORIC / CULTURAL",
+      "description": "A historic structure built 1925–1927 as part of the SC State College Historic District. Contributing property within the National Register Historic District.",
+      "happensHere": [
+        "Historic",
+        "NRHP District",
+        "YWCA",
+        "Historic District"
+      ]
+    },
+    {
+      "id": "shm-memorial-square",
+      "key": "shm memorial square",
+      "name": "Shm Memorial Square",
+      "category": "MEMORIAL",
+      "description": "The Smith-Hammond-Middleton Legacy Plaza at South Carolina State University, dedicated in 2022, honors the three victims of the 1968 Orangeburg Massacre.",
+      "image": "assets/locations/shm-memorial.webp",
+      "happensHere": [
+        "Memorial bronze busts",
+        "Annual commemoration",
+        "Historical marker"
+      ],
+      "departments": [],
+      "explorable": [
+        "Historical marker",
+        "Bronze Busts/Monuments"
+      ]
+    },
+    {
+      "id": "i-p-stanback-museum-and-planetarium",
+      "key": "i.p. stanback museum & planetarium",
+      "name": "I.p. Stanback Museum & Planetarium",
+      "category": "MUSEUM & CULTURAL",
+      "description": "Opened in 1979, the I.P. Stanback Museum and Planetarium is the only interdisciplinary art museum and planetarium on any HBCU campus in the United States. It presents rotating exhibitions year-round and showcases graduating senior artwork each May.",
+      "happensHere": [
+        "Museum",
+        "Planetarium",
+        "Art",
+        "Exhibitions",
+        "HBCU Unique",
+        "Cultural Heritage",
+        "STEM"
+      ],
+      "departments": [
+        "Visual & Performing Arts",
+        "Museum & Planetarium"
+      ]
+    },
+    {
+      "id": "olar-farm",
+      "key": "olar farm",
+      "name": "Olar Farm",
+      "category": "OFF-CAMPUS FACILITY",
+      "description": "The Olar Farm is an off-campus agricultural facility operated by South Carolina State University, located approximately 30 miles southwest of the main campus in Olar, SC. It supports the university's 1890 Research & Extension programs in sustainable agriculture and applied research. This location is not part of the main campus map — the point on the map points in its general direction. Click \"Explore\" to open the virtual tour of the farm.",
+      "image": "assets/locations/olar-farm.webp",
+      "happensHere": [
+        "1890 Research & Extension",
+        "Sustainable agriculture",
+        "Applied research"
+      ],
+      "departments": [
+        "Public Service & Agriculture"
+      ],
+      "address": "1678 Alligator Rd, Olar, SC 29843"
+    },
+    {
+      "id": "machine-shop-i",
+      "key": "machine shop i",
+      "name": "Machine Shop I",
+      "category": "OPERATIONS"
+    },
+    {
+      "id": "machine-shop-ii",
+      "key": "machine shop ii",
+      "name": "Machine Shop Ii",
+      "category": "OPERATIONS"
+    },
+    {
+      "id": "motor-pool",
+      "key": "motor pool",
+      "name": "Motor Pool",
+      "category": "OPERATIONS"
+    },
+    {
+      "id": "police-storage",
+      "key": "police storage",
+      "name": "Police Storage",
+      "category": "OPERATIONS"
+    },
+    {
+      "id": "faculty-staff-parking",
+      "key": "faculty / staff parking",
+      "name": "Faculty / Staff Parking",
+      "category": "PARKING"
+    },
+    {
+      "id": "faculty-staff-parking",
+      "key": "faculty/ staff parking",
+      "name": "Faculty/ Staff Parking",
+      "category": "PARKING"
+    },
+    {
+      "id": "off-campus-student-parking",
+      "key": "off campus student parking",
+      "name": "Off Campus Student Parking",
+      "category": "PARKING"
+    },
+    {
+      "id": "on-campus-off-campus-student-parking",
+      "key": "on campus / off campus student parking",
+      "name": "On Campus / Off Campus Student Parking",
+      "category": "PARKING"
+    },
+    {
+      "id": "on-campus-student-parking",
+      "key": "on campus student parking",
+      "name": "On Campus Student Parking",
+      "category": "PARKING"
+    },
+    {
+      "id": "battiste-hall",
+      "key": "battiste hall",
+      "name": "Battiste Hall",
+      "category": "RESIDENCE LIFE",
+      "description": "A 200-room co-ed residence hall designed by Huff + Gooden Architects. It completes the urban street wall between two existing dormitories along the internal east-west campus axis.",
+      "happensHere": [
+        "Residence Hall",
+        "Co-ed",
+        "Modern Housing",
+        "Dormitory"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "earle-hall",
+      "key": "earle hall",
+      "name": "Earle Hall",
+      "category": "RESIDENCE LIFE",
+      "description": "Earle Hall is a residential hall serving SC State students.",
+      "happensHere": [
+        "Residence Hall",
+        "Dormitory",
+        "Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "hugine-suites",
+      "key": "hugine suites",
+      "name": "Hugine Suites",
+      "category": "RESIDENCE LIFE",
+      "description": "The largest dormitory in South Carolina, Hugine Suites opened in 2006 with 771 beds across six buildings. Named for President Andrew Hugine Jr. Phase 1 (buildings 1–4) opened August 26, 2006; buildings 5–6 opened September 10, 2006.",
+      "happensHere": [
+        "Residence Hall",
+        "Suite-Style Housing",
+        "Largest Dorm in SC",
+        "Modern Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "miller-hall",
+      "key": "miller hall",
+      "name": "Miller Hall",
+      "category": "RESIDENCE LIFE",
+      "description": "Miller Hall is a former women's dormitory built in 1938 as part of the SC State College Historic District. It was closed after Hugine Suites opened, due to fire alarm system malfunctions.",
+      "happensHere": [
+        "Historic",
+        "NRHP District",
+        "Closed",
+        "Former Dormitory"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "mitchell-hall",
+      "key": "mitchell hall",
+      "name": "Mitchell Hall",
+      "category": "RESIDENCE LIFE",
+      "description": "John H. Mitchell Hall is a men's residence hall built in 1975. A new 500+ bed residence hall is planned adjacent on Naylor Street ($50 million, 110,000 sq ft; groundbreaking April 2026; occupancy fall 2027).",
+      "happensHere": [
+        "Residence Hall",
+        "Men's Housing",
+        "Dormitory"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "nix-hall",
+      "key": "nix hall",
+      "name": "Nix Hall",
+      "category": "RESIDENCE LIFE"
+    },
+    {
+      "id": "queens-village-a",
+      "key": "queens village a",
+      "name": "Queens Village a",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "queens-village-b",
+      "key": "queens village b",
+      "name": "Queens Village B",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "queens-village-c",
+      "key": "queens village c",
+      "name": "Queens Village C",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "queens-village-d",
+      "key": "queens village d",
+      "name": "Queens Village D",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "queens-village-e",
+      "key": "queens village e",
+      "name": "Queens Village E",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "queens-village-f",
+      "key": "queens village f",
+      "name": "Queens Village F",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "queens-village-g",
+      "key": "queens village g",
+      "name": "Queens Village G",
+      "category": "RESIDENCE LIFE",
+      "description": "Part of Queens Village — married and apartment-style student housing comprising seven buildings (Phase 1 built 1971, Phase 2 built 1975). Offline for several years; full renovation contract awarded in 2024. Each remodeled unit will include four two-bedroom suites, for roughly 112 units across the complex.",
+      "happensHere": [
+        "Apartment-Style Housing",
+        "Student Housing",
+        "Renovation",
+        "Family Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "staley-hall",
+      "key": "staley hall",
+      "name": "Staley Hall",
+      "category": "RESIDENCE LIFE"
+    },
+    {
+      "id": "truth-hall",
+      "key": "truth hall",
+      "name": "Truth Hall",
+      "category": "RESIDENCE LIFE",
+      "description": "At 14 stories, Sojourner Truth Hall is the tallest building in Orangeburg County. Built in 1972 as a women's residence hall (384 beds on upper floors). The dining hall inside was converted to a cyber café called Pete's Arena. Currently undergoing a $25 million renovation including installation of a fire suppression system to reopen the upper floors.",
+      "happensHere": [
+        "Residence Hall",
+        "Tallest Building",
+        "Orangeburg",
+        "Housing",
+        "Pete's Arena"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "university-village",
+      "key": "university village",
+      "name": "University Village",
+      "category": "RESIDENCE LIFE",
+      "description": "Student housing complex serving SC State students.",
+      "happensHere": [
+        "Residence Hall",
+        "Student Housing",
+        "Apartment-Style"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "williams-hall",
+      "key": "williams hall",
+      "name": "Williams Hall",
+      "category": "RESIDENCE LIFE",
+      "description": "Williams Hall is a residential hall serving SC State students.",
+      "happensHere": [
+        "Residence Hall",
+        "Dormitory",
+        "Housing"
+      ],
+      "departments": [
+        "Residence Life & Housing"
+      ]
+    }
+  ]
+}

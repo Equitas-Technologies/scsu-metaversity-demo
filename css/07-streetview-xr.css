@@ -1,0 +1,232 @@
+/* === SCSU styles — Part 7: Treedis street view + XR mode === */
+/* ===========================================================
+   TREEDIS STREET VIEW OVERLAY (mostly preserved)
+   =========================================================== */
+.streetview {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  background: var(--ink);
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease-out;
+  border-radius: inherit;
+}
+
+body.streetview-open .leaflet-control-container,
+body.streetview-open .leaflet-control-zoom,
+body.streetview-open .leaflet-control-attribution {
+  display: none !important;
+}
+
+body.streetview-open .map-action { display: none !important; }
+
+@media (min-width: 881px) {
+  body.streetview-open .locations-toggle { display: none !important; }
+}
+
+/* ============================================================
+   XR / VR MODE — streetview takes over the details column
+   ------------------------------------------------------------
+   When the page is opened in a VR/XR browser (Meta Quest, Pico,
+   etc.) AND street view is active, the details panel should be
+   hidden so the 3D tour can use the space the panel was taking.
+
+   Outside of street view (or outside of VR mode), the details
+   panel behaves exactly as it does on desktop/mobile — the
+   user can still open/close it, see info, scroll, etc. The
+   override only fires for the specific combination:
+       body.xr-mode  +  body.streetview-open
+
+   `body.xr-mode` is set by app.js at boot via applyTreedisProfile().
+   `body.streetview-open` is set by openStreetView() / cleared
+   by closeStreetView() in app.js.
+
+   We:
+     1) Collapse the right column of .shell back to zero so the
+        center map cell (which contains the streetview overlay)
+        reclaims the width.
+     2) Hide the .details aside outright so any partial open/close
+        animation can't peek through.
+
+   The desktop-only media guard mirrors the existing rules above
+   — on mobile (<=880px) the details panel is already a bottom
+   sheet that gets hidden on street-view entry, so this rule is
+   only needed at tablet+ widths where the panel is a side column.
+   ============================================================ */
+@media (min-width: 881px) {
+  body.xr-mode.streetview-open .shell.has-details {
+    grid-template-columns: var(--sidebar-w) 1fr 0px;
+  }
+  body.xr-mode.streetview-open .details {
+    display: none !important;
+  }
+}
+
+.streetview.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.streetview-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: var(--ink);
+}
+
+.streetview-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.55);
+  background: rgba(11,11,11,.45);
+  color: #fff;
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background .15s, border-color .15s;
+  padding: 0;
+}
+.streetview-close svg { width: 18px; height: 18px; display: block; }
+.streetview-close:hover {
+  background: rgba(11,11,11,.7);
+  border-color: rgba(255,255,255,.9);
+}
+.streetview-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.streetview-caption { display: none; }
+
+.streetview-loading {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: rgba(11,11,11,.92);
+  align-items: center;
+  justify-content: center;
+}
+.streetview-loading.is-active { display: flex; }
+
+.streetview-loading-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+
+.streetview-loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .9s linear infinite;
+  flex-shrink: 0;
+}
+
+.streetview-loading-cancel {
+  margin-left: 14px;
+  padding: 6px 14px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.streetview-loading-cancel:hover {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.9);
+}
+.streetview-loading-cancel:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.streetview-touch-guard {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(0,0,0,.35);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.streetview-touch-guard.is-active { display: flex; }
+
+.streetview-touch-guard-prompt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: rgba(11,11,11,.65);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+
+.sub-list li.sub-row { outline: none; }
+.sub-list li.sub-row:focus-visible {
+  background: var(--cell-active);
+  box-shadow: inset 0 0 0 2px var(--brand-red);
+}
+.sub-list li.sub-row .chev { transition: transform .12s ease; }
+.sub-list li.sub-row:hover .chev,
+.sub-list li.sub-row:focus-visible .chev { transform: translateX(2px); }
+.sub-list li.sub-row.is-pending { color: var(--on-dark-faint); }
+.explore-cta.is-pending { background: var(--brand-red-2); }
+
+@media (max-width: 880px) {
+  .streetview-close {
+    top: calc(22px + env(safe-area-inset-top, 0px));
+    right: calc(22px + env(safe-area-inset-right, 0px));
+  }
+
+  .shell .locations-toggle { z-index: 901; }
+  body.streetview-open .shell .locations-toggle {
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    bottom: auto;
+    right: auto;
+  }
+  body.streetview-open .locations         { z-index: 920; }
+  body.streetview-open .locations-backdrop { z-index: 910; }
+}
+
+@media (max-width: 420px) {
+  .streetview-close { width: 36px; height: 36px; }
+}
+

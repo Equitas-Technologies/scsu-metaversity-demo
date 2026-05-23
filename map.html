@@ -7,17 +7,31 @@
   <meta name="theme-color" content="#000000" />
   <title>SCSU Virtual Campus</title>
 
-  <!-- Fonts: monospace primary, clean sans for body, serif for titles
+  <!-- Fonts: Inter for all UI chrome and body, serif for titles.
        EB Garamond loaded as an open-source visual fallback for Minion
        (an old-style serif with similar proportions). If you self-host
        Minion Pro / Minion 3 via @font-face, it will take priority via
        the --serif font stack defined in mapstyles.css. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="mapstyles.css" />
+
+  <!-- Split stylesheets — load order matters: later files override earlier
+       ones via the CSS cascade, mirroring the original single-file order.
+       See the matching split.py for the line ranges each piece covers. -->
+  <link rel="stylesheet" href="css/01-base.css" />
+  <link rel="stylesheet" href="css/02-header.css" />
+  <link rel="stylesheet" href="css/03-sidebar.css" />
+  <link rel="stylesheet" href="css/04-map-details.css" />
+  <link rel="stylesheet" href="css/05-leaflet-responsive.css" />
+  <link rel="stylesheet" href="css/06-align-tool.css" />
+  <link rel="stylesheet" href="css/07-streetview-xr.css" />
+  <link rel="stylesheet" href="css/08-start-coachmark.css" />
+  <link rel="stylesheet" href="css/09-burger-settings.css" />
+  <link rel="stylesheet" href="css/10-nav-instructions.css" />
+  <link rel="stylesheet" href="css/11-learn-mode.css" />
 </head>
 <body>
 
@@ -123,10 +137,7 @@
         <a class="burger-link" href="#" id="burgerHowToUse">
           <span>How to use</span>
         </a>
-        <a class="burger-link" href="#">
-          <span>Student Portal</span>
-        </a>
-        <a class="burger-link" href="#">
+        <a class="burger-link" href="https://www.scsu.edu/" target="_blank" rel="noopener noreferrer">
           <span>Exit</span>
         </a>
 
@@ -231,7 +242,7 @@
                     stroke-width="2" stroke-linecap="round"/>
             </svg>
             <input id="searchInput" type="search"
-                   placeholder="Building, location, course…"
+                   placeholder="Search for buildings, locations, courses…"
                    aria-label="Search locations" />
             <button class="search-clear" id="searchClear"
                     type="button" aria-label="Clear search" hidden>
@@ -246,6 +257,23 @@
 
         <div class="locations-meta" aria-live="polite">
           <span id="locationsCount">0</span> locations to explore.
+        </div>
+
+        <!-- Sort control — visible only when the All tab is active.
+             Pure-CSS toggle using radio inputs in the same pattern
+             as the Featured/All tabs above. The JS listens for
+             `change` on these inputs to re-render the All list
+             in the chosen order. -->
+        <div class="loc-sort" id="locSort" role="radiogroup"
+             aria-label="Sort all locations by">
+          <input type="radio" name="locSort" id="locSortAlpha"
+                 class="loc-sort-input" checked />
+          <input type="radio" name="locSort" id="locSortDept"
+                 class="loc-sort-input" />
+          <span class="loc-sort-label">Sort by:</span>
+          <label for="locSortAlpha" class="loc-sort-opt">Alphabetical</label>
+          <span class="loc-sort-dot" aria-hidden="true">•</span>
+          <label for="locSortDept" class="loc-sort-opt">Department</label>
         </div>
 
         <!-- Featured list (tour stops). The existing JS owns this. -->
@@ -362,15 +390,6 @@
           <span>Locations</span>
         </button>
 
-        <!-- Basemap style toggle: Satellite ↔ Dark Map -->
-        <div class="basemap-toggle" id="basemapToggle"
-             role="group" aria-label="Base map style">
-          <button class="basemap-opt is-active" data-basemap="voyager"
-                  type="button">Basic</button>
-          <button class="basemap-opt" data-basemap="satellite"
-                  type="button">Satellite</button>
-        </div>
-
         <!-- Fit-to-view button -->
         <button class="map-action" id="fitBtn"
                 type="button" aria-label="Fit campus to view">
@@ -438,6 +457,18 @@
             <div class="details-block" id="explorableBlock">
               <div class="details-block-h">EXPLORABLE LOCATIONS</div>
               <ul class="sub-list" id="subList"></ul>
+            </div>
+
+            <!-- Physical address + "Open in Maps" link.
+                 Shown only when a location has an address configured
+                 in addressMap (locations.js). Primarily used for
+                 off-campus locations like Olar Farm so users can
+                 navigate there in their preferred map app. -->
+            <div class="details-block details-address-block"
+                 id="addressBlock" hidden>
+              <div class="details-block-h">ADDRESS</div>
+              <div class="details-address" id="detailsAddress"></div>
+              <div class="details-address-links" id="detailsAddressLinks"></div>
             </div>
 
             <!-- Inline VR-Enabled indicator — shown on MOBILE only.
@@ -768,7 +799,7 @@
        aria-hidden="true">
     <div class="start-screen-card">
       <img class="start-screen-logo"
-           src="assets/Icons/scsu_glyph_color.svg"
+           src="assets/Icons/logo.png"
            alt="South Carolina State University"
            onerror="this.style.display='none'" />
       <h2 class="start-screen-title" id="startScreenTitle">
@@ -870,10 +901,14 @@
        under a separate localStorage key from the welcome screen
        so the two settings don't conflict.
 
-       PLACEHOLDER IMAGE: assets/Icons/nav-instructions.png
-       The image already has white text and is partially
-       transparent — the dark #333333 modal background is what
-       gives it contrast.
+       PLACEHOLDER IMAGES:
+         • assets/Icons/nav-instructions.png    (desktop / mouse)
+         • assets/Icons/nav-instructions-xr.png (XR / VR headset)
+       Both images already have white text on a transparent
+       background — the dark #333333 modal background gives the
+       contrast. Which one is shown is driven by the existing
+       `body.xr-mode` class (set by applyTreedisProfile() in
+       01-utils.js at boot); see 10-nav-instructions.css.
        ============================================================ -->
   <div id="navInstructions" class="nav-instructions" role="dialog"
        aria-modal="true" aria-labelledby="navInstructionsTitle"
@@ -884,9 +919,16 @@
       </h2>
 
       <div class="nav-instructions-image">
-        <img src="assets/Icons/nav-instructions.png"
-             alt="Navigation instructions for 360° tour"
-             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <!-- Desktop / mouse version (default) -->
+        <img class="nav-instructions-img nav-instructions-img-desktop"
+             src="assets/Icons/nav-instructions.png"
+             alt="Navigation instructions for 360° tour using a mouse and keyboard"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.nav-instructions-fallback').style.display='block';" />
+        <!-- XR / VR headset version (shown when body.xr-mode is set) -->
+        <img class="nav-instructions-img nav-instructions-img-xr"
+             src="assets/Icons/nav-instructions-xr.png"
+             alt="Navigation instructions for 360° tour using a VR headset"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.nav-instructions-fallback').style.display='block';" />
         <!-- Fallback shown if the image is missing. Specs are
              still being finalized; replace this with the real
              content when it lands. -->
@@ -928,6 +970,24 @@
   <script src="data/treedis-sweeps.js" onerror="this.remove()"></script>
 
   <script src="config.js"></script>
-  <script src="app.js"></script>
+
+  <!-- Split app — must load in this order. Globals are shared via the
+       window scope exactly as in the original single-file app.js, so
+       each piece sees the helpers/state/refs declared before it.
+       See the matching split.py for the line ranges each piece covers. -->
+  <script src="js/00-data-adapter.js"></script>
+  <script src="js/01-utils.js"></script>
+  <script src="js/02-state.js"></script>
+  <script src="js/03-tour-bridge.js"></script>
+  <script src="js/04-street-view.js"></script>
+  <script src="js/05-map-helpers.js"></script>
+  <script src="js/06-details-panel.js"></script>
+  <script src="js/07-layer-builders.js"></script>
+  <script src="js/08-tourbar.js"></script>
+  <script src="js/09-sidebar-search.js"></script>
+  <script src="js/10-event-wiring.js"></script>
+  <script src="js/11-boot.js"></script>
+  <script src="js/12-start-screen.js"></script>
+  <script src="js/13-learn-mode.js"></script>
 </body>
 </html>
