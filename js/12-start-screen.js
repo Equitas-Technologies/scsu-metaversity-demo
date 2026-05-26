@@ -162,7 +162,10 @@
                "choose Learn to access all immersive coursework available to you.",
 
           getRect: () => {
-            const node = document.querySelector(".metabar");
+            // Highlight the Explore/Learn toggle itself (centered in
+            // the top bar) rather than the whole metabar, so the
+            // cutout and card draw attention to the toggle.
+            const node = document.querySelector(".mode-toggle-header");
             return node ? node.getBoundingClientRect() : null;
           },
           placement: "bottom"
@@ -172,7 +175,7 @@
           body:"Choose Explore to discover SCSU or to find something specific; " +
                "choose Learn to access all immersive coursework available to you.",
           getRect: () => {
-            const node = document.querySelector(".metabar");
+            const node = document.querySelector(".mode-toggle-header");
             return node ? node.getBoundingClientRect() : null;
           },
           placement: "bottom"

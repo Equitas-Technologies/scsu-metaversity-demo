@@ -17,6 +17,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- MapLibre GL — renders the Stadia Outdoors VECTOR basemap so we
+       can hide only the redundant POI/building labels. -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
 
   <!-- Split stylesheets — load order matters: later files override earlier
        ones via the CSS cascade, mirroring the original single-file order.
@@ -242,7 +245,7 @@
                     stroke-width="2" stroke-linecap="round"/>
             </svg>
             <input id="searchInput" type="search"
-                   placeholder="Search for buildings, locations, courses…"
+                   placeholder="Search locations & courses"
                    aria-label="Search locations" />
             <button class="search-clear" id="searchClear"
                     type="button" aria-label="Clear search" hidden>
@@ -256,7 +259,7 @@
         </div>
 
         <div class="locations-meta" aria-live="polite">
-          <span id="locationsCount">0</span> locations to explore.
+          <span id="locationsCount">0</span> locations to explore
         </div>
 
         <!-- Sort control — visible only when the All tab is active.
@@ -569,7 +572,8 @@
       <!-- ───── LEFT: COURSE LIST ───── -->
       <aside class="courses" id="courses" aria-label="Available courses">
         <header class="courses-head">
-          <div class="courses-kicker">AVAILABLE COURSES</div>
+          <div class="courses-kicker">IMMERSIVE LEARNING</div>
+          <h1 class="courses-title">Available Courses</h1>
           <div class="courses-meta" aria-live="polite">
             <span id="coursesCount">0</span> courses available.
           </div>
@@ -605,7 +609,10 @@
           </p>
         </div>
 
-        <!-- Course body — populated by app.js renderCourseDetail() -->
+        <!-- Course body — populated by app.js renderCourseDetail().
+             Single reading column (capped width for balance via
+             .course-body max-width): name + intro, then the course
+             image, then overview + curriculum. -->
         <article class="course-body" id="courseBody" hidden>
           <header class="course-detail-head">
             <!-- Identifier pill: course code is the loudest piece,
@@ -622,12 +629,12 @@
           <h1 class="course-title" id="courseTitle">—</h1>
           <p class="course-lede" id="courseLede">—</p>
 
-          <!-- Hero placeholder. Holds a course image once the team
-               has artwork; until then it shows a dark cell with
-               a faint grid pattern, the course code stamped large
-               as a watermark, and a "COURSE IMAGERY" kicker. The
-               JS sets the watermark text from the course code so
-               every course gets a distinct placeholder. -->
+          <!-- Course image, sitting directly under the intro. Holds a
+               course image once the team has artwork; until then it
+               shows a dark cell with a faint grid pattern, the course
+               code stamped large as a watermark, and a "COURSE
+               IMAGERY" kicker. The JS sets the watermark text from the
+               course code so every course gets a distinct placeholder. -->
           <figure class="course-hero" id="courseHero" aria-hidden="true">
             <div class="course-hero-grid"  aria-hidden="true"></div>
             <div class="course-hero-stamp" id="courseHeroStamp">—</div>
@@ -962,6 +969,12 @@
        SCRIPTS
        ============================================================ -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- MapLibre GL + the Leaflet bridge plugin. Must load after Leaflet
+       (the plugin extends L) and before the app scripts that build the
+       base layer. If these fail to load, addBaseTileLayer() falls back
+       to the raster tile URL in config. -->
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
 
   <script src="data/buildings.js"      onerror="this.remove()"></script>
   <script src="data/tours.js"          onerror="this.remove()"></script>

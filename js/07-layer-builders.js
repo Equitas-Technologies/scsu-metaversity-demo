@@ -7,10 +7,16 @@ function bindEvents(feature, layer, kind) {
   const label = cleanName(props.name);
   if (!label) return;
 
+  // Permanent labels stay drawn on the map at all times; otherwise
+  // the tooltip behaves as a hover label (the default).
+  const permanent = !!config.ui.permanentLabels;
+
   if (config.ui.showBuildingTooltips || kind === "tour") {
     layer.bindTooltip(label, {
-      direction: "top",
-      className: "campus-label",
+      direction: permanent ? "center" : "top",
+      className: permanent ? "campus-label campus-label-permanent"
+                           : "campus-label",
+      permanent: permanent,
       sticky: false,
       opacity: 1
     });
@@ -30,12 +36,14 @@ function bindEvents(feature, layer, kind) {
       isHovered = false;
       if (selectedLayer === layer) return;
       resetLayerStyle(layer, kind);
-      if (layer.closeTooltip) layer.closeTooltip();
+      // Don't dismiss permanent labels on mouse-out — they stay drawn.
+      if (!permanent && layer.closeTooltip) layer.closeTooltip();
     },
     // Safety net: if Leaflet opens the tooltip AFTER the cursor
     // has already left (fast-hover race), close it immediately.
+    // Skipped for permanent labels, which should remain open.
     tooltipopen: () => {
-      if (!isHovered && layer.closeTooltip) layer.closeTooltip();
+      if (!permanent && !isHovered && layer.closeTooltip) layer.closeTooltip();
     },
     click: (e) => {
       L.DomEvent.stopPropagation(e);

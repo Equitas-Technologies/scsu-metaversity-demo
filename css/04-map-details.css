@@ -20,6 +20,17 @@
   background: transparent;
 }
 
+/* Kill the browser's default focus rectangle that wraps the
+   bounding box of a clicked building/tour SVG path — it reads as
+   a big blue box around the shape. The selected-style fill already
+   signals selection. A focus ring is kept for keyboard users via
+   :focus-visible so accessibility isn't lost. */
+.leaflet-interactive:focus { outline: none; }
+.leaflet-interactive:focus-visible {
+  outline: 2px solid var(--brand-red, #B22222);
+  outline-offset: 2px;
+}
+
 /* Mobile-only trigger to reveal the locations list */
 .locations-toggle {
   display: none;
@@ -572,7 +583,7 @@ a.vr-link:active { transform: translateY(1px); }
     border-radius: 4px;
     color: #999999;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.7;
 }
 
 .details-offcampus-note .offcampus-icon {
@@ -582,8 +593,8 @@ a.vr-link:active { transform: translateY(1px); }
 }
 
 .details-offcampus-note strong {
-  color: #9A3412;
-  font-weight: 700;
+    color: #ffffff;
+    font-weight: 400;
 }
 
 /* Off-campus highlight on the tour bar — gives the current stop
@@ -621,22 +632,21 @@ a.vr-link:active { transform: translateY(1px); }
 }
 
 .address-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: var(--paper, #f7f4ef);
-  border: 1px solid var(--line, #2b2b2b);
-  color: var(--ink, #111);
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: .02em;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform .12s ease, background .12s ease,
-              box-shadow .12s ease;
-  white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: #555555;
+    /* border: 1px solid var(--line, #2b2b2b); */
+    color: #cccccc;
+    font-size: 12.5px;
+    font-weight: 400;
+    letter-spacing: .02em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+    white-space: nowrap;
 }
 
 .address-link:hover {
@@ -654,13 +664,9 @@ a.vr-link:active { transform: translateY(1px); }
   outline-offset: 2px;
 }
 
-.address-link-icon {
-  font-size: 14px;
-  line-height: 1;
-}
-
 /* Subtle per-provider tint on the left border — keeps the row
-   readable while still telegraphing which app will open. */
+   readable while still telegraphing which app will open. 
 .address-link-google { border-left: 3px solid #4285F4; }
 .address-link-apple  { border-left: 3px solid #0071E3; }
 .address-link-native { border-left: 3px solid #C2410C; }
+*/

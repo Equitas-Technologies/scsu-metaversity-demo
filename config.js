@@ -49,7 +49,21 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
   mapMode: "tiles",
 
   tiles: {
-    url: "assets/tiles/{z}/{x}/{y}.png",
+    // Primary basemap: Stadia's Outdoors VECTOR style, rendered by
+    // MapLibre GL (see addBaseTileLayer). Vector lets us keep streets,
+    // landmarks, and the Outdoors look while switching OFF only the
+    // redundant building/POI text labels (see hideLabelSourceLayers).
+    vectorStyleUrl: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
+
+    // Symbol (label) layers from these OpenMapTiles source-layers are
+    // hidden after the style loads. "poi" covers the building/place-of-
+    // interest names that duplicated our own permanent labels; street
+    // names (transportation_name), place names, parks and water stay.
+    hideLabelSourceLayers: ["poi"],
+
+    // Raster fallback — used only if MapLibre GL fails to load. Plain
+    // Outdoors raster so the map is still usable (with its own labels).
+    url: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
 
     // Match the QGIS OUTPUT_HTML.html values.
     minZoom: 15,
@@ -70,7 +84,7 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
       [33.5051108680217027, -80.8355473474424997]
     ],
 
-    attribution: "© SC State University | Imagery: SC_2023_RGB WMTS"
+    attribution: "© Stadia Maps © OpenMapTiles © OpenStreetMap contributors"
   },
 
   /* -- Coordinate system of the GeoJSON data --------------- */
@@ -151,10 +165,10 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
   /* -- Layer styles ---------------------------------------- */
   styles: {
     buildings: {
-      color: "#111111", weight: 1, fillColor: "#CBD5E1", fillOpacity: 0.35
+      color: "#AEBAC8", weight: 1, fillColor: "#CBD5E1", fillOpacity: 0.35
     },
     buildingsHover: {
-      color: "#111111", weight: 1.5, fillColor: "#94A3B8", fillOpacity: 0.55
+      color: "#828FA3", weight: 1.5, fillColor: "#94A3B8", fillOpacity: 0.55
     },
     tours: {
       color: "#111111", weight: 1.5, fillColor: "#A7F3D0", fillOpacity: 0.35
@@ -185,6 +199,15 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
 
   ui: {
     enableHoverPreview: true,
-    showBuildingTooltips: true
+    showBuildingTooltips: true,
+    // When true, each feature's NAME is shown as an always-on label
+    // on the map (a permanent Leaflet tooltip) instead of only on
+    // hover. Set false to revert to hover-only labels.
+    permanentLabels: true,
+    // Zoom gate for permanent labels: they're hidden when the map is
+    // zoomed out below this level (avoids clutter on the overview)
+    // and shown at this zoom or closer. Ignored unless
+    // permanentLabels is true. Map zoom range is 15–20.
+    permanentLabelMinZoom: 18
   }
 });

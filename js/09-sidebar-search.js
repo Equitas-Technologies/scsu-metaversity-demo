@@ -47,7 +47,7 @@ function renderLocationsList() {
     const offCampus = !!props.off_campus;
     const distance = props.off_campus_distance || "";
     const offCampusBadge = offCampus && distance
-      ? `<span class="location-offcampus-badge" title="This location is not on the campus map">📍 ${distance}</span>`
+      ? `<span class="location-offcampus-badge" title="This location is not on the campus map">${distance}</span>`
       : "";
     const rowClass = offCampus ? "location-row is-offcampus" : "location-row";
     rows.push(`
@@ -152,7 +152,21 @@ function renderAllLocationsList() {
     const name = cleanName(raw);
     const key = name.toLowerCase();
     if (seen.has(key)) return;
-    seen.set(key, { name, layer });
+    seen.set(key, { name, layer, kind: "building" });
+  });
+
+  // Tour-stop buildings are intentionally absent from buildingsLayer
+  // (their footprints duplicate the tour polygons — see boot()). Add the
+  // on-campus ones back here so the All list still lists them; their row
+  // selects the tour feature. Off-campus stops (e.g. the farm) are not
+  // buildings, so they stay out of this list.
+  (tourStops || []).forEach((stop) => {
+    const f = stop.feature;
+    if (!f || !f.properties || f.properties.off_campus) return;
+    const name = cleanName(f.properties.name);
+    const key = name.toLowerCase();
+    if (!key || seen.has(key)) return;
+    seen.set(key, { name, layer: stop.layer, kind: "tour" });
   });
 
   if (!seen.size) {
@@ -175,13 +189,11 @@ function renderAllLocationsList() {
 
   // Shared row template — used by both sort modes.
   const rowHTML = (it) => {
-    const cat = getCategory(it.name);
     return `
       <li class="location-row" role="option"
           data-name="${it.name.toLowerCase()}">
         <div>
           <div class="location-name">${it.name}</div>
-          <div class="location-cat">${cat}</div>
         </div>
         <span class="location-chev">›</span>
       </li>
@@ -274,9 +286,10 @@ function renderAllLocationsList() {
       // Mobile: close the drawer after the user picks something.
       closeMobileLocations({ silent: true });
 
-      // Same flow as the Featured rows — but kind:"building"
-      // because these come from the buildings layer, not tours.
-      selectFeature(item.layer, "building", { focus: true });
+      // Most rows are buildings; the handful of tour-stop rows carry
+      // kind:"tour" so they select the tour feature (with its tour
+      // content) rather than a building.
+      selectFeature(item.layer, item.kind || "building", { focus: true });
     });
   });
 }

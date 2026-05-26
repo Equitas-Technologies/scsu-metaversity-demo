@@ -48,6 +48,27 @@
 }
 .leaflet-tooltip.campus-label::before { border-top-color: var(--line); }
 
+/* Permanent (always-on) variant: lighter than the hover chip so a
+   whole map of labels doesn't overwhelm the basemap. No pointer
+   arrow (it's centered on the feature), a translucent backing for
+   legibility over the Outdoors tiles, and pointer-events disabled
+   so labels never intercept clicks meant for the building beneath. */
+.leaflet-tooltip.campus-label-permanent {
+  background: rgba(255, 255, 255, .8);
+  border: none;
+  box-shadow: none;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: #777777;
+  pointer-events: none;
+}
+.leaflet-tooltip.campus-label-permanent::before { display: none; }
+
+/* Zoom gate: when the map is zoomed out past the configured
+   threshold, JS adds .campus-labels-hidden to the map container
+   and the always-on labels are hidden to keep the overview clean. */
+.campus-labels-hidden .leaflet-tooltip.campus-label-permanent { display: none; }
+
 /* Tour stop pin (numbered) */
 .tour-pin {
   width: 26px;

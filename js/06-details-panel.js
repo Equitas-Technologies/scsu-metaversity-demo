@@ -192,7 +192,6 @@ function renderAddress(name) {
     `href="https://www.google.com/maps/search/?api=1&query=${q}" ` +
     `target="_blank" rel="noopener noreferrer" ` +
     `aria-label="Open ${escapeHTML(addr)} in Google Maps">` +
-    `<span class="address-link-icon" aria-hidden="true">🗺️</span>` +
     `Google Maps</a>`
   );
 
@@ -203,7 +202,6 @@ function renderAddress(name) {
       `href="https://maps.apple.com/?q=${q}" ` +
       `target="_blank" rel="noopener noreferrer" ` +
       `aria-label="Open ${escapeHTML(addr)} in Apple Maps">` +
-      `<span class="address-link-icon" aria-hidden="true">🍎</span>` +
       `Apple Maps</a>`
     );
   }
@@ -217,7 +215,6 @@ function renderAddress(name) {
       `<a class="address-link address-link-native" ` +
       `href="geo:0,0?q=${q}" ` +
       `aria-label="Open ${escapeHTML(addr)} in your preferred map app">` +
-      `<span class="address-link-icon" aria-hidden="true">📍</span>` +
       `Open in Maps</a>`
     );
   }

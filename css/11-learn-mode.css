@@ -213,12 +213,13 @@ body.mode-learn .details               { display: none; }
   -webkit-overflow-scrolling: touch;
   padding: 32px clamp(24px, 4vw, 56px) 48px;
   display: block;
-  /* Fill the full width of the .course-detail panel so the
-     content uses all the space available to the right of the
-     course list. No max-width cap — the panel itself is the
-     bound. The action bar below mirrors this so its buttons
-     align with the article edges. */
+  /* Capped reading width, centered in the .course-detail panel so
+     the content (and the image now sitting in-flow under the intro)
+     stays balanced instead of stretching edge-to-edge on wide
+     screens. The action bar below mirrors this max-width so its
+     buttons stay aligned with the article edges. */
   width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -268,23 +269,24 @@ body.mode-learn .details               { display: none; }
 }
 
 .course-title {
-  font-family: var(--sans);
-  font-size: clamp(28px, 3.2vw, 44px);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--on-dark);
-  margin: 0 0 16px;
+    font-family: minion;
+    font-size: clamp(28px, 3.2vw, 44px);
+    font-weight: 500;
+    line-height: 1.1;
+    /* letter-spacing: -0.01em; */
+    color: var(--on-dark);
+    margin: 0 0 16px;
 }
 
 .course-lede {
-  font-family: var(--sans);
-  font-size: clamp(15px, 1.3vw, 18px);
-  line-height: 1.5;
-  color: var(--on-dark);
-  opacity: .92;
-  margin: 0 0 28px;
-  max-width: 70ch;
+    font-family: var(--sans);
+    font-size: clamp(15px, 1.3vw, 18px);
+    line-height: 1.6;
+    color: var(--on-dark);
+    opacity: .92;
+    margin: 0 0 28px;
+    /* max-width: 70ch; */
+    padding: 10px 0;
 }
 
 /* ---- Hero placeholder ----------------------------------------
@@ -367,33 +369,37 @@ body.mode-learn .details               { display: none; }
   border-radius: 3px;
 }
 
-/* When a real image is bound, .has-image hides the placeholder
-   chrome and lets the <img> fill the frame. Mirrors the
-   pattern used by .details-image.has-image in the Explore
-   panel — keeps the bind logic consistent across modes. */
+/* When a real image is bound, drop the placeholder panel entirely
+   (border, background, fixed aspect/height) and let the image run
+   full content-width at its natural aspect ratio. The placeholder
+   chrome below is hidden. The no-image state keeps the framed
+   .course-hero panel so the watermark/grid still reads as designed. */
+.course-hero.has-image {
+  aspect-ratio: auto;
+  max-height: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  display: block;
+}
 .course-hero.has-image img {
-  position: absolute;
-  inset: 0;
+  position: static;
+  display: block;
   width: 100%;
-  height: 100%;
-  /* contain (not cover) — show the whole image, no crop.
-     The radial vignette on .course-hero shows through any
-     letterbox/pillarbox area so the frame reads as designed. */
-  object-fit: contain;
-  object-position: center;
+  height: auto;
 }
 .course-hero.has-image .course-hero-grid,
 .course-hero.has-image .course-hero-stamp,
 .course-hero.has-image .course-hero-cap { display: none; }
 
-/* Two-up layout: Overview is now weighted heavier than
-   Curriculum (prose vs scannable list). The curriculum side
-   gets its own subtle card background so it reads as a
-   "syllabus at a glance" panel. */
+/* Single-column body: Curriculum stacks directly below the
+   Overview prose (no longer a two-up split). The curriculum still
+   gets its own subtle card background so it reads as a "syllabus
+   at a glance" panel. */
 .course-columns {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: clamp(28px, 3.5vw, 52px);
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 3.5vw, 40px);
   margin-bottom: 12px;
   padding-top: 28px;
   border-top: 1px solid var(--on-dark-line);
@@ -423,7 +429,7 @@ body.mode-learn .details               { display: none; }
    floating in the void next to prose. */
 .course-column-curriculum {
   background: var(--cell-bg);
-  border: 1px solid var(--on-dark-line);
+  /* border: 1px solid var(--on-dark-line); */
   border-radius: 8px;
   padding: 20px 22px;
   align-self: start;
@@ -494,6 +500,7 @@ body.mode-learn .details               { display: none; }
 
 .course-actions-inner {
   width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 18px clamp(24px, 4vw, 56px);
   display: flex;

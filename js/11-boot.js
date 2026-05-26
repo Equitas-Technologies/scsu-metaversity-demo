@@ -217,8 +217,58 @@ function updateSplashProgress(done, total) {
 function addBaseTileLayer() {
   const t = config.tiles || {};
 
+  // Preferred path: a vector basemap rendered by MapLibre GL. This
+  // lets us hide just the redundant POI/building label layers while
+  // keeping streets, place names, and landmarks for orientation.
+  if (t.vectorStyleUrl && typeof L.maplibreGL === "function") {
+    const gl = L.maplibreGL({
+      pane: "imagePane",
+      style: t.vectorStyleUrl,
+      attribution: t.attribution || ""
+    }).addTo(map);
+
+    const hideSources = t.hideLabelSourceLayers || [];
+    if (hideSources.length) {
+      const hideLabelLayers = (mlMap) => {
+        if (!mlMap || !mlMap.getStyle) return;
+        const layers = (mlMap.getStyle() || {}).layers || [];
+        layers.forEach((ly) => {
+          if (ly.type === "symbol" && hideSources.includes(ly["source-layer"])) {
+            try {
+              // Only flip layers that are still visible. setLayoutProperty
+              // itself fires "styledata", so this guard keeps the
+              // styledata handler from looping on already-hidden layers.
+              if (mlMap.getLayoutProperty(ly.id, "visibility") !== "none") {
+                mlMap.setLayoutProperty(ly.id, "visibility", "none");
+              }
+            } catch (_) { /* layer id gone after a style change — ignore */ }
+          }
+        });
+      };
+
+      // Wire the hide passes once the GL map exists. getMaplibreMap()
+      // is null until Leaflet runs the layer's onAdd, which is deferred
+      // until the map has a view — so set up on the layer's "add" event
+      // (or immediately if the GL map is already there).
+      const wire = () => {
+        const mlMap = gl.getMaplibreMap && gl.getMaplibreMap();
+        if (!mlMap) return;
+        const run = () => hideLabelLayers(mlMap);
+        if (mlMap.isStyleLoaded && mlMap.isStyleLoaded()) run();
+        else mlMap.on("load", run);
+        // Re-apply if the style ever reloads (e.g. on error/retry).
+        mlMap.on("styledata", run);
+      };
+
+      if (gl.getMaplibreMap && gl.getMaplibreMap()) wire();
+      else gl.on("add", wire);
+    }
+    return gl;
+  }
+
+  // Fallback: raster tiles (used if MapLibre GL didn't load).
   if (!t.url) {
-    console.warn("[metaversity] mapMode is 'tiles' but config.tiles.url is missing.");
+    console.warn("[metaversity] no vector style and config.tiles.url is missing.");
     return null;
   }
 
@@ -260,7 +310,24 @@ async function boot() {
   const buildingsGeo = reprojectFC(rawB, config.dataCRS);
   const toursGeo     = reprojectFC(rawT, config.dataCRS);
 
-  buildingsLayer = buildLayer(buildingsGeo, "building", "buildingsPane");
+  // De-dupe map geometry: several tour stops have an identical footprint
+  // in buildings.geojson, which drew a second (gray) polygon — and a
+  // second permanent label — beneath the tour layer. Drop those building
+  // copies from the MAP; the tour layer renders them. They're added back
+  // to the sidebar "All" list (sourced from the tour layer) in
+  // renderAllLocationsList, so the list still includes them.
+  const tourStopNameSet = new Set(
+    (toursGeo.features || [])
+      .map((f) => cleanName((f.properties || {}).name || "").toLowerCase())
+      .filter(Boolean)
+  );
+  const buildingsForMap = Object.assign({}, buildingsGeo, {
+    features: (buildingsGeo.features || []).filter(
+      (f) => !tourStopNameSet.has(cleanName((f.properties || {}).name || "").toLowerCase())
+    )
+  });
+
+  buildingsLayer = buildLayer(buildingsForMap, "building", "buildingsPane");
   toursLayer     = buildLayer(toursGeo,     "tour",     "toursPane");
 
   // Data extent (from both layers combined)
@@ -325,6 +392,20 @@ if (config.mapMode === "tiles") {
   // Tour pins
   buildTourPins();
   tourPinsLayer.addTo(map);
+
+  // Zoom-gate permanent labels: toggle a class on the map container
+  // so the CSS hides labels when zoomed out below the configured
+  // threshold. Cheaper than binding/unbinding tooltips per feature.
+  if (config.ui.permanentLabels) {
+    const minZoom = config.ui.permanentLabelMinZoom ?? 18;
+    const updateLabelZoomVisibility = () => {
+      map.getContainer().classList.toggle(
+        "campus-labels-hidden", map.getZoom() < minZoom
+      );
+    };
+    map.on("zoomend", updateLabelZoomVisibility);
+    updateLabelZoomVisibility();
+  }
 
   // Locations list
   renderLocationsList();
