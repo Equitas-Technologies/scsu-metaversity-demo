@@ -283,6 +283,48 @@ function addBaseTileLayer() {
     attribution: t.attribution || "Created by QGIS"
   }).addTo(map);
 }
+// Lazily build the local-aerial overlay used by the satellite toggle.
+// It lives in the same imagePane as the base map but is added on TOP,
+// so when present its opaque tiles hide the vector base over campus.
+function getSatelliteLayer() {
+  if (satelliteLayer) return satelliteLayer;
+  const t = config.tiles || {};
+  if (!t.satelliteUrl) return null;
+  satelliteLayer = L.tileLayer(t.satelliteUrl, {
+    pane: "imagePane",
+    minZoom: t.minZoom ?? 15,
+    maxZoom: t.maxZoom ?? 20,
+    maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
+    tms: !!t.tms,
+    noWrap: true,
+    // Only clip to the campus rectangle for a campus-only source (the
+    // local aerial). A global source like Stadia satellite fills the view.
+    bounds: t.satelliteBounds && t.bounds ? L.latLngBounds(t.bounds) : undefined,
+    attribution: t.satelliteAttribution || ""
+  });
+  return satelliteLayer;
+}
+
+// Show/hide the aerial overlay and keep the button + container in sync.
+// The .satellite-mode class on the map container is a hook for any
+// label/footprint contrast tweaks over imagery (CSS, if needed later).
+function setSatelliteView(on) {
+  const layer = getSatelliteLayer();
+  if (!layer) return;
+  satelliteOn = !!on;
+  if (satelliteOn) {
+    if (!map.hasLayer(layer)) layer.addTo(map);
+    if (layer.bringToFront) layer.bringToFront(); // above the vector base
+  } else if (map.hasLayer(layer)) {
+    map.removeLayer(layer);
+  }
+  if (el.satelliteBtn) {
+    el.satelliteBtn.classList.toggle("is-active", satelliteOn);
+    el.satelliteBtn.setAttribute("aria-pressed", String(satelliteOn));
+  }
+  map.getContainer().classList.toggle("satellite-mode", satelliteOn);
+}
+
 async function boot() {
   // If the sync UA check missed but the WebXR API confirms an
   // XR device, switch to the VR profile *before* preloading the

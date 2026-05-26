@@ -65,6 +65,23 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
     // Outdoors raster so the map is still usable (with its own labels).
     url: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
 
+    // Satellite view: Stadia's Alidade Satellite raster imagery,
+    // toggled on/off by the on-map satellite button (see setSatelliteView
+    // in 11-boot). Global coverage, so it fills the viewport
+    // (satelliteBounds is left off). Uses the shared Stadia api_key and
+    // counts against that plan's quota.
+    satelliteUrl: "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
+    satelliteAttribution: "© CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) © Stadia Maps © OpenMapTiles © OpenStreetMap contributors",
+
+    // Alternative satellite source — the local, pre-rendered 2023 RGB
+    // aerial of campus (SC_2023_RGB WMTS) in assets/tiles. To use it
+    // instead of Stadia, swap the two lines above for these and set
+    // satelliteBounds: true (it only covers the campus bounds, zoom
+    // 15–20; outside that the vector base shows through). Local = no quota.
+    //   satelliteUrl: "assets/tiles/{z}/{x}/{y}.png",
+    //   satelliteAttribution: "Aerial imagery: SC_2023_RGB WMTS",
+    //   satelliteBounds: true,
+
     // Match the QGIS OUTPUT_HTML.html values.
     minZoom: 15,
     maxZoom: 20,
@@ -170,11 +187,14 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
     buildingsHover: {
       color: "#828FA3", weight: 1.5, fillColor: "#94A3B8", fillOpacity: 0.55
     },
+    /* Guided tour stops: blue fill with a subtly darker blue stroke
+       (a step or two darker than the fill, not black) so the border
+       reads as a soft outline rather than a hard frame. */
     tours: {
-      color: "#111111", weight: 1.5, fillColor: "#A7F3D0", fillOpacity: 0.35
+      color: "#60A5FA", weight: 1.5, fillColor: "#BFDBFE", fillOpacity: 0.35
     },
     toursHover: {
-      color: "#111111", weight: 2, fillColor: "#6EE7B7", fillOpacity: 0.60
+      color: "#3B82F6", weight: 2, fillColor: "#93C5FD", fillOpacity: 0.60
     },
     /* Off-campus tour stops get a distinct orange/amber treatment so
        the user can tell at a glance that the shape on the map is a
@@ -188,8 +208,10 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
       color: "#7C2D12", weight: 2.5, fillColor: "#F97316", fillOpacity: 0.90,
       dashArray: "4 3"
     },
+    /* Selected element: green fill with a subtly darker green stroke
+       (was black) so the selection outline stays soft. */
     selected: {
-      color: "#111111", weight: 2.5, fillColor: "#86EFAC", fillOpacity: 0.55
+      color: "#4ADE80", weight: 2.5, fillColor: "#86EFAC", fillOpacity: 0.55
     },
     selectedOffCampus: {
       color: "#7C2D12", weight: 3, fillColor: "#EA580C", fillOpacity: 0.85,

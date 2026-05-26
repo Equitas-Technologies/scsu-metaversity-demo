@@ -69,6 +69,12 @@
    and the always-on labels are hidden to keep the overview clean. */
 .campus-labels-hidden .leaflet-tooltip.campus-label-permanent { display: none; }
 
+/* User toggle (burger menu): when the "Show building labels" switch is
+   off, JS adds .campus-labels-off to the map container to hide the
+   always-on labels regardless of zoom. Independent of the zoom gate
+   above — either class hides the labels. */
+.campus-labels-off .leaflet-tooltip.campus-label-permanent { display: none; }
+
 /* Tour stop pin (numbered) */
 .tour-pin {
   width: 26px;
@@ -342,7 +348,8 @@
   .details-footer                 { display: none; }
 
   .details-close { top: 14px; right: 14px; }
-  .map-action    { bottom: 12px; right: 12px; }
+  .map-action               { bottom: 12px; right: 12px; }
+  .map-action--satellite    { bottom: 60px; }
 
   /* Search results popover sits within the sidebar drawer
      (not below the bar) since the bar is now inside the drawer. */

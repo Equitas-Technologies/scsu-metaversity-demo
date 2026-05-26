@@ -79,6 +79,7 @@ const el = {
   tourNextMobile:    $("tourNextMobile"),
 
   fitBtn:          $("fitBtn"),
+  satelliteBtn:    $("satelliteBtn"),
 
   /* ---- Treedis street-view overlay (new) ---------------- */
   streetview:        $("streetview"),
@@ -170,6 +171,8 @@ function selectedStyleFor(feature) {
 let imageBounds     = null; // still used as campus bounds by reset/fit helpers
 let imageOverlay    = null; // old single-image mode only
 let baseTileLayer   = null; // new tile mode
+let satelliteLayer  = null; // local aerial overlay (lazy); see setSatelliteView
+let satelliteOn     = false;
 let dataBounds      = null;
 let buildingsLayer  = null;
 let toursLayer      = null;

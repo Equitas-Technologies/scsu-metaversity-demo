@@ -213,6 +213,12 @@ el.fitBtn.addEventListener("click", () => {
   if (imageBounds) resetCampusView(true);
 });
 
+if (el.satelliteBtn) {
+  el.satelliteBtn.addEventListener("click", () => {
+    setSatelliteView(!satelliteOn);
+  });
+}
+
 el.detailsClose.addEventListener("click", () => clearSelection());
 
 if (el.searchInput) {

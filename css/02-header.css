@@ -36,7 +36,7 @@
 .metabar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   min-width: 0;
 }
 
@@ -52,14 +52,35 @@
   display: block;
 }
 
+/* Stacks the two brand lines vertically next to the logo. */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Line 1 — university name, set in the serif (Minion) face. Style
+   this independently of .brand-product below. */
+.brand-university {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: .01em;
+    color: var(--on-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .brand-product {
-  font-size: clamp(12px, 1.05vw, 14px);
-  font-weight: 600;
-  letter-spacing: .14em;
-  color: var(--on-dark);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: .14em;
+    color: #999999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ---- Right-side actions (burger) ---- */

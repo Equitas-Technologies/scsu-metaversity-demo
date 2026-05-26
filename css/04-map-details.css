@@ -72,6 +72,15 @@
 .map-action svg     { width: 18px; height: 18px; }
 .map-action:active  { transform: translateY(1px); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 
+/* Satellite toggle stacks just above the fit-to-view button. */
+.map-action--satellite { bottom: 64px; }
+/* On state: inverted (dark) so it reads as "satellite is active". */
+.map-action--satellite.is-active {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: #fff;
+}
+
 /* ===========================================================
    DETAILS PANEL (right side on desktop) — dark theme
    =========================================================== */

@@ -57,6 +57,11 @@
   const navSuppressCheckbox = document.getElementById("navInstructionsSuppress");
   const navInstructionsSwitch = document.getElementById("burgerShowNavInstructions");
 
+  // Building-labels toggle. Unlike the two above, this one applies
+  // LIVE: flipping it adds/removes a class on the map container so
+  // the always-on building name labels show or hide immediately.
+  const buildingLabelsSwitch = document.getElementById("burgerShowBuildingLabels");
+
   if (!startScreen || !overlay || !card) {
     console.warn("[onboarding] required nodes missing — disabled");
     return;
@@ -72,6 +77,7 @@
      storage key. --------------------------------------------- */
   const PREF_KEY = "scsu:showStartScreen";
   const NAV_PREF_KEY = "scsu:showNavInstructions";
+  const LABELS_PREF_KEY = "scsu:showBuildingLabels";
 
   function readPref(key) {
     try {
@@ -99,6 +105,19 @@
   function writeShowOnStartup(show)   { writePref(PREF_KEY, show); }
   function readShowNavInstructions()  { return readPref(NAV_PREF_KEY); }
   function writeShowNavInstructions(show) { writePref(NAV_PREF_KEY, show); }
+  function readShowBuildingLabels()   { return readPref(LABELS_PREF_KEY); }
+  function writeShowBuildingLabels(show) { writePref(LABELS_PREF_KEY, show); }
+
+  // Apply the building-labels preference to the live map: hide the
+  // always-on labels by adding .campus-labels-off to the container.
+  // Guarded in case `map` isn't created yet (it's a global from
+  // js/02-state.js, available by the time this IIFE runs).
+  function applyBuildingLabelsPref() {
+    if (typeof map === "undefined" || !map.getContainer) return;
+    map.getContainer().classList.toggle(
+      "campus-labels-off", !readShowBuildingLabels()
+    );
+  }
 
   // Push current preferences into all four controls. Called
   // at init and whenever any control changes so its mirror
@@ -111,6 +130,10 @@
     const showNav = readShowNavInstructions();
     if (navSuppressCheckbox)  navSuppressCheckbox.checked  = !showNav; // inverted
     if (navInstructionsSwitch) navInstructionsSwitch.checked = showNav;
+
+    const showLabels = readShowBuildingLabels();
+    if (buildingLabelsSwitch) buildingLabelsSwitch.checked = showLabels;
+    applyBuildingLabelsPref();
   }
 
   // The four edge masks that collectively dim everything around
@@ -828,6 +851,14 @@
   if (navInstructionsSwitch) {
     navInstructionsSwitch.addEventListener("change", () => {
       writeShowNavInstructions(navInstructionsSwitch.checked);
+      syncPrefControls();
+    });
+  }
+
+  /* -- Building-labels switch: applies live via syncPrefControls -- */
+  if (buildingLabelsSwitch) {
+    buildingLabelsSwitch.addEventListener("change", () => {
+      writeShowBuildingLabels(buildingLabelsSwitch.checked);
       syncPrefControls();
     });
   }

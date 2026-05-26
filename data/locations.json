@@ -694,31 +694,47 @@
       "id": "faculty-staff-parking",
       "key": "faculty / staff parking",
       "name": "Faculty / Staff Parking",
-      "category": "PARKING"
+      "category": "PARKING",
+      "departments": [
+        "Parking: Faculty & Staff"
+      ]
     },
     {
       "id": "faculty-staff-parking",
       "key": "faculty/ staff parking",
       "name": "Faculty/ Staff Parking",
-      "category": "PARKING"
+      "category": "PARKING",
+      "departments": [
+        "Parking: Faculty & Staff"
+      ]
     },
     {
       "id": "off-campus-student-parking",
       "key": "off campus student parking",
       "name": "Off Campus Student Parking",
-      "category": "PARKING"
+      "category": "PARKING",
+      "departments": [
+        "Parking: Off-Campus Students"
+      ]
     },
     {
       "id": "on-campus-off-campus-student-parking",
       "key": "on campus / off campus student parking",
       "name": "On Campus / Off Campus Student Parking",
-      "category": "PARKING"
+      "category": "PARKING",
+      "departments": [
+        "Parking: Off-Campus Students",
+        "Parking: On-Campus Students"
+      ]
     },
     {
       "id": "on-campus-student-parking",
       "key": "on campus student parking",
       "name": "On Campus Student Parking",
-      "category": "PARKING"
+      "category": "PARKING",
+      "departments": [
+        "Parking: On-Campus Students"
+      ]
     },
     {
       "id": "battiste-hall",

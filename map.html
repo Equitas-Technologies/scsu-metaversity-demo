@@ -5,7 +5,7 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#000000" />
-  <title>SCSU Virtual Campus</title>
+  <title>Virtual Campus Experience</title>
 
   <!-- Fonts: Inter for all UI chrome and body, serif for titles.
        EB Garamond loaded as an open-source visual fallback for Minion
@@ -78,7 +78,12 @@
              alt="South Carolina State University"
              width="48" height="48"
              onerror="this.outerHTML='&lt;svg class=&quot;brand-logo&quot; viewBox=&quot;0 0 48 48&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; aria-label=&quot;South Carolina State University&quot; role=&quot;img&quot;&gt;&lt;circle cx=&quot;24&quot; cy=&quot;24&quot; r=&quot;22&quot; fill=&quot;none&quot; stroke=&quot;#ffffff&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;24&quot; cy=&quot;24&quot; r=&quot;17&quot; fill=&quot;none&quot; stroke=&quot;#ffffff&quot; stroke-width=&quot;0.75&quot;/&gt;&lt;text x=&quot;24&quot; y=&quot;22&quot; text-anchor=&quot;middle&quot; fill=&quot;#ffffff&quot; font-family=&quot;serif&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot;&gt;SC&lt;/text&gt;&lt;text x=&quot;24&quot; y=&quot;32&quot; text-anchor=&quot;middle&quot; fill=&quot;#ffffff&quot; font-family=&quot;sans-serif&quot; font-size=&quot;4.5&quot; letter-spacing=&quot;0.6&quot;&gt;STATE&lt;/text&gt;&lt;/svg&gt;'" />
-        <span class="brand-product">SCSU VIRTUAL CAMPUS</span>
+        <!-- Two independently-styleable brand lines, stacked:
+             .brand-university (serif/Minion) above .brand-product. -->
+        <span class="brand-text">
+          <span class="brand-university">South Carolina State University</span>
+          <span class="brand-product">VIRTUAL CAMPUS EXPERIENCE</span>
+        </span>
       </div>
 
       <!-- ==== EXPLORE / LEARN TOGGLE (persistent in header) ====
@@ -150,6 +155,27 @@
              opt-out there). Both write the same localStorage flag. -->
         <div class="burger-settings" role="group"
              aria-label="Display settings">
+          <!-- Building labels: unlike the two toggles below, this one
+               takes effect immediately — it adds/removes a class on the
+               map container that hides the always-on building name
+               tooltips (the zoom gate still applies independently). -->
+          <label class="burger-toggle-row">
+            <span class="burger-toggle-text">
+              <span class="burger-toggle-label">
+                Show building labels
+              </span>
+              <span class="burger-toggle-hint">
+                Building name labels on the map
+              </span>
+            </span>
+            <span class="burger-switch">
+              <input type="checkbox" id="burgerShowBuildingLabels" />
+              <span class="burger-switch-track" aria-hidden="true">
+                <span class="burger-switch-thumb"></span>
+              </span>
+            </span>
+          </label>
+
           <label class="burger-toggle-row">
             <span class="burger-toggle-text">
               <span class="burger-toggle-label">
@@ -391,6 +417,21 @@
                alt="" aria-hidden="true" class="locations-toggle-icon"
                onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'≡',className:'lt-fallback'}))" />
           <span>Locations</span>
+        </button>
+
+        <!-- Satellite-view toggle. Switches the basemap between the
+             Outdoors vector map and the local 2023 aerial imagery.
+             aria-pressed reflects the current state. -->
+        <button class="map-action map-action--satellite" id="satelliteBtn"
+                type="button" aria-pressed="false"
+                aria-label="Toggle satellite view" title="Satellite view">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"
+                    stroke-width="2" fill="none"/>
+            <path d="M3 12h18M12 3c2.5 2.4 2.5 15.6 0 18M12 3c-2.5 2.4-2.5 15.6 0 18"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" fill="none"/>
+          </svg>
         </button>
 
         <!-- Fit-to-view button -->
