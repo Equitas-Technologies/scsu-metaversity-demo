@@ -72,8 +72,22 @@
 .map-action svg     { width: 18px; height: 18px; }
 .map-action:active  { transform: translateY(1px); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 
-/* Satellite toggle stacks just above the fit-to-view button. */
-.map-action--satellite { bottom: 64px; }
+/* Satellite toggle stacks just above the SCSU logo. */
+.map-action--satellite { bottom: 80px; }
+
+/* SCSU logo — bottom-right corner, beneath the satellite toggle.
+   Bare transparent PNG, no frame (per branding). Decorative, so it
+   doesn't intercept map drags. */
+.map-logo {
+  position: absolute;
+  bottom: 28px;         /* lifted off the attribution text along the bottom edge */
+  right: 14px;          /* center (36px from right) aligns under the satellite button */
+  z-index: 500;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  pointer-events: none;
+}
 /* On state: inverted (dark) so it reads as "satellite is active". */
 .map-action--satellite.is-active {
   background: #1f2937;
@@ -674,8 +688,51 @@ a.vr-link:active { transform: translateY(1px); }
 }
 
 /* Subtle per-provider tint on the left border — keeps the row
-   readable while still telegraphing which app will open. 
+   readable while still telegraphing which app will open.
 .address-link-google { border-left: 3px solid #4285F4; }
 .address-link-apple  { border-left: 3px solid #0071E3; }
 .address-link-native { border-left: 3px solid #C2410C; }
 */
+
+/* External-link rows (e.g. SCSU Bookstore) at the bottom of the
+   details column. Plain text links with a leading glyph, styled
+   for the dark panel. */
+.details-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.details-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  color: var(--on-dark, #e8e8e8);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color .12s ease;
+}
+.details-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.details-link:focus-visible {
+  outline: 2px solid var(--brand-red, #B22222);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.details-link-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+/* Trailing "opens in a new tab" glyph — smaller and slightly muted. */
+.details-link-ext {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  opacity: .7;
+}

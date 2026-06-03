@@ -434,15 +434,11 @@
           </svg>
         </button>
 
-        <!-- Fit-to-view button -->
-        <button class="map-action" id="fitBtn"
-                type="button" aria-label="Fit campus to view">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
-                  stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" fill="none"/>
-          </svg>
-        </button>
+        <!-- SCSU logo badge (client request). Decorative — sits in the
+             bottom-right corner with the satellite toggle stacked above. -->
+        <img class="map-logo" src="assets/Icons/logo.png"
+             alt="South Carolina State University"
+             onerror="this.style.display='none'" />
       </section>
 
       <!-- ───── RIGHT: METADATA PANEL ───── -->
@@ -537,6 +533,14 @@
                       tabindex="-1" aria-hidden="true">
                 <span>Explore</span>
               </button>
+            </div>
+
+            <!-- External links (e.g. bookstore / department sites).
+                 Shown only when a location has entries in linksMap
+                 (locations.js). Sits at the bottom of the column. -->
+            <div class="details-block details-links-block"
+                 id="linksBlock" hidden>
+              <div class="details-links" id="detailsLinks"></div>
             </div>
           </div>
         </div>
@@ -851,7 +855,7 @@
            alt="South Carolina State University"
            onerror="this.style.display='none'" />
       <h2 class="start-screen-title" id="startScreenTitle">
-        Virtual Campus Tour
+        Virtual Campus Experience
       </h2>
       <p class="start-screen-body">
         Welcome to the South Carolina State University Virtual Campus

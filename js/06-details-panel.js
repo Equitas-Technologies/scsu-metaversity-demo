@@ -222,6 +222,52 @@ function renderAddress(name) {
   el.detailsAddressLinks.innerHTML = links.join("");
 }
 
+/* Render external-link rows (e.g. a bookstore or department
+   website) at the bottom of the details column. Pulls entries
+   from linksMap (via getLinks()); hides the block entirely when
+   a location has none. Each entry is { label, url, icon? }. */
+function renderLinks(name) {
+  if (!el.linksBlock || !el.detailsLinks) return;
+
+  const links = getLinks(name);
+  if (!links.length) {
+    el.linksBlock.hidden = true;
+    el.detailsLinks.innerHTML = "";
+    return;
+  }
+
+  // Inline glyphs keyed by the entry's optional `icon` field.
+  const ICONS = {
+    book:
+      `<svg class="details-link-icon" viewBox="0 0 24 24" aria-hidden="true">` +
+      `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" ` +
+      `stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>` +
+      `<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" ` +
+      `stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ` +
+      `stroke-linejoin="round" fill="none"/></svg>`
+  };
+
+  // Trailing "opens in a new tab" glyph — box with an arrow leaving it.
+  const EXT_ICON =
+    `<svg class="details-link-ext" viewBox="0 0 24 24" aria-hidden="true">` +
+    `<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" ` +
+    `stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ` +
+    `stroke-linejoin="round" fill="none"/>` +
+    `<path d="M15 3h6v6M10 14 21 3" stroke="currentColor" stroke-width="1.8" ` +
+    `stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+
+  el.linksBlock.hidden = false;
+  el.detailsLinks.innerHTML = links
+    .map((lnk) => {
+      if (!lnk || !lnk.url || !lnk.label) return "";
+      const icon = ICONS[lnk.icon] || "";
+      return `<a class="details-link" href="${escapeHTML(lnk.url)}" ` +
+             `target="_blank" rel="noopener noreferrer">` +
+             `${icon}<span>${escapeHTML(lnk.label)}</span>${EXT_ICON}</a>`;
+    })
+    .join("");
+}
+
 function renderDetails(feature, kind) {
   const props = (feature && feature.properties) || {};
   const name = cleanName(props.name);
@@ -288,6 +334,7 @@ function renderDetails(feature, kind) {
   renderHappensHere(name);
   renderExplorable(name);
   renderAddress(name);
+  renderLinks(name);
   renderImage(name);
 
   // Annotate the Explore CTA with the current location so the

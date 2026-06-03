@@ -6,7 +6,7 @@
 
      window.CAMPUS_CONFIG.categoryMap, .descriptionMap,
        .imageMap, .happensHereMap, .departmentMap,
-       .addressMap, .explorableMap
+       .addressMap, .explorableMap, .linksMap
      window.CAMPUS_CONFIG.treedisMaps.{desktop, vr}
      window.CAMPUS_CONFIG.treedisMap         (alias)
      window.SCSU_DATA.courses
@@ -49,7 +49,7 @@ async function tryFetchJSON(url) {
 }
 
 /* Take a locations.json payload (per-document shape) and
-   rebuild the seven flat maps on window.CAMPUS_CONFIG that
+   rebuild the flat maps on window.CAMPUS_CONFIG that
    01-utils.js reads from. Each per-location-document field
    becomes one entry in its corresponding flat map.
 
@@ -68,6 +68,7 @@ function applyLocationsJSON(payload) {
   cfg.departmentMap  = cfg.departmentMap  || {};
   cfg.addressMap     = cfg.addressMap     || {};
   cfg.explorableMap  = cfg.explorableMap  || {};
+  cfg.linksMap       = cfg.linksMap       || {};
 
   for (const loc of payload.locations) {
     if (!loc || !loc.key) continue;
@@ -81,6 +82,7 @@ function applyLocationsJSON(payload) {
     if (Array.isArray(loc.happensHere)) cfg.happensHereMap[k] = loc.happensHere;
     if (Array.isArray(loc.departments)) cfg.departmentMap[k]  = loc.departments;
     if (Array.isArray(loc.explorable))  cfg.explorableMap[k]  = loc.explorable;
+    if (Array.isArray(loc.links))       cfg.linksMap[k]       = loc.links;
   }
   return true;
 }

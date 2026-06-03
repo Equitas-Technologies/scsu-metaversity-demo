@@ -21,7 +21,8 @@ body.streetview-open .leaflet-control-attribution {
   display: none !important;
 }
 
-body.streetview-open .map-action { display: none !important; }
+body.streetview-open .map-action,
+body.streetview-open .map-logo { display: none !important; }
 
 @media (min-width: 881px) {
   body.streetview-open .locations-toggle { display: none !important; }

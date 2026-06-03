@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="4.0.1-Norrköping">
+<qgis version="4.0.2-Norrköping">
   <identifier></identifier>
   <parentidentifier></parentidentifier>
   <language></language>

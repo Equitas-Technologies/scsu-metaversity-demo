@@ -445,6 +445,13 @@
         "Office of Student Financial Services",
         "Facilities Management & Operations",
         "Admissions & Financial Aid"
+      ],
+      "links": [
+        {
+          "label": "SCSU Bookstore website",
+          "url": "https://southcarolinastate.bkstr.com",
+          "icon": "book"
+        }
       ]
     },
     {
@@ -512,13 +519,12 @@
         "Homecoming"
       ],
       "departments": [
-        "Athletics",
         "Athletics"
       ],
       "explorable": [
         "Midfield",
         "Gate 1",
-        "Bulldog wall"
+        "Bulldog Wall"
       ]
     },
     {
@@ -625,7 +631,7 @@
       ],
       "departments": [],
       "explorable": [
-        "Historical marker",
+        "Historical Marker",
         "Bronze Busts/Monuments"
       ]
     },

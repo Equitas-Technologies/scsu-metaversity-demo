@@ -209,10 +209,6 @@ if (el.streetviewTouchGuard) {
   });
 }
 
-el.fitBtn.addEventListener("click", () => {
-  if (imageBounds) resetCampusView(true);
-});
-
 if (el.satelliteBtn) {
   el.satelliteBtn.addEventListener("click", () => {
     setSatelliteView(!satelliteOn);

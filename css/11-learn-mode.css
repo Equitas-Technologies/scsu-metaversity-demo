@@ -22,6 +22,7 @@ body.mode-learn .tourbar               { display: none; }
 body.mode-learn .learn-shell           { display: grid; }
 body.mode-learn .locations-backdrop    { display: none !important; }
 body.mode-learn .map-action,
+body.mode-learn .map-logo,
 body.mode-learn .locations-toggle      { display: none !important; }
 
 /* The map's right details panel is part of .shell so it's

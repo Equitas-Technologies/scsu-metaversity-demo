@@ -62,6 +62,8 @@ const el = {
   addressBlock:     $("addressBlock"),
   detailsAddress:   $("detailsAddress"),
   detailsAddressLinks: $("detailsAddressLinks"),
+  linksBlock:       $("linksBlock"),
+  detailsLinks:     $("detailsLinks"),
   detailsImage:     $("detailsImage"),
 
   // Desktop tour nav (inside sidebar footer)
@@ -78,7 +80,6 @@ const el = {
   tourPrevMobile:    $("tourPrevMobile"),
   tourNextMobile:    $("tourNextMobile"),
 
-  fitBtn:          $("fitBtn"),
   satelliteBtn:    $("satelliteBtn"),
 
   /* ---- Treedis street-view overlay (new) ---------------- */

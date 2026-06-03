@@ -316,6 +316,16 @@ function getAddress(name) {
   return (config.addressMap || {})[k] || "";
 }
 
+/* Look up external links (related websites) for a location.
+   Returns an array of { label, url, icon } objects, or an empty
+   array when none are configured. Used by the details panel to
+   render link rows at the bottom of the column. */
+function getLinks(name) {
+  if (!name) return [];
+  const list = (config.linksMap || {})[name.toLowerCase()];
+  return Array.isArray(list) ? list : [];
+}
+
 /* Look up a Treedis entry by location name (case-insensitive).
    Accepts short-hand string entries as well as full objects, and
    always returns a normalized

@@ -349,7 +349,8 @@
 
   .details-close { top: 14px; right: 14px; }
   .map-action               { bottom: 12px; right: 12px; }
-  .map-action--satellite    { bottom: 60px; }
+  .map-action--satellite    { bottom: 74px; }
+  .map-logo                 { bottom: 24px; right: 10px; width: 44px; height: 44px; }
 
   /* Search results popover sits within the sidebar drawer
      (not below the bar) since the bar is now inside the drawer. */

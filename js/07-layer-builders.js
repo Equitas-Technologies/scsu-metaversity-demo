@@ -124,25 +124,32 @@ function buildTourPins() {
     // amber pin with a small arrow glyph so the user can see
     // at a glance that the shape on the map is a directional
     // indicator rather than a real building footprint.
+    // On-campus stops no longer show a numbered pin (client request) —
+    // only off-campus stops keep a pin, an amber directional arrow that
+    // tells the user the on-map shape is an indicator, not a real
+    // footprint. On-campus stops are still navigable via the tour bar /
+    // sidebar; they just have no marker.
     const offCampus = !!props.off_campus;
-    const icon = L.divIcon({
-      className: offCampus ? "tour-pin-wrap is-offcampus" : "tour-pin-wrap",
-      html: offCampus
-        ? `<div class="tour-pin is-offcampus" data-order="${order}" ` +
+    let marker = null;
+    if (offCampus) {
+      const icon = L.divIcon({
+        className: "tour-pin-wrap is-offcampus",
+        html:
+          `<div class="tour-pin is-offcampus" data-order="${order}" ` +
           `title="Off-campus location — click for details">` +
-          `${order}<span class="tour-pin-arrow" aria-hidden="true">↗</span></div>`
-        : `<div class="tour-pin" data-order="${order}">${order}</div>`,
-      iconSize: offCampus ? [34, 26] : [26, 26],
-      iconAnchor: offCampus ? [17, 13] : [13, 13]
-    });
+          `${order}<span class="tour-pin-arrow" aria-hidden="true">↗</span></div>`,
+        iconSize: [34, 26],
+        iconAnchor: [17, 13]
+      });
 
-    const marker = L.marker(center, {
-      icon,
-      pane: "pinsPane",
-      interactive: false,
-      keyboard: false
-    });
-    tourPinsLayer.addLayer(marker);
+      marker = L.marker(center, {
+        icon,
+        pane: "pinsPane",
+        interactive: false,
+        keyboard: false
+      });
+      tourPinsLayer.addLayer(marker);
+    }
 
     tourStops.push({ feature: f, layer, marker, order });
   });
@@ -159,7 +166,7 @@ function highlightActivePin() {
   document.querySelectorAll(".tour-pin.is-active")
           .forEach((n) => n.classList.remove("is-active"));
   const stop = tourStops[tourIndex];
-  if (!stop) return;
+  if (!stop || !stop.marker) return;          // on-campus stops have no pin
   const node = stop.marker.getElement()?.querySelector(".tour-pin");
   if (node) node.classList.add("is-active");
 }

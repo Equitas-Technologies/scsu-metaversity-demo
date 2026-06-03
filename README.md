@@ -12,7 +12,7 @@ An interactive web map of the South Carolina State University campus, pairing a 
 - **Dual Treedis profiles** — separate desktop (`8e4ca3fc`) and VR (`scsu-campus-ade0f346`) models, auto-selected at boot by user-agent inspection and `navigator.xr.isSessionSupported('immersive-vr')`.
 - **Off-campus tour stops** — locations physically outside the campus map (currently Olar Farm, ~20 mi southwest) can be added as tour stops via an `off_campus: true` flag. They render with an amber palette and a directional arrow rather than a building footprint, skip the map fly-to, and expose an "Open in Maps" link block so users can navigate there in their preferred map app.
 - **Learn mode** — a course catalog (currently `NRM 342 Agronomy & Soils`) that pairs syllabus-style content with deep links into the immersive VR experience.
-- **File:// fallback** — the app works without a server: GeoJSON is also shipped as `data/*.js` shims that assign onto `window.SCSU_DATA`, so opening the HTML directly from disk still boots.
+- **JSON content + file:// fallback** — per-location content is canonically stored as JSON (`data/locations.json`, `data/treedis-sweeps.json`, `data/courses.json`) and loaded at boot by `js/00-data-adapter.js`. The app also works without a server: the same content ships as `data/*.js` shims (`locations.js`, etc.) that populate `window.CAMPUS_CONFIG` / `window.SCSU_DATA` at parse time, so opening the HTML directly from disk (where `fetch` can't read JSON) still boots. **When served over http/https the JSON wins and overwrites the shim** — so edit the `.json`, not the `.js`, for production. GeoJSON geometry is similarly shipped as both `.geojson` and `.js` fallbacks.
 - **Splash / progress screen, burger menu, search, and align tools** built in.
 
 ---
@@ -29,9 +29,10 @@ The application code lives in three folders — `js/` (13 numbered scripts), `cs
 | `css/` | All visual styling, split across 11 numbered files (~3,500 lines total) that load in order via `<link>` tags. Order matters because of the CSS cascade — later files override earlier ones, mirroring the original single-file order. |
 | `data/buildings.geojson` | Building footprint polygons (EPSG:4326). Source of truth when served over HTTP. |
 | `data/tours.geojson` | Tour-stop polygons (EPSG:4326). Each feature carries `name`, `tour_group`, `order_num`, `description`, and optional `off_campus` / `off_campus_distance` properties. |
-| `data/locations.js` | Per-location content — `descriptionMap`, `imageMap`, `categoryMap`, `happensHereMap`, `explorableMap`, and `addressMap` (for "Open in Maps" links). Edit this file to change copy without touching app plumbing. |
-| `data/treedis-sweeps.js` | Per-location sweep IDs, split into `desktop` and `vr` profile tables. |
-| `data/courses.js` | Learn-mode course catalog. |
+| `data/locations.json` | **Canonical** per-location content. An array of per-location "documents" keyed by lowercase `key`, each with `name`, `category`, `description`, `image`, `happensHere`, `departments`, `explorable`, `address`, and `links`. `js/00-data-adapter.js` flattens these into the `descriptionMap` / `imageMap` / … lookup maps the app reads. **Edit this file to change copy** (when served over HTTP). |
+| `data/locations.js` | **Fallback shim only** — populates the same lookup maps at `<script>` parse time so `file://` loads work. The JSON overwrites it over HTTP, so edits here are ignored in production. **Don't hand-edit — regenerate it** from the JSON with `node scripts/extract.js`. |
+| `data/treedis-sweeps.json` / `.js` | Per-location sweep IDs (`desktop` + `vr` profiles). JSON canonical, `.js` is the file:// shim. |
+| `data/courses.json` / `.js` | Learn-mode course catalog. JSON canonical, `.js` is the file:// shim. |
 
 ### JS file layout
 
@@ -39,7 +40,8 @@ The `js/` directory holds 13 numbered files. They are plain `<script>`s (not ES 
 
 | File | Purpose |
 |------|---------|
-| `01-utils.js` | XR / VR detection, Treedis profile selection, EPSG:3857 → 4326 reprojection, name/category/description/image/explorable/address lookup helpers, `escapeHTML`. |
+| `00-data-adapter.js` | Fetches the canonical JSON (`locations.json` / `treedis-sweeps.json` / `courses.json`) and flattens the per-location "documents" into the legacy lookup maps (`categoryMap`, `descriptionMap`, `imageMap`, `happensHereMap`, `departmentMap`, `addressMap`, `explorableMap`, `linksMap`). On fetch failure (`file://`, 404) it silently leaves the `data/*.js` shim values in place. This is the single seam where the data *shape* lives — a future CMS slots in here. |
+| `01-utils.js` | XR / VR detection, Treedis profile selection, EPSG:3857 → 4326 reprojection, name/category/description/image/explorable/address/links lookup helpers, `escapeHTML`. |
 | `02-state.js` | Creates the Leaflet `map` and its panes, the `el` object of DOM references, the `mqMobile` media query, `isMobile()`, `styleFor()` / `hoverStyleFor()` / `selectedStyleFor()` / `isOffCampusFeature()`, and every module-level `let` of mutable state (selected layer, tour stops, drawer mode, align state, etc.). |
 | `03-tour-bridge.js` | `TourBridge` — the `postMessage` wrapper around the Treedis iframe. Handles Ping / Navigate / RequestSweeps outbound and TourReady / PoseChanged / SweepsChanged / Tag* events inbound. |
 | `04-street-view.js` | `openStreetView()` / `closeStreetView()`, the loading-veil escalation timers (8s → "slow connection" copy, 25s → Cancel button), pending-sweep queueing while Treedis is still booting, and `navigateStreetViewToLayer()` / `openSubLocationInStreetView()`. |
@@ -82,10 +84,17 @@ The HTML loads stylesheets and scripts in this order, which matters for both rea
 leaflet.css  →  css/01-base.css → … → css/11-learn-mode.css
 
 leaflet.js  →  data/buildings.js, data/tours.js, data/courses.js,
-              data/locations.js, data/treedis-sweeps.js
+              data/locations.js, data/treedis-sweeps.js   (file:// shims)
            →  config.js
-           →  js/01-utils.js → js/02-state.js → … → js/13-learn-mode.js
+           →  js/00-data-adapter.js → js/01-utils.js → js/02-state.js
+              → … → js/13-learn-mode.js
 ```
+
+The `.js` data files run first and seed `window.CAMPUS_CONFIG` so the page
+boots even from `file://`. At boot, `js/00-data-adapter.js` fetches the
+canonical `data/*.json` and overwrites those seeded maps when served over
+http/https. So the `.json` files are the source of truth in production; the
+`.js` shims are the offline fallback.
 
 The `js/01..13` numeric order is not cosmetic — it encodes the dependency chain. For example, `js/09-sidebar-search.js` has top-level `el.locationsToggle.addEventListener(...)` calls; those require `el` from `js/02-state.js` to already exist at parse time. Renumbering or reordering the script tags will break the page.
 
@@ -96,7 +105,7 @@ The `js/01..13` numeric order is not cosmetic — it encodes the dependency chai
 1. **At module load** `js/01-utils.js` inspects the user agent for `OculusBrowser`, `Quest`, or `VR` tokens and tentatively picks a Treedis profile.
 2. **At boot** `js/11-boot.js` confirms with `navigator.xr.isSessionSupported('immersive-vr')` and upgrades to the VR profile if WebXR is available. `config.treedis.modelId` and `config.treedis.tourUrl` are rewritten to the active profile; the legacy `treedisMap` alias is repointed to the matching sweep table.
 3. **Geometry** is loaded by `fetch()` from `data/buildings.geojson` and `data/tours.geojson`. If `fetch` fails (e.g. `file://` origin), the app falls back to `window.SCSU_DATA.buildings` / `.tours` populated by `data/buildings.js` and `data/tours.js`.
-4. **Per-location overrides** — when a feature is selected, the app looks up its `name` (case-insensitively) in `descriptionMap`, `imageMap`, `categoryMap`, `addressMap`, etc. to render the details panel.
+4. **Per-location overrides** — `js/00-data-adapter.js` has (at boot) flattened `data/locations.json` into the lookup maps. When a feature is selected, the app looks up its `name` (case-insensitively) in `descriptionMap`, `imageMap`, `categoryMap`, `addressMap`, `linksMap`, etc. to render the details panel.
 5. **3D drop-in** — selecting a location resolves its sweep ID in the active-profile `treedisMaps` and posts a message into the Treedis iframe to move to that sweep. For `off_campus` features the map does NOT fly to the feature; instead it animates back to the full campus view (so the user sees the directional arrow in context), and the user navigates via the Explore button or the address block.
 
 ---
@@ -110,7 +119,30 @@ All structural settings live in `config.js`. Common edits:
 - **Treedis models** — `treedis.profiles.desktop` and `treedis.profiles.vr`. The `origin` (`https://spaces.dtsxr.com`) is shared by both and used for `postMessage` safety.
 - **Layer colors** — `styles.buildings`, `styles.tours`, plus `*Hover` and `selected` variants. Off-campus tour stops use the separate `styles.toursOffCampus` / `toursOffCampusHover` / `selectedOffCampus` palette.
 
-Per-location *content* (descriptions, images, sweep IDs, course catalog, addresses) lives in the `data/*.js` files so non-technical editors can change copy without touching app plumbing.
+Per-location *content* (descriptions, images, sweep IDs, course catalog, addresses, external links) lives in the canonical `data/*.json` files so non-technical editors can change copy without touching app plumbing. The matching `data/*.js` files are `file://` fallback shims that **must not be hand-edited** — the JSON wins when served over HTTP.
+
+**Editing workflow:** edit the relevant `data/*.json`, then regenerate the shims:
+
+```
+node scripts/extract.js          # rebuild data/*.js from the JSON
+node scripts/extract.js --check   # verify the shims match the JSON (exits non-zero if stale)
+```
+
+`scripts/extract.js` loads the real `js/00-data-adapter.js` and runs its exact JSON→maps transform, so the shims it writes are guaranteed to match what the app produces over HTTP (it self-verifies before writing). Commit the regenerated `.js` alongside your `.json` edit. `--check` is CI/pre-commit friendly.
+
+See **`data/README.md`** for per-dataset field references and the domain quirks worth knowing before editing content (feature-mapping notes, Treedis `rotation`/`parentName` semantics, course entry shape, etc.).
+
+To add an **external link** to a location's details panel (e.g. a department or bookstore website), add a `links` array to that location's document in `data/locations.json`:
+
+```json
+"links": [
+  { "label": "SCSU Bookstore website",
+    "url": "https://southcarolinastate.bkstr.com",
+    "icon": "book" }
+]
+```
+
+Each entry is `{ label, url, icon? }`; `icon` is optional (`"book"` is the only built-in glyph today). Links render at the bottom of the details column with a trailing "opens in a new tab" indicator. The block is hidden for locations with no `links`.
 
 ### Adding an off-campus tour stop
 
