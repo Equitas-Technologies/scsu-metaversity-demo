@@ -68,8 +68,8 @@ a 36-entry confirmed-locations sheet):
   - Sheet "Bethea Hall" → feature `Engineering & Computer Science Complex / Bethea Hall`.
   - Sheet "Turner Hall" → **3** features: `Turner Hall Wing A/B/D`.
   - Sheet "Queens Village" → **7** features: `Queens Village A`–`G`.
-- **Buildings absent from the sheet** (parking lots, machine shops, motor pool,
-  alumni house, Felton Lab, H-D Theatre, …) get a `category` only; their
+- **Buildings absent from the sheet** (parking lots, Felton Lab, H-D Theatre, …)
+  get a `category` only; their
   description falls through to the generic "…more information coming soon" string
   in `getDescription()` (`js/01-utils.js`).
 - **Davis Hall ambiguity.** The sheet had two Davis Hall entries: #7 =

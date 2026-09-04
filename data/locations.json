@@ -1,13 +1,7 @@
 {
   "$schema": "scsu-locations-v1",
-  "generatedAt": "2026-05-21",
+  "generatedAt": "2026-09-04",
   "locations": [
-    {
-      "id": "adult-continuing-education",
-      "key": "adult continuing education",
-      "name": "Adult Continuing Education",
-      "category": "ACADEMICS"
-    },
     {
       "id": "belcher-hall",
       "key": "belcher hall",
@@ -352,12 +346,6 @@
       ]
     },
     {
-      "id": "alumni-house",
-      "key": "alumni house",
-      "name": "Alumni House",
-      "category": "ADMINISTRATION"
-    },
-    {
       "id": "campus-services",
       "key": "campus services",
       "name": "Campus Services",
@@ -475,18 +463,6 @@
       "explorable": []
     },
     {
-      "id": "athletics-department-i",
-      "key": "athletics department i",
-      "name": "Athletics Department I",
-      "category": "ATHLETICS"
-    },
-    {
-      "id": "athletics-department-ii",
-      "key": "athletics department ii",
-      "name": "Athletics Department Ii",
-      "category": "ATHLETICS"
-    },
-    {
       "id": "dukes-gymnasium",
       "key": "dukes gymnasium",
       "name": "Dukes Gymnasium",
@@ -583,7 +559,7 @@
       "key": "crawford hall engineering building",
       "name": "Crawford Hall Engineering Building",
       "category": "HISTORIC / CULTURAL",
-      "description": "Built 1938–1942 as part of the SC State College Historic District. Originally an Industrial Arts building. Contributing property within the National Register Historic District.",
+      "description": "An academic facility supporting South Carolina State University's engineering programs, providing classroom, laboratory, and collaborative learning spaces for students pursuing engineering and technology-related disciplines.",
       "happensHere": [
         "Historic",
         "NRHP District",
@@ -609,7 +585,7 @@
       "key": "y-hut",
       "name": "Y-Hut",
       "category": "HISTORIC / CULTURAL",
-      "description": "A historic structure built 1925–1927 as part of the SC State College Historic District. Contributing property within the National Register Historic District.",
+      "description": "Marion Birnie Wilkinson YWCA Hut - A historic campus building constructed in the 1920s that originally served the YWCA and YMCA and became an important gathering place for student activities. Named for Marion Birnie Wilkinson, the Y-Hut remains a significant part of South Carolina State University's historic campus core.",
       "happensHere": [
         "Historic",
         "NRHP District",
@@ -676,25 +652,29 @@
       "id": "machine-shop-i",
       "key": "machine shop i",
       "name": "Machine Shop I",
-      "category": "OPERATIONS"
+      "category": "OPERATIONS",
+      "description": "A campus support facility that manages and coordinates university vehicles to support transportation, maintenance, and daily operational needs."
     },
     {
       "id": "machine-shop-ii",
       "key": "machine shop ii",
-      "name": "Machine Shop Ii",
-      "category": "OPERATIONS"
+      "name": "Machine Shop II",
+      "category": "OPERATIONS",
+      "description": "A campus support facility that manages and coordinates university vehicles to support transportation, maintenance, and daily operational needs."
     },
     {
       "id": "motor-pool",
       "key": "motor pool",
       "name": "Motor Pool",
-      "category": "OPERATIONS"
+      "category": "OPERATIONS",
+      "description": "This building is currently not in use, and Machine Shops I and II assume motor pool operations."
     },
     {
       "id": "police-storage",
       "key": "police storage",
       "name": "Police Storage",
-      "category": "OPERATIONS"
+      "category": "OPERATIONS",
+      "description": "A campus support facility that oversees the maintenance and operation of university buildings, grounds, utilities, and other physical infrastructure."
     },
     {
       "id": "faculty-staff-parking",
