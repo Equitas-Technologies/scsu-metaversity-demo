@@ -52,7 +52,7 @@ window.CAMPUS_CONFIG.categoryMap = {
   "track & field facility": "ATHLETICS",
   "washington dining hall": "DINING",
   "infirmary & cl. self developement center": "HEALTH & WELLNESS",
-  "crawford hall engineering building": "HISTORIC / CULTURAL",
+  "crawford hall engineering building": "ACADEMICS / HISTORIC / CULTURAL",
   "housing office": "HISTORIC / CULTURAL",
   "y-hut": "HISTORIC / CULTURAL",
   "shm memorial square": "MEMORIAL",
@@ -61,7 +61,7 @@ window.CAMPUS_CONFIG.categoryMap = {
   "machine shop i": "OPERATIONS",
   "machine shop ii": "OPERATIONS",
   "motor pool": "OPERATIONS",
-  "police storage": "OPERATIONS",
+  "facilities management storage": "OPERATIONS",
   "faculty / staff parking": "PARKING",
   "faculty/ staff parking": "PARKING",
   "off campus student parking": "PARKING",
@@ -121,7 +121,7 @@ window.CAMPUS_CONFIG.descriptionMap = {
   "machine shop i": "A campus support facility that manages and coordinates university vehicles to support transportation, maintenance, and daily operational needs.",
   "machine shop ii": "A campus support facility that manages and coordinates university vehicles to support transportation, maintenance, and daily operational needs.",
   "motor pool": "This building is currently not in use, and Machine Shops I and II assume motor pool operations.",
-  "police storage": "A campus support facility that oversees the maintenance and operation of university buildings, grounds, utilities, and other physical infrastructure.",
+  "facilities management storage": "A campus support facility that oversees the maintenance and operation of university buildings, grounds, utilities, and other physical infrastructure.",
   "battiste hall": "A 200-room co-ed residence hall designed by Huff + Gooden Architects. It completes the urban street wall between two existing dormitories along the internal east-west campus axis.",
   "earle hall": "Earle Hall is a residential hall serving SC State students.",
   "hugine suites": "The largest dormitory in South Carolina, Hugine Suites opened in 2006 with 771 beds across six buildings. Named for President Andrew Hugine Jr. Phase 1 (buildings 1–4) opened August 26, 2006; buildings 5–6 opened September 10, 2006.",
@@ -327,10 +327,12 @@ window.CAMPUS_CONFIG.happensHereMap = {
     "Self Development"
   ],
   "crawford hall engineering building": [
+    "Engineering",
+    "Technology",
+    "Laboratories",
     "Historic",
     "NRHP District",
-    "Industrial Arts",
-    "Historic District"
+    "Industrial Arts"
   ],
   "housing office": [
     "Historic",
@@ -545,6 +547,9 @@ window.CAMPUS_CONFIG.departmentMap = {
     "Athletics",
     "Health & Physical Education",
     "Recreation"
+  ],
+  "crawford hall engineering building": [
+    "Engineering"
   ],
   "shm memorial square": [],
   "i.p. stanback museum & planetarium": [

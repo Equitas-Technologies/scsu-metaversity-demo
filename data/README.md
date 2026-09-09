@@ -72,6 +72,10 @@ a 36-entry confirmed-locations sheet):
   get a `category` only; their
   description falls through to the generic "…more information coming soon" string
   in `getDescription()` (`js/01-utils.js`).
+- **Name-only retained locations.** Adult Continuing Education, Alumni House,
+  Athletics Department I, and Athletics Department II remain in the canonical
+  registry and active map at SCSU's request, but intentionally have no custom
+  category or description.
 - **Davis Hall ambiguity.** The sheet had two Davis Hall entries: #7 =
   "Leroy Davis Sr. Science and Research Complex" (2011, extension of Hodge Hall),
   #23 = a separate older classroom building. The GeoJSON has only one

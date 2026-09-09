@@ -1,7 +1,12 @@
 {
   "$schema": "scsu-locations-v1",
-  "generatedAt": "2026-09-04",
+  "generatedAt": "2026-09-08",
   "locations": [
+    {
+      "id": "adult-continuing-education",
+      "key": "adult continuing education",
+      "name": "Adult Continuing Education"
+    },
     {
       "id": "belcher-hall",
       "key": "belcher hall",
@@ -346,6 +351,11 @@
       ]
     },
     {
+      "id": "alumni-house",
+      "key": "alumni house",
+      "name": "Alumni House"
+    },
+    {
       "id": "campus-services",
       "key": "campus services",
       "name": "Campus Services",
@@ -463,6 +473,16 @@
       "explorable": []
     },
     {
+      "id": "athletics-department-i",
+      "key": "athletics department i",
+      "name": "Athletics Department I"
+    },
+    {
+      "id": "athletics-department-ii",
+      "key": "athletics department ii",
+      "name": "Athletics Department II"
+    },
+    {
       "id": "dukes-gymnasium",
       "key": "dukes gymnasium",
       "name": "Dukes Gymnasium",
@@ -558,13 +578,18 @@
       "id": "crawford-hall-engineering-building",
       "key": "crawford hall engineering building",
       "name": "Crawford Hall Engineering Building",
-      "category": "HISTORIC / CULTURAL",
+      "category": "ACADEMICS / HISTORIC / CULTURAL",
       "description": "An academic facility supporting South Carolina State University's engineering programs, providing classroom, laboratory, and collaborative learning spaces for students pursuing engineering and technology-related disciplines.",
       "happensHere": [
+        "Engineering",
+        "Technology",
+        "Laboratories",
         "Historic",
         "NRHP District",
-        "Industrial Arts",
-        "Historic District"
+        "Industrial Arts"
+      ],
+      "departments": [
+        "Engineering"
       ]
     },
     {
@@ -670,9 +695,9 @@
       "description": "This building is currently not in use, and Machine Shops I and II assume motor pool operations."
     },
     {
-      "id": "police-storage",
-      "key": "police storage",
-      "name": "Police Storage",
+      "id": "facilities-management-storage",
+      "key": "facilities management storage",
+      "name": "Facilities Management Storage",
       "category": "OPERATIONS",
       "description": "A campus support facility that oversees the maintenance and operation of university buildings, grounds, utilities, and other physical infrastructure."
     },
