@@ -562,9 +562,9 @@
       "category": "DINING"
     },
     {
-      "id": "infirmary-and-cl-self-developement-center",
-      "key": "infirmary & cl. self developement center",
-      "name": "Infirmary & Cl. Self Developement Center",
+      "id": "infirmary-and-cl-self-development-center",
+      "key": "infirmary & cl. self development center",
+      "name": "Infirmary & Cl. Self Development Center",
       "category": "HEALTH & WELLNESS",
       "description": "The Infirmary & Self Development Center supports student health, wellness, and personal development on the SC State campus. More information about this location is coming soon.",
       "happensHere": [
@@ -639,7 +639,7 @@
     {
       "id": "i-p-stanback-museum-and-planetarium",
       "key": "i.p. stanback museum & planetarium",
-      "name": "I.p. Stanback Museum & Planetarium",
+      "name": "I.P. Stanback Museum & Planetarium",
       "category": "MUSEUM & CULTURAL",
       "description": "Opened in 1979, the I.P. Stanback Museum and Planetarium is the only interdisciplinary art museum and planetarium on any HBCU campus in the United States. It presents rotating exhibitions year-round and showcases graduating senior artwork each May.",
       "happensHere": [
@@ -705,15 +705,6 @@
       "id": "faculty-staff-parking",
       "key": "faculty / staff parking",
       "name": "Faculty / Staff Parking",
-      "category": "PARKING",
-      "departments": [
-        "Parking: Faculty & Staff"
-      ]
-    },
-    {
-      "id": "faculty-staff-parking",
-      "key": "faculty/ staff parking",
-      "name": "Faculty/ Staff Parking",
       "category": "PARKING",
       "departments": [
         "Parking: Faculty & Staff"

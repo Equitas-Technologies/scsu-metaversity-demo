@@ -51,7 +51,7 @@ window.CAMPUS_CONFIG.categoryMap = {
   "tennis courts": "ATHLETICS",
   "track & field facility": "ATHLETICS",
   "washington dining hall": "DINING",
-  "infirmary & cl. self developement center": "HEALTH & WELLNESS",
+  "infirmary & cl. self development center": "HEALTH & WELLNESS",
   "crawford hall engineering building": "ACADEMICS / HISTORIC / CULTURAL",
   "housing office": "HISTORIC / CULTURAL",
   "y-hut": "HISTORIC / CULTURAL",
@@ -63,7 +63,6 @@ window.CAMPUS_CONFIG.categoryMap = {
   "motor pool": "OPERATIONS",
   "facilities management storage": "OPERATIONS",
   "faculty / staff parking": "PARKING",
-  "faculty/ staff parking": "PARKING",
   "off campus student parking": "PARKING",
   "on campus / off campus student parking": "PARKING",
   "on campus student parking": "PARKING",
@@ -111,7 +110,7 @@ window.CAMPUS_CONFIG.descriptionMap = {
   "dukes gymnasium": "Built in 1931 from a student thesis design by John H. Blanche and funded by student recreation fees, Dukes Gymnasium is a two-story brick building with a full basement, listed individually on the National Register of Historic Places (1985). Home venue for the women's volleyball team and the Office of Intramural Sports. Contains a regulation basketball court, yoga space, and basement weight room. Became the Intramural Center after Smith-Hammond-Middleton opened in 1968.",
   "oliver c. dawson stadium": "Home of the SC State Bulldogs football and women's soccer teams. Built in 1955 on Buckley Street, named in 1984 for coach and AD Oliver Cromwell Dawson. Capacity raised to 22,000 in 1994 via a $4.5 million renovation. Synthetic turf and a new scoreboard were installed in 2006. Home to 16 MEAC titles.",
   "smith-hammond-middleton memorial center": "Opened in 1968, the Smith-Hammond-Middleton Memorial Center is the primary Health and Physical Education facility on campus, serving both varsity athletics and general recreation. Its opening shifted Dukes Gymnasium to intramural use.",
-  "infirmary & cl. self developement center": "The Infirmary & Self Development Center supports student health, wellness, and personal development on the SC State campus. More information about this location is coming soon.",
+  "infirmary & cl. self development center": "The Infirmary & Self Development Center supports student health, wellness, and personal development on the SC State campus. More information about this location is coming soon.",
   "crawford hall engineering building": "An academic facility supporting South Carolina State University's engineering programs, providing classroom, laboratory, and collaborative learning spaces for students pursuing engineering and technology-related disciplines.",
   "housing office": "Built in 1928 as part of the SC State College Historic District. Originally home to the College of Agriculture, Family and Consumer Sciences. Contributing property within the National Register Historic District.",
   "y-hut": "Marion Birnie Wilkinson YWCA Hut - A historic campus building constructed in the 1920s that originally served the YWCA and YMCA and became an important gathering place for student activities. Named for Marion Birnie Wilkinson, the Y-Hut remains a significant part of South Carolina State University's historic campus core.",
@@ -320,7 +319,7 @@ window.CAMPUS_CONFIG.happensHereMap = {
     "Physical Education",
     "Fitness"
   ],
-  "infirmary & cl. self developement center": [
+  "infirmary & cl. self development center": [
     "Student Health",
     "Wellness",
     "Counseling",
@@ -560,9 +559,6 @@ window.CAMPUS_CONFIG.departmentMap = {
     "Public Service & Agriculture"
   ],
   "faculty / staff parking": [
-    "Parking: Faculty & Staff"
-  ],
-  "faculty/ staff parking": [
     "Parking: Faculty & Staff"
   ],
   "off campus student parking": [
