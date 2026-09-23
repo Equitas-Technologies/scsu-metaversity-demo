@@ -31,7 +31,8 @@
       "id": "bradham-hall",
       "key": "bradham hall",
       "name": "Bradham Hall",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Bradham Hall is an academic facility at South Carolina State University that supports classroom instruction, faculty offices, academic advising, student learning and other educational activities. The building provides space for lectures, faculty-student engagement, meetings, workshops and academic programs that contribute to the university’s teaching and learning mission."
     },
     {
       "id": "clyburn-center",
@@ -111,19 +112,22 @@
       "id": "felton-laboratory",
       "key": "felton laboratory",
       "name": "Felton Laboratory",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Felton Laboratory School is an educational and teacher-training facility on the campus of South Carolina State University. The school serves as a laboratory and clinical learning environment for education majors, providing opportunities to connect university coursework with practical experiences involving teaching, curriculum development, classroom management, and student learning."
     },
     {
       "id": "felton-pre-school",
       "key": "felton pre school",
       "name": "Felton Pre School",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Felton Laboratory Pre-School is an early childhood education and laboratory learning facility at South Carolina State University. The facility supports early learning, supervised educational activities, social and developmental growth, and school-readiness experiences for young children while providing SC State students with opportunities for observation, field experiences, teacher preparation, and practical application of early childhood education methods."
     },
     {
       "id": "h-d-theatre",
       "key": "h-d theatre",
       "name": "H-D Theatre",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Henderson-Davis Theatre is a performing arts and instructional facility. The theatre provides a venue for theatrical productions, performing arts instruction, rehearsals, cultural programming, and university and community events. It supports opportunities for students to develop practical experience in performance, production and other aspects of the performing arts."
     },
     {
       "id": "hodge-hall",
@@ -148,19 +152,22 @@
       "id": "manning-hall",
       "key": "manning hall",
       "name": "Manning Hall",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Manning Hall is an academic and administrative facility. The building provides space that supports the university’s instructional, academic, and student-development functions, including classrooms, faculty and staff offices, and areas for interaction between students and faculty. Activities and services associated with Manning Hall include classroom instruction, academic advising, faculty-student consultations, departmental operations, meetings, workshops, collaborative learning, and other academic and administrative activities. The facility helps support students’ academic progress by providing spaces for instruction, mentoring, communication with faculty and university-related programs."
     },
     {
       "id": "mays-hall-1",
       "key": "mays hall 1",
       "name": "Mays Hall 1",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Mays Hall I is a student residential facility that provides on-campus housing and supports residential life. The facility serves as a living and community space where students participate in residence-life programming, social and educational activities, peer engagement, community-building initiatives, and other experiences that contribute to student development and campus life."
     },
     {
       "id": "mays-hall-2",
       "key": "mays hall 2",
       "name": "Mays Hall 2",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "Mays Hall II is an on-campus residential facility at South Carolina State University that provides on-campus student housing and supports residential life. The facility offers living and community spaces for residence-life programming, student meetings, social and educational activities, peer engagement, and community-building initiatives that enhance the overall student experience."
     },
     {
       "id": "miller-f-whittaker-library",
@@ -263,7 +270,8 @@
       "id": "speech-hearing-center",
       "key": "speech hearing center",
       "name": "Speech Hearing Center",
-      "category": "ACADEMICS"
+      "category": "ACADEMICS",
+      "description": "The Speech and Hearing Center is an academic and clinical facility that supports education, clinical training, and community services in speech-language pathology and communication sciences and disorders. Services and activities include speech and language evaluations, therapy, communication and hearing screenings, supervised student clinical experiences, faculty-led instruction, research and community outreach."
     },
     {
       "id": "turner-hall-wing-a",
@@ -359,7 +367,8 @@
       "id": "campus-services",
       "key": "campus services",
       "name": "Campus Services",
-      "category": "ADMINISTRATION"
+      "category": "ADMINISTRATION",
+      "description": "Campus Services is an operational support facility that helps maintain the university’s physical campus, facilities, infrastructure, and day-to-day campus operations. The department plays an important role in providing a safe, functional, and well-maintained environment for students, faculty, staff, and visitors. Activities and services associated with Campus Services may include building and facility maintenance, custodial services, grounds and landscaping, maintenance requests, repairs, utility and infrastructure support, equipment and property support, and coordination of campus improvement projects. Staff also assist with operational needs related to university buildings and outdoor spaces and respond to service requests that support the effective operation of campus facilities."
     },
     {
       "id": "john-w-matthews-jr-1890-extension-center",
@@ -402,7 +411,8 @@
       "id": "sponsored-programs-office",
       "key": "sponsored programs office",
       "name": "Sponsored Programs Office",
-      "category": "ADMINISTRATION"
+      "category": "ADMINISTRATION",
+      "description": "The Sponsored Programs Office supports externally funded research, academic, and public service initiatives. The office assists faculty and staff with identifying funding opportunities, developing and submitting grant proposals, preparing budgets, administering awards, maintaining sponsor and institutional compliance, managing grants and contracts and coordinating reporting requirements for externally funded projects."
     },
     {
       "id": "wilkinson-hall",
@@ -547,19 +557,22 @@
       "id": "tennis-courts",
       "key": "tennis courts",
       "name": "Tennis Courts",
-      "category": "ATHLETICS"
+      "category": "ATHLETICS",
+      "description": "The Hardeep Judge Tennis Center is an outdoor athletic facility that supports intercollegiate tennis, team practices, competitive matches, tournaments, training, physical fitness, and recreational activities. The facility provides student-athletes with a dedicated environment for athletic development and competition while supporting health, wellness, and recreational opportunities within the university community."
     },
     {
       "id": "track-and-field-facility",
       "key": "track & field facility",
       "name": "Track & Field Facility",
-      "category": "ATHLETICS"
+      "category": "ATHLETICS",
+      "description": "The Lorry H. Dawkins Track Facility is an outdoor athletic facility at South Carolina State University that serves as the home of the university’s men’s and women’s track and field programs. The facility supports team practices, athletic training and conditioning, running and field events, collegiate competitions, track meets, and student-athlete development. It provides a dedicated environment for competitive athletics, physical fitness and the development of track and field skills."
     },
     {
       "id": "washington-dining-hall",
       "key": "washington dining hall",
       "name": "Washington Dining Hall",
-      "category": "DINING"
+      "category": "DINING",
+      "description": "Washington Dining Hall is a campus dining and student-service facility that provides daily meal services, meal-plan dining, food and beverage options, and nutritional support for students and the university community. The facility also serves as a central gathering space for student interaction, social engagement, special dining programs, and community-building activities."
     },
     {
       "id": "infirmary-and-cl-self-development-center",
@@ -938,7 +951,8 @@
       "id": "staley-hall",
       "key": "staley hall",
       "name": "Staley Hall",
-      "category": "RESIDENCE LIFE"
+      "category": "RESIDENCE LIFE",
+      "description": "Staley Hall is a multipurpose academic and athletics facility that houses the Department of Athletics and Family and Consumer Sciences programs, academic advising, faculty offices, media and press activities, meetings, and special events. The facility provides instructional, administrative, and event spaces that support student learning, athletics, professional development, and university programming."
     },
     {
       "id": "truth-hall",
