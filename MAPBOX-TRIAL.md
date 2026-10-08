@@ -30,14 +30,15 @@ views have been checked against the current production map.
    development token that permits localhost. Never put a secret (`sk.`) token
    in the web app.
 
-## Emergency map switches
+## Cost risk mitigation
 
-SCSU IT can edit [`data/map-flags.json`](data/map-flags.json) in the deployed
-repository and publish the change. `normalMap` and `satelliteMap` are separate
-booleans. Setting either to `false` prevents that layer from being attached and
-requesting new tiles. If only one mode is enabled, the map opens in that mode
-and hides the mode toggle. If both are disabled, visitors see a map-unavailable
-message while the rest of the page remains available.
+Unexpectedly high tile usage is unlikely, but SCSU IT can limit its cost impact
+by editing [`data/map-flags.json`](data/map-flags.json) in the deployed
+repository and publishing the change. The separate `normalMap` and
+`satelliteMap` flags let IT turn off either map mode. A disabled mode stops
+requesting new tiles. If one mode remains enabled, the map opens in that mode;
+if both are disabled, visitors see a map-unavailable message while the rest of
+the page remains available.
 
 The page reads this file before adding a tile layer and rechecks it every 30
 seconds and when a browser tab becomes visible. Invalid or unreachable flags
@@ -47,11 +48,10 @@ only after GitHub Pages publishes the edited file, then after the next poll in
 each open browser tab. Older app versions that predate these switches will not
 poll.
 
-**For token abuse, use the Mapbox Console too.** The switches stop requests
-from this version of the site; they cannot prevent someone from calling the
-Mapbox API directly with a copied public token. Restrict the production token
-to the deployment URL. If abuse continues, rotate or delete that token in
-Mapbox, replace it in the app, and review Mapbox usage statistics and billing.
+The flags control requests from this version of the site. If unexpected usage
+continues outside the site, IT can review Mapbox usage statistics and rotate or
+delete the public token in the Mapbox Console. Restrict the production token to
+the deployment URL as part of normal setup.
 
 ## Visual and functional checks
 
