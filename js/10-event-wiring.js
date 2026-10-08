@@ -218,7 +218,10 @@ if (el.satelliteBtn) {
 el.detailsClose.addEventListener("click", () => clearSelection());
 
 if (el.searchInput) {
-  el.searchInput.addEventListener("input", (e) => renderSearch(e.target.value));
+  el.searchInput.addEventListener("input", (e) => {
+    renderSearch(e.target.value);
+    refreshSearchClear();
+  });
   document.addEventListener("click", (e) => {
     // Don't hide results if the click is inside the search area itself
     if (e.target.closest(".metabar-search")) return;
@@ -345,4 +348,3 @@ map.on("click", (e) => {
   if (streetViewActive) return;
   clearSelection();
 });
-

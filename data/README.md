@@ -8,12 +8,16 @@ domain quirks worth knowing before you edit.
 > Those shims are now **auto-generated** (see below), so the prose moved here
 > where it survives regeneration.
 
-## How content loads (canonical JSON + file:// shim)
+## How content loads (runtime JSON + file:// shim)
 
 Per-location content has two representations of the *same data*:
 
-- **`*.json`** — the **canonical source of truth** (`locations.json`,
-  `treedis-sweeps.json`, `courses.json`). Loaded at boot by
+- **`*.json`** — the app's runtime data (`locations.json`,
+  `treedis-sweeps.json`, `courses.json`). The SCSU Canonical Location Registry
+  [workbook in SharePoint](https://equitasgroup.sharepoint.com/sites/Equitas-group.com2/_layouts/15/Doc.aspx?sourcedoc=%7BE28669C8-6238-4D91-ADCB-2E4E360DA071%7D&file=SCSU_Canonical_Location_Registry_scsu-copy.xlsx&action=default&mobileredirect=true)
+  is the business source of truth for locations; keep
+  `locations.json` and its geometry aligned with confirmed workbook changes.
+  Loaded at boot by
   `js/00-data-adapter.js` via `fetch()`, which works over **http/https**.
 - **`*.js`** — **`file://` fallback shims**. Plain `<script>`s that seed the
   same globals at parse time, so the page still boots when opened directly off
@@ -82,9 +86,15 @@ a 36-entry confirmed-locations sheet):
   generic fallback. Alumni House was demolished and has been removed from the
   active registry and geometry.
 - **Nix Hall geometry.** The existing Nix Hall footprint (fid 46) and the renamed
-  Athletics Department I footprint (fid 51) share one registry record. Both
-  footprints are preserved pending clarification; the sidebar/search deduplicate
-  by name. No footprint has been guessed or deleted to resolve that ambiguity.
+  Athletics Department I footprint (former fid 51) are one MultiPolygon feature
+  and one registry record. Both outline parts are preserved. Their alignment,
+  along with several other building polygons including Miller F. Whittaker
+  Library and Turner Hall, remains open for the manual QGIS pass.
+- **Canonical registry sync (2026-10-08).** Confirmed name and description
+  changes and the seven entrance records were written to the SharePoint
+  workbook. Alumni House and Athletics Department I were replaced in that
+  active registry; Nix Hall has one row. The workbook still retains its
+  pre-existing audit/JSON parallel rows for some other buildings.
 - **Davis Hall identity resolved.** SCSU confirms Davis Hall and Leroy Davis Sr.
   Science and Research Complex are the same building. The full canonical name
   is displayed and Davis Hall remains a search alias. The old claim that they

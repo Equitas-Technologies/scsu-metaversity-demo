@@ -194,6 +194,7 @@
   color: #777777;
 }
 .search-clear svg { width: 14px; height: 14px; }
+.search-clear[hidden] { display: none; }
 .search-clear:hover { background: rgba(255,255,255,.1); }
 
 .search-results {

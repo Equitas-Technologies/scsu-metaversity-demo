@@ -488,13 +488,9 @@ function closeSearchPanel() {
 
 function refreshSearchClear() {
   if (!el.searchClear) return;
-  // Desktop: always hidden (the input behaves like a normal field).
-  // Mobile : visible so the user can clear text or close the panel.
-  if (isMobile()) {
-    el.searchClear.hidden = false;
-  } else {
-    el.searchClear.hidden = true;
-  }
+  // Mobile keeps the button available to close the panel; on desktop it
+  // appears only when there is text to clear.
+  el.searchClear.hidden = !isMobile() && !el.searchInput.value;
 }
 
 if (el.searchBtn) {
@@ -521,6 +517,7 @@ if (el.searchClear) {
       el.searchResults.hidden = true;
       el.searchResults.innerHTML = "";
       el.searchInput.focus();
+      refreshSearchClear();
     } else {
       // Second click with empty input → close the panel (mobile only)
       if (isMobile()) {

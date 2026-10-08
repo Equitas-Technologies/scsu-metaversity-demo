@@ -24,7 +24,10 @@ for (const removed of ['Alumni House', 'Athletics Department I', 'Athletics Depa
   assert.ok(!features.some(f => f.properties.name === removed));
 }
 assert.equal(locations.filter(loc => loc.name === 'Nix Hall').length, 1);
-assert.equal(features.filter(f => f.properties.name === 'Nix Hall').length, 2);
+const nixFeatures = features.filter(f => f.properties.name === 'Nix Hall');
+assert.equal(nixFeatures.length, 1);
+assert.equal(nixFeatures[0].geometry.type, 'MultiPolygon');
+assert.equal(nixFeatures[0].geometry.coordinates.length, 2);
 assert.equal(locations.filter(loc => loc.id === 'davis-hall').length, 1);
 const entranceNames = ['1', '1A', '1B', '2', '3', '4', '5'].map(n => `Entrance ${n}`);
 const entrances = features.filter(f => f.properties.location_type === 'entrance');
