@@ -419,23 +419,11 @@
           <span>Locations</span>
         </button>
 
-        <!-- Satellite-view toggle. Switches the basemap between the
-             Outdoors vector map and the local 2023 aerial imagery.
-             aria-pressed reflects the current state. -->
-        <button class="map-action map-action--satellite" id="satelliteBtn"
-                type="button" aria-pressed="false"
-                aria-label="Toggle satellite view" title="Satellite view">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" stroke="currentColor"
-                    stroke-width="2" fill="none"/>
-            <path d="M3 12h18M12 3c2.5 2.4 2.5 15.6 0 18M12 3c-2.5 2.4-2.5 15.6 0 18"
-                  stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" fill="none"/>
-          </svg>
-        </button>
+        <!-- Satellite-view toggle temporarily removed for the demo
+             while satellite imagery issues are investigated. -->
 
         <!-- SCSU logo badge (client request). Decorative — sits in the
-             bottom-right corner with the satellite toggle stacked above. -->
+             bottom-right corner. -->
         <img class="map-logo" src="assets/Icons/logo.png"
              alt="South Carolina State University"
              onerror="this.style.display='none'" />
