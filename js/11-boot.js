@@ -214,6 +214,38 @@ function updateSplashProgress(done, total) {
   const node = document.getElementById("splashProgress");
   if (node) node.textContent = "Loading " + done + "/" + total + "…";
 }
+// This file is deliberately separate from the app bundle so SCSU IT can
+// disable either billable map mode with a one-file deployment. Fail closed
+// on HTTP errors or invalid JSON: an unavailable control file must not
+// continue generating tile requests.
+async function refreshMapFlags(apply = true) {
+  if (location.protocol === "file:") {
+    mapFlags = { normalMap: true, satelliteMap: true };
+    if (apply) applyMapFlagsToLayers();
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const url = new URL("data/map-flags.json", document.baseURI);
+    url.searchParams.set("checked", String(Date.now()));
+    const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const flags = await response.json();
+    if (typeof flags.normalMap !== "boolean" || typeof flags.satelliteMap !== "boolean") {
+      throw new Error("normalMap and satelliteMap must be booleans");
+    }
+    mapFlags = { normalMap: flags.normalMap, satelliteMap: flags.satelliteMap };
+  } catch (err) {
+    console.warn("[metaversity] map flags unavailable; disabling map tiles:", err);
+    mapFlags = { normalMap: false, satelliteMap: false };
+  } finally {
+    clearTimeout(timeout);
+  }
+  if (apply) applyMapFlagsToLayers();
+}
+
 function addBaseTileLayer() {
   const t = config.tiles || {};
 
@@ -225,7 +257,7 @@ function addBaseTileLayer() {
       pane: "imagePane",
       style: t.vectorStyleUrl,
       attribution: t.attribution || ""
-    }).addTo(map);
+    });
 
     const hideSources = t.hideLabelSourceLayers || [];
     if (hideSources.length) {
@@ -281,11 +313,9 @@ function addBaseTileLayer() {
     noWrap: true,
     bounds: t.bounds ? L.latLngBounds(t.bounds) : undefined,
     attribution: t.attribution || "Created by QGIS"
-  }).addTo(map);
+  });
 }
-// Lazily build the local-aerial overlay used by the satellite toggle.
-// It lives in the same imagePane as the base map but is added on TOP,
-// so when present its opaque tiles hide the vector base over campus.
+// Lazily build the imagery layer used by the satellite toggle.
 function getSatelliteLayer() {
   if (satelliteLayer) return satelliteLayer;
   const t = config.tiles || {};
@@ -305,24 +335,48 @@ function getSatelliteLayer() {
   return satelliteLayer;
 }
 
-// Show/hide the aerial overlay and keep the button + container in sync.
-// The .satellite-mode class on the map container is a hook for any
-// label/footprint contrast tweaks over imagery (CSS, if needed later).
-function setSatelliteView(on) {
-  const layer = getSatelliteLayer();
-  if (!layer) return;
-  satelliteOn = !!on;
-  if (satelliteOn) {
-    if (!map.hasLayer(layer)) layer.addTo(map);
-    if (layer.bringToFront) layer.bringToFront(); // above the vector base
-  } else if (map.hasLayer(layer)) {
-    map.removeLayer(layer);
+// Keep only the selected provider layer attached. Removing a disabled layer
+// stops new tile requests from both newly loaded and already-open pages.
+function applyMapFlagsToLayers() {
+  if (config.mapMode !== "tiles") return;
+  if (mapFlags.normalMap && !baseTileLayer) baseTileLayer = addBaseTileLayer();
+  const normalAvailable = mapFlags.normalMap && !!baseTileLayer;
+  const satelliteAvailable = mapFlags.satelliteMap && !!(config.tiles || {}).satelliteUrl;
+
+  if (satelliteOn && !satelliteAvailable) satelliteOn = false;
+  if (!satelliteOn && !normalAvailable && satelliteAvailable) satelliteOn = true;
+
+  const showNormal = normalAvailable && !satelliteOn;
+  const showSatellite = satelliteAvailable && satelliteOn;
+
+  if (baseTileLayer) {
+    if (showNormal && !map.hasLayer(baseTileLayer)) baseTileLayer.addTo(map);
+    if (!showNormal && map.hasLayer(baseTileLayer)) map.removeLayer(baseTileLayer);
   }
+
+  if (showSatellite) {
+    const layer = getSatelliteLayer();
+    if (layer && !map.hasLayer(layer)) layer.addTo(map);
+    if (layer && layer.bringToFront) layer.bringToFront();
+  } else if (satelliteLayer && map.hasLayer(satelliteLayer)) {
+    map.removeLayer(satelliteLayer);
+  }
+
   if (el.satelliteBtn) {
+    el.satelliteBtn.hidden = !(normalAvailable && satelliteAvailable);
     el.satelliteBtn.classList.toggle("is-active", satelliteOn);
     el.satelliteBtn.setAttribute("aria-pressed", String(satelliteOn));
   }
+  if (el.mapUnavailable) el.mapUnavailable.hidden = showNormal || showSatellite;
   map.getContainer().classList.toggle("satellite-mode", satelliteOn);
+}
+
+// The .satellite-mode class remains available for contrast adjustments.
+function setSatelliteView(on) {
+  if (on && !mapFlags.satelliteMap) return;
+  if (!on && !mapFlags.normalMap) return;
+  satelliteOn = !!on;
+  applyMapFlagsToLayers();
 }
 
 async function boot() {
@@ -390,7 +444,8 @@ async function boot() {
 // In tile mode, the raster map is already georeferenced by the XYZ tile grid.
 // We do NOT compute image bounds from the polygons anymore.
 if (config.mapMode === "tiles") {
-  baseTileLayer = addBaseTileLayer();
+  await refreshMapFlags(false);
+  applyMapFlagsToLayers();
 
   // Use explicit tile bounds if provided; otherwise use the vector data
   // bounds with padding only for fit/reset/maxBounds behavior.
@@ -407,6 +462,10 @@ if (config.mapMode === "tiles") {
   }
 
   refreshMapConstraints({ recenterIfNeeded: false });
+  setInterval(refreshMapFlags, 30000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshMapFlags();
+  });
 } else {
   // Legacy single-image mode
   imageBounds = computeImageBounds(

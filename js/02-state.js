@@ -81,6 +81,7 @@ const el = {
   tourNextMobile:    $("tourNextMobile"),
 
   satelliteBtn:    $("satelliteBtn"),
+  mapUnavailable:  $("mapUnavailable"),
 
   /* ---- Treedis street-view overlay (new) ---------------- */
   streetview:        $("streetview"),
@@ -181,6 +182,7 @@ let imageOverlay    = null; // old single-image mode only
 let baseTileLayer   = null; // new tile mode
 let satelliteLayer  = null; // local aerial overlay (lazy); see setSatelliteView
 let satelliteOn     = false;
+let mapFlags        = { normalMap: false, satelliteMap: false };
 let dataBounds      = null;
 let buildingsLayer  = null;
 let toursLayer      = null;

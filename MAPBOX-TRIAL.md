@@ -30,6 +30,29 @@ views have been checked against the current production map.
    development token that permits localhost. Never put a secret (`sk.`) token
    in the web app.
 
+## Emergency map switches
+
+SCSU IT can edit [`data/map-flags.json`](data/map-flags.json) in the deployed
+repository and publish the change. `normalMap` and `satelliteMap` are separate
+booleans. Setting either to `false` prevents that layer from being attached and
+requesting new tiles. If only one mode is enabled, the map opens in that mode
+and hides the mode toggle. If both are disabled, visitors see a map-unavailable
+message while the rest of the page remains available.
+
+The page reads this file before adding a tile layer and rechecks it every 30
+seconds and when a browser tab becomes visible. Invalid or unreachable flags
+disable both tile layers over HTTP(S). A direct `file://` preview uses both
+layers because it cannot fetch the control file. An update becomes effective
+only after GitHub Pages publishes the edited file, then after the next poll in
+each open browser tab. Older app versions that predate these switches will not
+poll.
+
+**For token abuse, use the Mapbox Console too.** The switches stop requests
+from this version of the site; they cannot prevent someone from calling the
+Mapbox API directly with a copied public token. Restrict the production token
+to the deployment URL. If abuse continues, rotate or delete that token in
+Mapbox, replace it in the app, and review Mapbox usage statistics and billing.
+
 ## Visual and functional checks
 
 - Compare both views at zoom 17–20 over campus and at the map boundaries.
@@ -40,6 +63,9 @@ views have been checked against the current production map.
   Mapbox Studio and hide those labels there, or reconsider the normal basemap.
 - Verify that no Stadia tile requests remain and that only the active Mapbox
   layer requests tiles. Check attribution and logo in both modes.
+- Set each map flag off independently while the page is open, then set both
+  off. Confirm disabled layers stop making new tile requests and that the
+  unavailable message appears only when both modes are off.
 - Check Mapbox account statistics after a representative session to estimate
   per-visit requests before production deployment.
 

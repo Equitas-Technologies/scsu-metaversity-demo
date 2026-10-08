@@ -15,6 +15,21 @@
   background: #1a1a1a;
 }
 
+.map-unavailable:not([hidden]) {
+  position: absolute;
+  z-index: 500;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
+  font: 600 1rem/1.5 sans-serif;
+  text-align: center;
+}
+
+.map-action[hidden] { display: none !important; }
+
 .leaflet-container {
   font-family: var(--mono);
   background: transparent;
