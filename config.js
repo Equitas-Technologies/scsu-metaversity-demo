@@ -181,6 +181,12 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
 
   /* -- Layer styles ---------------------------------------- */
   styles: {
+    entrances: {
+      radius: 8, color: "#FFFFFF", weight: 2, fillColor: "#1D4ED8", fillOpacity: 1
+    },
+    entrancesHover: {
+      radius: 10, color: "#FFFFFF", weight: 2, fillColor: "#1E40AF", fillOpacity: 1
+    },
     buildings: {
       color: "#AEBAC8", weight: 1, fillColor: "#CBD5E1", fillOpacity: 0.35
     },

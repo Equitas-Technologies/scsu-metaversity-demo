@@ -321,6 +321,8 @@
   border-radius: 4px;
 }
 
+.details-image[hidden] { display: none; }
+
 .details-image-x {
   position: absolute;
   inset: 0;

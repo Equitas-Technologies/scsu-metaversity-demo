@@ -278,7 +278,7 @@ function renderDetails(feature, kind) {
     el.detailsTag.textContent = "OFF-CAMPUS STOP";
     el.detailsTag.classList.add("is-offcampus");
   } else {
-    el.detailsTag.textContent = (kind === "tour"
+    el.detailsTag.textContent = (isEntranceFeature(feature) ? "CAMPUS ENTRANCE" : kind === "tour"
                                    ? "TOUR STOP"
                                    : "CAMPUS BUILDING");
     el.detailsTag.classList.remove("is-offcampus");
@@ -299,6 +299,8 @@ function renderDetails(feature, kind) {
     : (getCategory(name) || "—");
 
   el.detailsBody.textContent  = getDescription(name);
+  el.detailsBody.hidden = !el.detailsBody.textContent;
+  if (el.detailsImage) el.detailsImage.hidden = isEntranceFeature(feature);
 
   /* Insert (or remove) a small inline notice right above the
      description so users on the details panel know the site is
@@ -448,7 +450,7 @@ function selectFeature(layer, kind, { focus = false } = {}) {
      view (streetViewActive) — there's no visible map to refresh,
      and snapping it underneath would just spend an animation the
      user can't see. */
-  if (focus && layer.getBounds && !isOffCampus) {
+  if (focus && (layer.getBounds || layer.getLatLng) && !isOffCampus) {
     const fitOpts = {
       ...focusPaddingFor(layer),
       maxZoom: config.tour.focusZoom,
@@ -458,7 +460,9 @@ function selectFeature(layer, kind, { focus = false } = {}) {
     // latest shell width after the details panel state changes.
     const fly = () => {
       refreshMapConstraints({ recenterIfNeeded: false });
-      map.flyToBounds(layer.getBounds(), fitOpts);
+      const bounds = layer.getBounds ? layer.getBounds()
+        : L.latLngBounds([layer.getLatLng(), layer.getLatLng()]);
+      map.flyToBounds(bounds, fitOpts);
     };
     if (isMobile()) {
       requestAnimationFrame(() => requestAnimationFrame(fly));

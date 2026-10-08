@@ -268,8 +268,15 @@ function getCategory(name) {
 function getDescription(name) {
   if (!name) return "";
   const k = name.toLowerCase();
+  if ((config.descriptionModeMap || {})[k] === "none") return "";
   return config.descriptionMap[k] ||
          `${name} — more information about this location is coming soon.`;
+}
+
+function matchesLocationName(name, term) {
+  const key = cleanName(name).toLowerCase();
+  return key.includes(term) || ((config.aliasMap || {})[key] || [])
+    .some((alias) => String(alias).toLowerCase().includes(term));
 }
 
 function getHappensHere(name) {

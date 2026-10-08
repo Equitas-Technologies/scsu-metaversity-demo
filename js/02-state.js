@@ -134,8 +134,13 @@ function isOffCampusFeature(feature) {
   return !!(feature && feature.properties && feature.properties.off_campus);
 }
 
+function isEntranceFeature(feature) {
+  return feature?.properties?.location_type === "entrance";
+}
+
 function styleFor(kind, feature) {
   const s = config.styles;
+  if (isEntranceFeature(feature)) return { ...s.entrances };
   if (kind === "building") return { ...s.buildings };
   if (kind === "tour") {
     if (isOffCampusFeature(feature) && s.toursOffCampus) {
@@ -148,6 +153,7 @@ function styleFor(kind, feature) {
 
 function hoverStyleFor(kind, feature) {
   const s = config.styles;
+  if (isEntranceFeature(feature)) return { ...s.entrancesHover };
   if (kind === "building") return { ...s.buildingsHover };
   if (kind === "tour") {
     if (isOffCampusFeature(feature) && s.toursOffCampusHover) {
@@ -160,6 +166,7 @@ function hoverStyleFor(kind, feature) {
 
 function selectedStyleFor(feature) {
   const s = config.styles;
+  if (isEntranceFeature(feature)) return { ...s.entrances, ...s.selected, radius: 10, fillOpacity: 1 };
   if (isOffCampusFeature(feature) && s.selectedOffCampus) {
     return { ...s.selectedOffCampus };
   }

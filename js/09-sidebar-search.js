@@ -152,7 +152,7 @@ function renderAllLocationsList() {
     const name = cleanName(raw);
     const key = name.toLowerCase();
     if (seen.has(key)) return;
-    seen.set(key, { name, layer, kind: "building" });
+    seen.set(key, { name, layer, kind: isEntranceFeature(f) ? "entrance" : "building" });
   });
 
   // Tour-stop buildings are intentionally absent from buildingsLayer
@@ -551,7 +551,7 @@ refreshSearchClear();
        const n = cleanName(x.props.name).toLowerCase();
        if (!n) continue;
 
-       if (n.includes(term)) {
+       if (matchesLocationName(n, term)) {
          filtered.push({ ...x, matchKind: "name", matchedDept: null });
          continue;
        }

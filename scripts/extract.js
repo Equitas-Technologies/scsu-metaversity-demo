@@ -100,7 +100,8 @@ function banner(title, sourceJSON) {
 
 const LOCATION_MAPS = [
   "categoryMap", "descriptionMap", "imageMap", "happensHereMap",
-  "departmentMap", "addressMap", "explorableMap", "linksMap"
+  "departmentMap", "addressMap", "explorableMap", "linksMap",
+  "descriptionModeMap", "aliasMap"
 ];
 
 function buildLocationsShim(cfg) {

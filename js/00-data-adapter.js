@@ -69,10 +69,14 @@ function applyLocationsJSON(payload) {
   cfg.addressMap     = cfg.addressMap     || {};
   cfg.explorableMap  = cfg.explorableMap  || {};
   cfg.linksMap       = cfg.linksMap       || {};
+  cfg.descriptionModeMap = {};
+  cfg.aliasMap = {};
 
   for (const loc of payload.locations) {
     if (!loc || !loc.key) continue;
     const k = String(loc.key).toLowerCase();
+    if (loc.descriptionMode === "none") cfg.descriptionModeMap[k] = "none";
+    if (Array.isArray(loc.aliases)) cfg.aliasMap[k] = loc.aliases;
 
     if (typeof loc.category === "string")    cfg.categoryMap[k]    = loc.category;
     if (typeof loc.description === "string") cfg.descriptionMap[k] = loc.description;

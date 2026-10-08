@@ -16,10 +16,10 @@ window.CAMPUS_CONFIG = window.CAMPUS_CONFIG || {};
 window.CAMPUS_CONFIG.categoryMap = {
   "belcher hall": "ACADEMICS",
   "bradham hall": "ACADEMICS",
-  "clyburn center": "ACADEMICS",
-  "davis hall": "ACADEMICS",
+  "clyburn research building": "ACADEMICS",
+  "leroy davis sr. science and research complex": "ACADEMICS",
   "department of visual & performing arts": "ACADEMICS",
-  "engineering & computer science complex / bethea hall": "ACADEMICS",
+  "james e. clyburn engineering and computer science complex": "ACADEMICS",
   "felton laboratory": "ACADEMICS",
   "felton pre school": "ACADEMICS",
   "h-d theatre": "ACADEMICS",
@@ -37,7 +37,7 @@ window.CAMPUS_CONFIG.categoryMap = {
   "turner hall wing b": "ACADEMICS",
   "turner hall wing d": "ACADEMICS",
   "w.c. lewis building": "ACADEMICS",
-  "administration building": "ADMINISTRATION",
+  "ko w.g. donma administration building": "ADMINISTRATION",
   "campus services": "ADMINISTRATION",
   "john w. matthews jr. 1890 extension center": "ADMINISTRATION",
   "lowman hall": "ADMINISTRATION",
@@ -71,7 +71,6 @@ window.CAMPUS_CONFIG.categoryMap = {
   "hugine suites": "RESIDENCE LIFE",
   "miller hall": "RESIDENCE LIFE",
   "mitchell hall": "RESIDENCE LIFE",
-  "nix hall": "RESIDENCE LIFE",
   "queens village a": "RESIDENCE LIFE",
   "queens village b": "RESIDENCE LIFE",
   "queens village c": "RESIDENCE LIFE",
@@ -82,16 +81,23 @@ window.CAMPUS_CONFIG.categoryMap = {
   "staley hall": "RESIDENCE LIFE",
   "truth hall": "RESIDENCE LIFE",
   "university village": "RESIDENCE LIFE",
-  "williams hall": "RESIDENCE LIFE"
+  "williams hall": "RESIDENCE LIFE",
+  "entrance 1": "CAMPUS ENTRANCES",
+  "entrance 1a": "CAMPUS ENTRANCES",
+  "entrance 1b": "CAMPUS ENTRANCES",
+  "entrance 2": "CAMPUS ENTRANCES",
+  "entrance 3": "CAMPUS ENTRANCES",
+  "entrance 4": "CAMPUS ENTRANCES",
+  "entrance 5": "CAMPUS ENTRANCES"
 };
 
 window.CAMPUS_CONFIG.descriptionMap = {
   "belcher hall": "Built in 1986 and named for benefactor Algernon S. Belcher, Belcher Hall is home to the College of Business & Information Systems, the Career Center (2nd Floor, Suite 250), and the BECT Institute.",
   "bradham hall": "Bradham Hall is an academic facility at South Carolina State University that supports classroom instruction, faculty offices, academic advising, student learning and other educational activities. The building provides space for lectures, faculty-student engagement, meetings, workshops and academic programs that contribute to the university’s teaching and learning mission.",
-  "clyburn center": "The only University Transportation Center (UTC) in South Carolina and one of three at HBCUs nationally. Funded by $13 million in federal funds and a $2.6 million state match. The Clyburn Archives and Research Center is planned for the Russell Street side of campus. Designed by Perkins & Will, with construction expected in 2026.",
-  "davis hall": "Davis Hall houses classrooms and faculty offices for the Department of Biological & Physical Sciences. Not to be confused with the Leroy Davis Sr. Science and Research Complex (the 2011 Hodge Hall annex named for SC State's 8th president).",
+  "clyburn research building": "The only University Transportation Center (UTC) in South Carolina and one of three at HBCUs nationally. Funded by $13 million in federal funds and a $2.6 million state match. The Clyburn Archives and Research Center is planned for the Russell Street side of campus. Designed by Perkins & Will, with construction expected in 2026.",
+  "leroy davis sr. science and research complex": "Leroy Davis Sr. Science and Research Complex, also known as Davis Hall, houses classrooms and faculty offices for the Department of Biological & Physical Sciences.",
   "department of visual & performing arts": "Constructed in 1999, the Fine Arts Building gave the Art and Music departments a dedicated home. It includes the Barbara A. Vaughan Recital Hall (currently undergoing seating repairs) and serves as the center for creative arts programming at SC State.",
-  "engineering & computer science complex / bethea hall": "Opened in 2013, the four-story Engineering and Computer Science Complex — known as Bethea Hall — provides 85,400 square feet of cutting-edge STEM learning space including lecture halls, research centers, teaching and research laboratories, computer labs, and faculty offices. Designed by Evoke Studios at a cost of approximately $24.5 million. Located on Geathers Street, across from the new academic building site.",
+  "james e. clyburn engineering and computer science complex": "Opened in 2013, the four-story Engineering and Computer Science Complex — known as Bethea Hall — provides 85,400 square feet of cutting-edge STEM learning space including lecture halls, research centers, teaching and research laboratories, computer labs, and faculty offices. Designed by Evoke Studios at a cost of approximately $24.5 million. Located on Geathers Street, across from the new academic building site.",
   "felton laboratory": "Felton Laboratory School is an educational and teacher-training facility on the campus of South Carolina State University. The school serves as a laboratory and clinical learning environment for education majors, providing opportunities to connect university coursework with practical experiences involving teaching, curriculum development, classroom management, and student learning.",
   "felton pre school": "Felton Laboratory Pre-School is an early childhood education and laboratory learning facility at South Carolina State University. The facility supports early learning, supervised educational activities, social and developmental growth, and school-readiness experiences for young children while providing SC State students with opportunities for observation, field experiences, teacher preparation, and practical application of early childhood education methods.",
   "h-d theatre": "Henderson-Davis Theatre is a performing arts and instructional facility. The theatre provides a venue for theatrical productions, performing arts instruction, rehearsals, cultural programming, and university and community events. It supports opportunities for students to develop practical experience in performance, production and other aspects of the performing arts.",
@@ -109,7 +115,7 @@ window.CAMPUS_CONFIG.descriptionMap = {
   "turner hall wing b": "Part of Turner Hall (built 1956) — a multi-wing academic building that has housed Health Sciences, Education, and other departments, with some portions dating back nearly a century. Being replaced by a new $54.7 million, 94,000 sq ft academic building designed by Evoke Studios (groundbreaking April 2024; completion expected fall 2027).",
   "turner hall wing d": "Part of Turner Hall (built 1956) — a multi-wing academic building that has housed Health Sciences, Education, and other departments, with some portions dating back nearly a century. Being replaced by a new $54.7 million, 94,000 sq ft academic building designed by Evoke Studios (groundbreaking April 2024; completion expected fall 2027).",
   "w.c. lewis building": "Houses the Department of Speech Pathology and Audiology, including graduate programs and clinical training facilities.",
-  "administration building": "Built in 1970, the Donma Administration Building is the central administrative hub of SC State, housing the Office of the President (Suite 210) and University Relations & Marketing (Suite 100).",
+  "ko w.g. donma administration building": "Built in 1970, the Donma Administration Building is the central administrative hub of SC State, housing the Office of the President (Suite 210) and University Relations & Marketing (Suite 100).",
   "campus services": "Campus Services is an operational support facility that helps maintain the university’s physical campus, facilities, infrastructure, and day-to-day campus operations. The department plays an important role in providing a safe, functional, and well-maintained environment for students, faculty, staff, and visitors. Activities and services associated with Campus Services may include building and facility maintenance, custodial services, grounds and landscaping, maintenance requests, repairs, utility and infrastructure support, equipment and property support, and coordination of campus improvement projects. Staff also assist with operational needs related to university buildings and outdoor spaces and respond to service requests that support the effective operation of campus facilities.",
   "john w. matthews jr. 1890 extension center": "Headquarters for the 1890 Research and Extension division of SC State's Public Service and Agriculture operation. Houses extension administrators, the Family, Nutrition and Health program, and IT support for the division.",
   "lowman hall": "The oldest intact building on campus, Lowman Hall was designed by architect Miller F. Whittaker in 1917 and originally served as a men's dormitory (80 rooms across 3 stories). Restored by Watson Tate Savory 2001–2009, it now houses Administration, Institutional Research, and Institutional Advancement offices. Listed individually on the National Register of Historic Places (1985). Address: 124 Geathers St.",
@@ -149,7 +155,14 @@ window.CAMPUS_CONFIG.descriptionMap = {
   "staley hall": "Staley Hall is a multipurpose academic and athletics facility that houses the Department of Athletics and Family and Consumer Sciences programs, academic advising, faculty offices, media and press activities, meetings, and special events. The facility provides instructional, administrative, and event spaces that support student learning, athletics, professional development, and university programming.",
   "truth hall": "At 14 stories, Sojourner Truth Hall is the tallest building in Orangeburg County. Built in 1972 as a women's residence hall (384 beds on upper floors). The dining hall inside was converted to a cyber café called Pete's Arena. Currently undergoing a $25 million renovation including installation of a fire suppression system to reopen the upper floors.",
   "university village": "Student housing complex serving SC State students.",
-  "williams hall": "Williams Hall is a residential hall serving SC State students."
+  "williams hall": "Williams Hall is a residential hall serving SC State students.",
+  "entrance 1": "Buckley Street. Visiting team, officials, VIP, media and STATE Club members. Mitchell & Kennel only with hangtag.",
+  "entrance 1a": "Pecan Grove. Pre-paid season parking only with hangtag.",
+  "entrance 1b": "Baldwin Street. Bus parking only.",
+  "entrance 2": "Russell Street at the Crawford-Zimmerman approach. General parking for guests; no grilling. Purchase parking in advance online or on game day with debit/credit card only. Will Call and football student-athlete guest pass pickup. Game-day-only cash ticket sales.",
+  "entrance 3": "Magnolia Street at Geathers Street. General parking for guests; no grilling. Purchase in advance online. Debit/credit card only.",
+  "entrance 4": "Goff Avenue / Magnolia Street at Buckley Street. Mason and Nix/Miller Society members with parking pass; STATE Club members: Felton hangtag only.",
+  "entrance 5": "Chestnut Street & Wilkinson Blvd. STATE Club members: Wilkinson Field, SHM, Staley and Practice Area pre-sold tailgating; SCSU coaches with hangtags only."
 };
 
 window.CAMPUS_CONFIG.imageMap = {
@@ -170,7 +183,7 @@ window.CAMPUS_CONFIG.happensHereMap = {
     "BECT",
     "Information Systems"
   ],
-  "clyburn center": [
+  "clyburn research building": [
     "Transportation",
     "Research",
     "Workforce Training",
@@ -178,7 +191,7 @@ window.CAMPUS_CONFIG.happensHereMap = {
     "HBCU",
     "UTC"
   ],
-  "davis hall": [
+  "leroy davis sr. science and research complex": [
     "Biology",
     "Physics",
     "Science",
@@ -193,7 +206,7 @@ window.CAMPUS_CONFIG.happensHereMap = {
     "Gallery",
     "Studio"
   ],
-  "engineering & computer science complex / bethea hall": [
+  "james e. clyburn engineering and computer science complex": [
     "Engineering",
     "Computer Science",
     "STEM",
@@ -269,7 +282,7 @@ window.CAMPUS_CONFIG.happensHereMap = {
     "Clinical Training",
     "Graduate Programs"
   ],
-  "administration building": [
+  "ko w.g. donma administration building": [
     "President",
     "Administration",
     "University Relations",
@@ -473,17 +486,17 @@ window.CAMPUS_CONFIG.departmentMap = {
     "Career Center",
     "BECT Institute"
   ],
-  "clyburn center": [
+  "clyburn research building": [
     "Transportation Research",
     "Workforce Training"
   ],
-  "davis hall": [
+  "leroy davis sr. science and research complex": [
     "Biological & Physical Sciences"
   ],
   "department of visual & performing arts": [
     "Visual & Performing Arts"
   ],
-  "engineering & computer science complex / bethea hall": [
+  "james e. clyburn engineering and computer science complex": [
     "Engineering",
     "Computer Science & Mathematics",
     "Cybersecurity"
@@ -527,7 +540,7 @@ window.CAMPUS_CONFIG.departmentMap = {
   "w.c. lewis building": [
     "Speech Pathology & Audiology"
   ],
-  "administration building": [
+  "ko w.g. donma administration building": [
     "Office of the President",
     "University Relations & Marketing"
   ],
@@ -668,5 +681,48 @@ window.CAMPUS_CONFIG.linksMap = {
       "url": "https://southcarolinastate.bkstr.com",
       "icon": "book"
     }
+  ]
+};
+
+window.CAMPUS_CONFIG.descriptionModeMap = {
+  "adult continuing education": "none",
+  "rowe hall": "none",
+  "nix hall": "none"
+};
+
+window.CAMPUS_CONFIG.aliasMap = {
+  "clyburn research building": [
+    "Clyburn Center"
+  ],
+  "leroy davis sr. science and research complex": [
+    "Davis Hall",
+    "Leroy Davis, Sr. Science and Research Complex"
+  ],
+  "james e. clyburn engineering and computer science complex": [
+    "Engineering & Computer Science Complex / Bethea Hall"
+  ],
+  "ko w.g. donma administration building": [
+    "Administration Building"
+  ],
+  "entrance 1": [
+    "Gate 1"
+  ],
+  "entrance 1a": [
+    "Gate 1A"
+  ],
+  "entrance 1b": [
+    "Gate 1B"
+  ],
+  "entrance 2": [
+    "Gate 2"
+  ],
+  "entrance 3": [
+    "Gate 3"
+  ],
+  "entrance 4": [
+    "Gate 4"
+  ],
+  "entrance 5": [
+    "Gate 5"
   ]
 };

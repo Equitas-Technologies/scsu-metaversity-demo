@@ -472,7 +472,8 @@ if (config.mapMode === "tiles") {
   const push = (layer, kind) => {
     layer.eachLayer((lyr) => {
       const n = cleanName(lyr.feature.properties.name);
-      if (n) allFeatures.push({ kind, layer: lyr, props: lyr.feature.properties });
+      if (n) allFeatures.push({ kind: isEntranceFeature(lyr.feature) ? "entrance" : kind,
+        layer: lyr, props: lyr.feature.properties });
     });
   };
   push(buildingsLayer, "building");
@@ -528,4 +529,3 @@ if (config.mapMode === "tiles") {
 // satellite image and building photos are loaded. The Treedis
 // iframe continues loading in the background and warms its home
 // sweep when ready (see warmHomeSweep inside boot).
-

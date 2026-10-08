@@ -3,6 +3,7 @@
    9. Layer builders
    ----------------------------------------------------------- */
 function bindEvents(feature, layer, kind) {
+  if (isEntranceFeature(feature)) kind = "entrance";
   const props = feature.properties || {};
   const label = cleanName(props.name);
   if (!label) return;
@@ -55,6 +56,10 @@ function bindEvents(feature, layer, kind) {
 function buildLayer(data, kind, paneName) {
   return L.geoJSON(data, {
     pane: paneName,
+    pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+      pane: paneName,
+      ...styleFor(kind, feature)
+    }),
     style: (feature) => styleFor(kind, feature),
     onEachFeature: (f, l) => bindEvents(f, l, kind)
   });

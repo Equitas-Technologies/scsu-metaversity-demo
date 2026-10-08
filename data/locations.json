@@ -1,11 +1,12 @@
 {
   "$schema": "scsu-locations-v1",
-  "generatedAt": "2026-09-08",
+  "generatedAt": "2026-10-08",
   "locations": [
     {
       "id": "adult-continuing-education",
       "key": "adult continuing education",
-      "name": "Adult Continuing Education"
+      "name": "Adult Continuing Education",
+      "descriptionMode": "none"
     },
     {
       "id": "belcher-hall",
@@ -36,8 +37,8 @@
     },
     {
       "id": "clyburn-center",
-      "key": "clyburn center",
-      "name": "Clyburn Center",
+      "key": "clyburn research building",
+      "name": "Clyburn Research Building",
       "category": "ACADEMICS",
       "description": "The only University Transportation Center (UTC) in South Carolina and one of three at HBCUs nationally. Funded by $13 million in federal funds and a $2.6 million state match. The Clyburn Archives and Research Center is planned for the Russell Street side of campus. Designed by Perkins & Will, with construction expected in 2026.",
       "happensHere": [
@@ -51,14 +52,17 @@
       "departments": [
         "Transportation Research",
         "Workforce Training"
+      ],
+      "aliases": [
+        "Clyburn Center"
       ]
     },
     {
       "id": "davis-hall",
-      "key": "davis hall",
-      "name": "Davis Hall",
+      "key": "leroy davis sr. science and research complex",
+      "name": "Leroy Davis Sr. Science and Research Complex",
       "category": "ACADEMICS",
-      "description": "Davis Hall houses classrooms and faculty offices for the Department of Biological & Physical Sciences. Not to be confused with the Leroy Davis Sr. Science and Research Complex (the 2011 Hodge Hall annex named for SC State's 8th president).",
+      "description": "Leroy Davis Sr. Science and Research Complex, also known as Davis Hall, houses classrooms and faculty offices for the Department of Biological & Physical Sciences.",
       "happensHere": [
         "Biology",
         "Physics",
@@ -68,6 +72,10 @@
       ],
       "departments": [
         "Biological & Physical Sciences"
+      ],
+      "aliases": [
+        "Davis Hall",
+        "Leroy Davis, Sr. Science and Research Complex"
       ]
     },
     {
@@ -90,8 +98,8 @@
     },
     {
       "id": "engineering-and-computer-science-complex-bethea-hall",
-      "key": "engineering & computer science complex / bethea hall",
-      "name": "Engineering & Computer Science Complex / Bethea Hall",
+      "key": "james e. clyburn engineering and computer science complex",
+      "name": "James E. Clyburn Engineering and Computer Science Complex",
       "category": "ACADEMICS",
       "description": "Opened in 2013, the four-story Engineering and Computer Science Complex — known as Bethea Hall — provides 85,400 square feet of cutting-edge STEM learning space including lecture halls, research centers, teaching and research laboratories, computer labs, and faculty offices. Designed by Evoke Studios at a cost of approximately $24.5 million. Located on Geathers Street, across from the new academic building site.",
       "happensHere": [
@@ -106,6 +114,9 @@
         "Engineering",
         "Computer Science & Mathematics",
         "Cybersecurity"
+      ],
+      "aliases": [
+        "Engineering & Computer Science Complex / Bethea Hall"
       ]
     },
     {
@@ -342,8 +353,8 @@
     },
     {
       "id": "administration-building",
-      "key": "administration building",
-      "name": "Administration Building",
+      "key": "ko w.g. donma administration building",
+      "name": "Ko W.G. Donma Administration Building",
       "category": "ADMINISTRATION",
       "description": "Built in 1970, the Donma Administration Building is the central administrative hub of SC State, housing the Office of the President (Suite 210) and University Relations & Marketing (Suite 100).",
       "happensHere": [
@@ -356,12 +367,10 @@
       "departments": [
         "Office of the President",
         "University Relations & Marketing"
+      ],
+      "aliases": [
+        "Administration Building"
       ]
-    },
-    {
-      "id": "alumni-house",
-      "key": "alumni house",
-      "name": "Alumni House"
     },
     {
       "id": "campus-services",
@@ -483,14 +492,10 @@
       "explorable": []
     },
     {
-      "id": "athletics-department-i",
-      "key": "athletics department i",
-      "name": "Athletics Department I"
-    },
-    {
-      "id": "athletics-department-ii",
-      "key": "athletics department ii",
-      "name": "Athletics Department II"
+      "id": "rowe-hall",
+      "key": "rowe hall",
+      "name": "Rowe Hall",
+      "descriptionMode": "none"
     },
     {
       "id": "dukes-gymnasium",
@@ -833,7 +838,7 @@
       "id": "nix-hall",
       "key": "nix hall",
       "name": "Nix Hall",
-      "category": "RESIDENCE LIFE"
+      "descriptionMode": "none"
     },
     {
       "id": "queens-village-a",
@@ -999,6 +1004,97 @@
       ],
       "departments": [
         "Residence Life & Housing"
+      ]
+    },
+    {
+      "id": "entrance-1",
+      "key": "entrance 1",
+      "name": "Entrance 1",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Buckley Street. Visiting team, officials, VIP, media and STATE Club members. Mitchell & Kennel only with hangtag.",
+      "locationReference": "Buckley Street",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 1"
+      ]
+    },
+    {
+      "id": "entrance-1a",
+      "key": "entrance 1a",
+      "name": "Entrance 1A",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Pecan Grove. Pre-paid season parking only with hangtag.",
+      "locationReference": "Pecan Grove",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 1A"
+      ]
+    },
+    {
+      "id": "entrance-1b",
+      "key": "entrance 1b",
+      "name": "Entrance 1B",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Baldwin Street. Bus parking only.",
+      "locationReference": "Baldwin Street",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 1B"
+      ]
+    },
+    {
+      "id": "entrance-2",
+      "key": "entrance 2",
+      "name": "Entrance 2",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Russell Street at the Crawford-Zimmerman approach. General parking for guests; no grilling. Purchase parking in advance online or on game day with debit/credit card only. Will Call and football student-athlete guest pass pickup. Game-day-only cash ticket sales.",
+      "locationReference": "Russell Street at the Crawford-Zimmerman approach",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 2"
+      ]
+    },
+    {
+      "id": "entrance-3",
+      "key": "entrance 3",
+      "name": "Entrance 3",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Magnolia Street at Geathers Street. General parking for guests; no grilling. Purchase in advance online. Debit/credit card only.",
+      "locationReference": "Magnolia Street at Geathers Street",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 3"
+      ]
+    },
+    {
+      "id": "entrance-4",
+      "key": "entrance 4",
+      "name": "Entrance 4",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Goff Avenue / Magnolia Street at Buckley Street. Mason and Nix/Miller Society members with parking pass; STATE Club members: Felton hangtag only.",
+      "locationReference": "Goff Avenue / Magnolia Street at Buckley Street",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 4"
+      ]
+    },
+    {
+      "id": "entrance-5",
+      "key": "entrance 5",
+      "name": "Entrance 5",
+      "category": "CAMPUS ENTRANCES",
+      "description": "Chestnut Street & Wilkinson Blvd. STATE Club members: Wilkinson Field, SHM, Staley and Practice Area pre-sold tailgating; SCSU coaches with hangtags only.",
+      "locationReference": "Chestnut Street & Wilkinson Blvd",
+      "mappingStatus": "mapped-approximate",
+      "source": "SCSU follow-up response, page 3 access rules; SC STATE MAP SEPT 2026.pdf, page 1 positions (map heading: Football Game Zone 2025)",
+      "aliases": [
+        "Gate 5"
       ]
     }
   ]

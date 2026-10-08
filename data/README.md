@@ -53,6 +53,10 @@ Per-document fields (all optional except `key`/`name`):
 | `name` | string | Display name (the GeoJSON `name` is the real title source; this mirrors it). |
 | `category` | string | Kicker tag / sidebar label (e.g. `ACADEMICS`). |
 | `description` | string | Details-panel paragraph. |
+| `descriptionMode` | `"none"` | Intentionally hide the description, including the default coming-soon message. Omit to retain the normal fallback. |
+| `aliases` | string[] | Alternate names accepted by location search; results still display the canonical name. |
+| `mappingStatus` | string | `mapped-approximate` marks positions digitized from SCSU's schematic campus map. |
+| `locationReference` | string | Source-provided street/area reference for an entrance; not a verified coordinate or postal address. |
 | `image` | string | Hero image path (e.g. `assets/locations/…webp`). |
 | `happensHere` | string[] | "What happens here?" chips. |
 | `departments` | string[] | Subtitle under the building name. |
@@ -72,16 +76,36 @@ a 36-entry confirmed-locations sheet):
   get a `category` only; their
   description falls through to the generic "…more information coming soon" string
   in `getDescription()` (`js/01-utils.js`).
-- **Name-only retained locations.** Adult Continuing Education, Alumni House,
-  Athletics Department I, and Athletics Department II remain in the canonical
-  registry and active map at SCSU's request, but intentionally have no custom
-  category or description.
-- **Davis Hall ambiguity.** The sheet had two Davis Hall entries: #7 =
-  "Leroy Davis Sr. Science and Research Complex" (2011, extension of Hodge Hall),
-  #23 = a separate older classroom building. The GeoJSON has only one
-  `Davis Hall` feature; we used **#23's** narrative on the assumption the polygon
-  is the older classroom building. If it's actually the Leroy Davis Sr. Complex,
-  swap to #7's copy.
+- **SCSU follow-up responses (implemented 2026-10-08).** Adult Continuing
+  Education, Nix Hall (formerly Athletics Department I), and Rowe Hall (formerly
+  Athletics Department II) use `descriptionMode: "none"`. Parking retains the
+  generic fallback. Alumni House was demolished and has been removed from the
+  active registry and geometry.
+- **Nix Hall geometry.** The existing Nix Hall footprint (fid 46) and the renamed
+  Athletics Department I footprint (fid 51) share one registry record. Both
+  footprints are preserved pending clarification; the sidebar/search deduplicate
+  by name. No footprint has been guessed or deleted to resolve that ambiguity.
+- **Davis Hall identity resolved.** SCSU confirms Davis Hall and Leroy Davis Sr.
+  Science and Research Complex are the same building. The full canonical name
+  is displayed and Davis Hall remains a search alias. The old claim that they
+  were distinct has been removed; the existing ID and geometry are retained.
+- **Clyburn names.** Clyburn Center is now Clyburn Research Building; the existing
+  engineering feature is James E. Clyburn Engineering and Computer Science
+  Complex. Existing IDs, geometry and descriptions are preserved. SCSU still
+  needs university-official confirmation of the workbook rows 53/54 relationship
+  and preferred description, so this change does not merge those locations.
+- **Campus entrances.** Seven entries (1, 1A, 1B, 2, 3, 4, 5) transcribe the
+  follow-up response's page 3 access rules. Their Point features in
+  `buildings.geojson` carry `location_type: "entrance"` and render as blue circle
+  markers, with entrance-specific details and Gate-number search aliases.
+  Locations were digitized from page 1 of `SC STATE MAP SEPT 2026.pdf`, using
+  nearby existing campus building footprints as control points. They are
+  approximate, not surveyed coordinates (`mappingStatus: "mapped-approximate"`).
+  The supplied file's heading says "SC STATE FOOTBALL GAME ZONE 2025" despite
+  its September 2026 filename; retain this provenance without asserting a new
+  policy year. Access rules remain SCSU-supplied event parking information.
+  Entrance 2 is the Russell Street/Crawford-Zimmerman approach; Entrance 3 is
+  Magnolia/Geathers. Entrance 4 is at the Goff Avenue/Magnolia-to-Buckley approach.
 
 ---
 
