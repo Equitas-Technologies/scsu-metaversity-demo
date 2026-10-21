@@ -15,9 +15,6 @@ Exchange admin. It will serve as the development service identity for creating
 project accounts and obtaining API keys, including the Mapbox trial account.
 This setup is in progress; the Mapbox account and token are not yet configured.
 
-The existing `github.admin@equitas-group.com` shared mailbox owns the Equitas
-GitHub organization. It is separate from the development account.
-
 ## Proposed implementation
 
 1. Use Mapbox's Static Tiles API to render a normal raster basemap in Leaflet.
