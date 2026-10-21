@@ -250,6 +250,7 @@ async function refreshMapFlags(apply = true) {
 // an empty local style stops Mapbox map-data requests when both are off.
 let activeMapStyle = "empty";
 let satelliteAccessUnavailable = false;
+let mapboxPoiLabelsShown = null;
 const satelliteDesktopQuery = window.matchMedia("(min-width: 881px)");
 function satelliteRasterStyle(use2x) {
   const tiles = config.tiles || {};
@@ -267,6 +268,23 @@ function satelliteRasterStyle(use2x) {
     layers: [{ id: "satellite-imagery", type: "raster", source: "satellite-imagery" }]
   };
 }
+
+// Mapbox POIs supply context at overview zoom. At the zoom where our own
+// canonical building names appear, remove the overlapping Mapbox POIs. If the
+// visitor turns off our labels, restore POIs so the map does not go unlabeled.
+// Roads, places, and transit labels are separate Standard configuration keys.
+function syncMapboxPoiLabels() {
+  if (!mapEnabledAtBoot || activeMapStyle !== "normal" || !overlayStyleReady) return;
+  const customLabelsVisible = config.ui.permanentLabels
+    && !map.getContainer().classList.contains("campus-labels-off")
+    && map.getZoom() >= (config.ui.permanentLabelMinZoom ?? 18);
+  const showPoi = !customLabelsVisible;
+  if (showPoi === mapboxPoiLabelsShown) return;
+  map.setConfigProperty("basemap", "showPointOfInterestLabels", showPoi);
+  mapboxPoiLabelsShown = showPoi;
+}
+map.on("zoom", syncMapboxPoiLabels);
+
 function applyMapFlagsToLayers() {
   if (config.mapMode !== "tiles") return;
   const normalAvailable = mapFlags.normalMap && !!mapboxPublicToken;
@@ -292,6 +310,7 @@ function applyMapFlagsToLayers() {
     : showNormal ? "normal" : "empty";
   if (nextStyle !== activeMapStyle) {
     activeMapStyle = nextStyle;
+    mapboxPoiLabelsShown = null;
     overlayStyleReady = false;
     interactiveLayerIds.length = 0;
     const styles = config.tiles || {};

@@ -24,6 +24,12 @@ as a raster source. It preserves the 1x mobile / 2x desktop choice from the
 Leaflet trial, while local building and tour layers remain vector. A 429 from
 this endpoint switches back to Standard for that page visit.
 
+On Standard, Mapbox POIs remain visible below the local building-label zoom
+threshold. At that threshold they are hidden while our canonical labels are
+shown, avoiding duplicate building names. Turning off **Show building labels**
+restores Mapbox POIs. Road, place, and transit labels remain visible. The
+satellite-v9 imagery contains no Mapbox POI labels, so our labels stand alone.
+
 ## Cost controls
 
 `data/map-flags.json` has independent `normalMap` and `satelliteMap` booleans.

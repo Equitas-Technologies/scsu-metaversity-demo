@@ -153,6 +153,9 @@ function updateCampusLabelVisibility() {
     const id = `${collection.sourceId}-labels`;
     if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", visible ? "visible" : "none");
   }
+  // The same preference controls whether Standard should display its POIs.
+  // This function may run before the boot script defining the sync helper.
+  if (typeof syncMapboxPoiLabels === "function") syncMapboxPoiLabels();
 }
 
 function featureAtPoint(point) {
