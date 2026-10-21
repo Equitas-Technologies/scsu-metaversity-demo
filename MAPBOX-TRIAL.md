@@ -8,15 +8,15 @@ Try Mapbox for both the normal map and satellite mode while retaining Leaflet, t
 campus data, controls, and 3D tour behavior. Do not deploy the trial until both
 views have been checked against the current production map.
 
-The Leaflet tile wiring and mode toggle are in this branch. Live Mapbox tile,
-visual, and attribution checks await the demo token.
+The Leaflet tile wiring and mode toggle are in this branch. A local demo token
+is configured; visual and attribution checks are still needed before deployment.
 
 ## Account ownership
 
 Equitas is creating `dev.account@equitas-group.com` as a shared mailbox in
 Exchange admin. It will serve as the development service identity for creating
 project accounts and obtaining API keys, including the Mapbox trial account.
-This setup is in progress; the Mapbox account and token are not yet configured.
+The Mapbox demo token is configured locally in the Git-ignored file.
 
 ## Entering the demo token
 
@@ -36,12 +36,18 @@ is only for the development trial; it is not published by GitHub Pages.
 
 1. Use Mapbox's Static Tiles API to render a normal raster basemap in Leaflet.
    Start with the classic `mapbox/outdoors-v12` style because it is the closest
-   visual comparison to Stadia Outdoors. Use 512-pixel tiles with Leaflet's
-   `tileSize: 512` and `zoomOffset: -1`. The style is no longer actively
-   maintained. Mapbox Standard cannot currently be served by the Static Tiles
-   API, so it is not a drop-in Leaflet option.
-2. Use the Raster Tiles API's `mapbox.satellite` tileset for satellite mode.
-   This serves ordinary 256-pixel XYZ tiles to the existing Leaflet toggle.
+   visual comparison to Stadia Outdoors. Use 512-pixel Leaflet tiles with
+   `zoomOffset: -1`. The mobile layout (up to 880px wide) requests 512-pixel
+   1x images; wider viewports request 1024-pixel `@2x` images for sharper
+   rendering. Resizing across the breakpoint updates the active tile layer.
+   The style is no longer actively maintained. Mapbox Standard cannot currently
+   be served by the Static Tiles API, so it is not a drop-in Leaflet option.
+2. Use the Static Tiles API's classic `mapbox/satellite-v9` style for satellite
+   mode, with the same 512-pixel tile settings and responsive resolution as
+   Outdoors. Higher-resolution images increase transferred bytes but do not
+   increase the number of tile requests for a given viewport. The direct Raster
+   Tiles API returned HTTP 429 with a rate-limit value of `-1` for the demo
+   token, while the satellite style tile returned HTTP 200.
 3. Ensure only the selected basemap requests tiles. The trial detaches the
    inactive basemap when switching modes.
 4. Display Mapbox's required logo on the map and linked text attribution in
@@ -97,10 +103,8 @@ the deployment URL as part of normal setup.
   configuration. Production requires upgrading the account to **standard
   pay-as-you-go access** by adding a payment method; monthly free allowances
   continue to apply.
-- Leaflet's normal style tiles are billed under the **Static Tiles API**:
+- Both Leaflet modes use the **Static Tiles API** and share its request meter:
   200,000 requests/month free, then $0.50 per 1,000 at the first paid tier.
-  Satellite uses the separate **Raster Tiles API**: 750,000 requests/month
-  free, then $0.25 per 1,000 at the first paid tier. These are separate meters.
 - Pay-as-you-go has no configurable hard spending cap. Set usage alerts and
   monitor statistics; charges above free allowances are billed automatically.
 - Mapbox permits its tiles in third-party renderers such as Leaflet, subject
@@ -115,7 +119,7 @@ the deployment URL as part of normal setup.
 - [Mapbox billing and usage alerts](https://docs.mapbox.com/accounts/guides/invoices/)
 - [Mapbox in Leaflet](https://docs.mapbox.com/accounts/guides/pricing/sections/third-party-tools/)
 - [Static Tiles API](https://docs.mapbox.com/api/maps/static-tiles/)
-- [Raster Tiles API](https://docs.mapbox.com/api/maps/raster-tiles/)
+- [Satellite style](https://docs.mapbox.com/map-styles/reference/satellite/)
 - [Classic Outdoors style](https://docs.mapbox.com/map-styles/reference/outdoors/)
 - [Token management](https://docs.mapbox.com/accounts/guides/tokens/)
 - [Attribution](https://docs.mapbox.com/help/dive-deeper/attribution/)

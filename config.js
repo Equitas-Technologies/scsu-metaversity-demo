@@ -56,17 +56,25 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
   mapMode: "tiles",
 
   tiles: {
-    // Mapbox Outdoors as 512px raster tiles in Leaflet. No Mapbox requests are
-    // made until a valid public token is supplied in mapbox-token.local.js.
+    // Serve 1x (512px) tiles in the mobile layout and 2x (1024px) tiles on
+    // desktop. Both render into the same 512px Leaflet tile footprint.
+    // No Mapbox requests are made without a valid public token.
     url: mapboxPublicToken
       ? `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/512/{z}/{x}/{y}${mapboxTokenQuery}`
+      : null,
+    url2x: mapboxPublicToken
+      ? `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/512/{z}/{x}/{y}@2x${mapboxTokenQuery}`
       : null,
     tileSize: 512,
     zoomOffset: -1,
 
-    // Mapbox Satellite: separate 256px raster tiles and billing meter.
+    // The satellite style uses the same Static Tiles API as Outdoors. The
+    // direct Raster Tiles API is unavailable to the demo token (HTTP 429).
     satelliteUrl: mapboxPublicToken
-      ? `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90${mapboxTokenQuery}`
+      ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}${mapboxTokenQuery}`
+      : null,
+    satelliteUrl2x: mapboxPublicToken
+      ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x${mapboxTokenQuery}`
       : null,
     satelliteAttribution: '<a href="https://www.mapbox.com/">© Mapbox</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a> · <a href="https://www.maxar.com/">© Maxar</a> · <a class="mapbox-feedback" href="https://apps.mapbox.com/feedback/" target="_blank" rel="noopener">Improve this map</a>',
 

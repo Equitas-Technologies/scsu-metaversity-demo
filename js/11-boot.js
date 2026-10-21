@@ -246,14 +246,31 @@ async function refreshMapFlags(apply = true) {
   if (apply) applyMapFlagsToLayers();
 }
 
+// The map's mobile layout starts at 880px; match its breakpoint for tile
+// resolution, and switch an open map if the viewport crosses it.
+const desktopTileMedia = window.matchMedia("(min-width: 881px)");
+function mapboxTileUrl(t, satellite = false) {
+  return desktopTileMedia.matches
+    ? (satellite ? t.satelliteUrl2x : t.url2x)
+    : (satellite ? t.satelliteUrl : t.url);
+}
+
+function updateMapTileResolution() {
+  const t = config.tiles || {};
+  if (baseTileLayer) baseTileLayer.setUrl(mapboxTileUrl(t));
+  if (satelliteLayer) satelliteLayer.setUrl(mapboxTileUrl(t, true));
+}
+desktopTileMedia.addEventListener("change", updateMapTileResolution);
+
 function addBaseTileLayer() {
   const t = config.tiles || {};
-  if (!t.url) {
+  const url = mapboxTileUrl(t);
+  if (!url) {
     console.warn("[metaversity] Mapbox public token is missing or invalid.");
     return null;
   }
 
-  return L.tileLayer(t.url, {
+  return L.tileLayer(url, {
     pane: "imagePane",
     tileSize: t.tileSize ?? 256,
     zoomOffset: t.zoomOffset ?? 0,
@@ -269,9 +286,12 @@ function addBaseTileLayer() {
 function getSatelliteLayer() {
   if (satelliteLayer) return satelliteLayer;
   const t = config.tiles || {};
-  if (!t.satelliteUrl) return null;
-  satelliteLayer = L.tileLayer(t.satelliteUrl, {
+  const url = mapboxTileUrl(t, true);
+  if (!url) return null;
+  satelliteLayer = L.tileLayer(url, {
     pane: "imagePane",
+    tileSize: t.tileSize ?? 256,
+    zoomOffset: t.zoomOffset ?? 0,
     minZoom: t.minZoom ?? 15,
     maxZoom: t.maxZoom ?? 20,
     maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
