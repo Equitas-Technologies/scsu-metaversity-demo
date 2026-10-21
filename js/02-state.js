@@ -81,6 +81,7 @@ const el = {
   tourNextMobile:    $("tourNextMobile"),
 
   satelliteBtn:    $("satelliteBtn"),
+  mapboxLogo:      $("mapboxLogo"),
   mapUnavailable:  $("mapUnavailable"),
 
   /* ---- Treedis street-view overlay (new) ---------------- */

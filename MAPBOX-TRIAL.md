@@ -8,12 +8,29 @@ Try Mapbox for both the normal map and satellite mode while retaining Leaflet, t
 campus data, controls, and 3D tour behavior. Do not deploy the trial until both
 views have been checked against the current production map.
 
+The Leaflet tile wiring and mode toggle are in this branch. Live Mapbox tile,
+visual, and attribution checks await the demo token.
+
 ## Account ownership
 
 Equitas is creating `dev.account@equitas-group.com` as a shared mailbox in
 Exchange admin. It will serve as the development service identity for creating
 project accounts and obtaining API keys, including the Mapbox trial account.
 This setup is in progress; the Mapbox account and token are not yet configured.
+
+## Entering the demo token
+
+Open [`mapbox-token.local.js`](mapbox-token.local.js) and paste the Mapbox
+**public** `pk.` token between the quotes. This file is Git-ignored and is
+loaded by `map.html` before `config.js`; reload the local page after editing it.
+The normal and satellite Mapbox layers stay unavailable until a valid token is
+present. If working in a fresh checkout, copy `mapbox-token.example.js` to
+`mapbox-token.local.js` first. Never put a secret `sk.` token in browser code.
+
+The demo account provides one default public token. Before production, create
+a separate, URL-restricted public token after upgrading the Mapbox account,
+and provide it through the deployment configuration. The ignored local file
+is only for the development trial; it is not published by GitHub Pages.
 
 ## Proposed implementation
 
@@ -25,17 +42,14 @@ This setup is in progress; the Mapbox account and token are not yet configured.
    API, so it is not a drop-in Leaflet option.
 2. Use the Raster Tiles API's `mapbox.satellite` tileset for satellite mode.
    This serves ordinary 256-pixel XYZ tiles to the existing Leaflet toggle.
-3. Ensure only the selected basemap requests tiles. The current satellite layer
-   covers Stadia Outdoors while it continues to run underneath; the trial
-   should remove the inactive basemap when switching modes.
+3. Ensure only the selected basemap requests tiles. The trial detaches the
+   inactive basemap when switching modes.
 4. Display Mapbox's required logo on the map and linked text attribution in
    Leaflet's bottom attribution control. Check the satellite tileset metadata
    for any additional imagery credits. Keep credits visible on desktop and
    mobile, and switch them with the active layer.
-5. Use a Mapbox **public** (`pk.`) access token. Keep development and production
-   tokens distinct. Restrict the production token to the deployed site; use a
-   development token that permits localhost. Never put a secret (`sk.`) token
-   in the web app.
+5. Use a Mapbox **public** (`pk.`) access token. The demo token is for local
+   development; use a separate, site-restricted public token in production.
 
 ## Cost risk mitigation
 

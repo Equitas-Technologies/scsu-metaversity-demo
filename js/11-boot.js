@@ -248,71 +248,21 @@ async function refreshMapFlags(apply = true) {
 
 function addBaseTileLayer() {
   const t = config.tiles || {};
-
-  // Preferred path: a vector basemap rendered by MapLibre GL. This
-  // lets us hide just the redundant POI/building label layers while
-  // keeping streets, place names, and landmarks for orientation.
-  if (t.vectorStyleUrl && typeof L.maplibreGL === "function") {
-    const gl = L.maplibreGL({
-      pane: "imagePane",
-      style: t.vectorStyleUrl,
-      attribution: t.attribution || ""
-    });
-
-    const hideSources = t.hideLabelSourceLayers || [];
-    if (hideSources.length) {
-      const hideLabelLayers = (mlMap) => {
-        if (!mlMap || !mlMap.getStyle) return;
-        const layers = (mlMap.getStyle() || {}).layers || [];
-        layers.forEach((ly) => {
-          if (ly.type === "symbol" && hideSources.includes(ly["source-layer"])) {
-            try {
-              // Only flip layers that are still visible. setLayoutProperty
-              // itself fires "styledata", so this guard keeps the
-              // styledata handler from looping on already-hidden layers.
-              if (mlMap.getLayoutProperty(ly.id, "visibility") !== "none") {
-                mlMap.setLayoutProperty(ly.id, "visibility", "none");
-              }
-            } catch (_) { /* layer id gone after a style change — ignore */ }
-          }
-        });
-      };
-
-      // Wire the hide passes once the GL map exists. getMaplibreMap()
-      // is null until Leaflet runs the layer's onAdd, which is deferred
-      // until the map has a view — so set up on the layer's "add" event
-      // (or immediately if the GL map is already there).
-      const wire = () => {
-        const mlMap = gl.getMaplibreMap && gl.getMaplibreMap();
-        if (!mlMap) return;
-        const run = () => hideLabelLayers(mlMap);
-        if (mlMap.isStyleLoaded && mlMap.isStyleLoaded()) run();
-        else mlMap.on("load", run);
-        // Re-apply if the style ever reloads (e.g. on error/retry).
-        mlMap.on("styledata", run);
-      };
-
-      if (gl.getMaplibreMap && gl.getMaplibreMap()) wire();
-      else gl.on("add", wire);
-    }
-    return gl;
-  }
-
-  // Fallback: raster tiles (used if MapLibre GL didn't load).
   if (!t.url) {
-    console.warn("[metaversity] no vector style and config.tiles.url is missing.");
+    console.warn("[metaversity] Mapbox public token is missing or invalid.");
     return null;
   }
 
   return L.tileLayer(t.url, {
     pane: "imagePane",
+    tileSize: t.tileSize ?? 256,
+    zoomOffset: t.zoomOffset ?? 0,
     minZoom: t.minZoom ?? 15,
     maxZoom: t.maxZoom ?? 20,
     maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
     tms: !!t.tms,
     noWrap: true,
-    bounds: t.bounds ? L.latLngBounds(t.bounds) : undefined,
-    attribution: t.attribution || "Created by QGIS"
+    attribution: t.attribution || ""
   });
 }
 // Lazily build the imagery layer used by the satellite toggle.
@@ -327,8 +277,7 @@ function getSatelliteLayer() {
     maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
     tms: !!t.tms,
     noWrap: true,
-    // Only clip to the campus rectangle for a campus-only source (the
-    // local aerial). A global source like Stadia satellite fills the view.
+    // Mapbox satellite has global coverage, so the viewport is not clipped.
     bounds: t.satelliteBounds && t.bounds ? L.latLngBounds(t.bounds) : undefined,
     attribution: t.satelliteAttribution || ""
   });
@@ -367,9 +316,22 @@ function applyMapFlagsToLayers() {
     el.satelliteBtn.classList.toggle("is-active", satelliteOn);
     el.satelliteBtn.setAttribute("aria-pressed", String(satelliteOn));
   }
+  if (el.mapboxLogo) el.mapboxLogo.hidden = !(showNormal || showSatellite);
   if (el.mapUnavailable) el.mapUnavailable.hidden = showNormal || showSatellite;
   map.getContainer().classList.toggle("satellite-mode", satelliteOn);
+  updateMapboxFeedbackLink();
 }
+
+function updateMapboxFeedbackLink() {
+  if (!map._loaded) return;
+  const center = map.getCenter();
+  const url = `https://apps.mapbox.com/feedback/#/${center.lng.toFixed(5)}/${center.lat.toFixed(5)}/${map.getZoom()}`;
+  map.getContainer().querySelectorAll(".mapbox-feedback").forEach((link) => {
+    link.href = url;
+  });
+}
+
+map.on("moveend zoomend", updateMapboxFeedbackLink);
 
 // The .satellite-mode class remains available for contrast adjustments.
 function setSatelliteView(on) {

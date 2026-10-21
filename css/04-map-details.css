@@ -103,6 +103,18 @@
   object-fit: contain;
   pointer-events: none;
 }
+.mapbox-logo {
+  position: absolute;
+  bottom: 28px;
+  left: 14px;
+  z-index: 500;
+  display: block;
+  padding: 4px 6px;
+  background: #fff;
+  border-radius: 3px;
+}
+.mapbox-logo[hidden] { display: none !important; }
+.mapbox-logo img { display: block; width: 82px; height: auto; }
 /* On state: inverted (dark) so it reads as "satellite is active". */
 .map-action--satellite.is-active {
   background: #1f2937;

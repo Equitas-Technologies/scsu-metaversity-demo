@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- MapLibre GL — renders the Stadia Outdoors VECTOR basemap so we
        can hide only the redundant POI/building labels. -->
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
 
   <!-- Split stylesheets — load order matters: later files override earlier
        ones via the CSS cascade, mirroring the original single-file order.
@@ -422,8 +421,22 @@
           <span>Locations</span>
         </button>
 
-        <!-- Satellite-view toggle temporarily removed for the demo
-             while satellite imagery issues are investigated. -->
+        <button class="map-action map-action--satellite" id="satelliteBtn"
+                type="button" aria-pressed="false"
+                aria-label="Toggle satellite view" title="Satellite view" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"
+                    stroke-width="2" fill="none"/>
+            <path d="M3 12h18M12 3c2.5 2.4 2.5 15.6 0 18M12 3c-2.5 2.4-2.5 15.6 0 18"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" fill="none"/>
+          </svg>
+        </button>
+
+        <a class="mapbox-logo" id="mapboxLogo" href="https://www.mapbox.com/"
+           target="_blank" rel="noopener" aria-label="Mapbox" hidden>
+          <img src="assets/mapbox-logo-black.svg" alt="Mapbox" />
+        </a>
 
         <!-- SCSU logo badge (client request). Decorative — sits in the
              bottom-right corner. -->
@@ -1005,12 +1018,6 @@
        SCRIPTS
        ============================================================ -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- MapLibre GL + the Leaflet bridge plugin. Must load after Leaflet
-       (the plugin extends L) and before the app scripts that build the
-       base layer. If these fail to load, addBaseTileLayer() falls back
-       to the raster tile URL in config. -->
-  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
 
   <script src="data/buildings.js"      onerror="this.remove()"></script>
   <script src="data/tours.js"          onerror="this.remove()"></script>
@@ -1018,6 +1025,7 @@
   <script src="data/locations.js"      onerror="this.remove()"></script>
   <script src="data/treedis-sweeps.js" onerror="this.remove()"></script>
 
+  <script src="mapbox-token.local.js" onerror="this.remove()"></script>
   <script src="config.js"></script>
 
   <!-- Split app — must load in this order. Globals are shared via the

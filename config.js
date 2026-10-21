@@ -36,6 +36,14 @@
    desktop-profile aliases for backward compatibility; app.js
    overwrites them with the VR equivalents when XR is detected.
    ============================================================ */
+// Only a public Mapbox token belongs in the browser. The local trial reads it
+// from the Git-ignored mapbox-token.local.js file loaded by map.html.
+const mapboxPublicToken = /^pk\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(
+  String(window.MAPBOX_PUBLIC_TOKEN || "").trim()
+) ? String(window.MAPBOX_PUBLIC_TOKEN).trim() : "";
+const mapboxTokenQuery = mapboxPublicToken
+  ? `?access_token=${encodeURIComponent(mapboxPublicToken)}` : "";
+
 window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
   /* -- Branding ------------------------------------------- */
   brand: {
@@ -44,43 +52,23 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
     tagline: "Virtual Campus Tour"
   },
 
-  /* -- Satellite image ------------------------------------- */
   /* -- Base map tiles -------------------------------------- */
   mapMode: "tiles",
 
   tiles: {
-    // Primary basemap: Stadia's Outdoors VECTOR style, rendered by
-    // MapLibre GL (see addBaseTileLayer). Vector lets us keep streets,
-    // landmarks, and the Outdoors look while switching OFF only the
-    // redundant building/POI text labels (see hideLabelSourceLayers).
-    vectorStyleUrl: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
+    // Mapbox Outdoors as 512px raster tiles in Leaflet. No Mapbox requests are
+    // made until a valid public token is supplied in mapbox-token.local.js.
+    url: mapboxPublicToken
+      ? `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/512/{z}/{x}/{y}${mapboxTokenQuery}`
+      : null,
+    tileSize: 512,
+    zoomOffset: -1,
 
-    // Symbol (label) layers from these OpenMapTiles source-layers are
-    // hidden after the style loads. "poi" covers the building/place-of-
-    // interest names that duplicated our own permanent labels; street
-    // names (transportation_name), place names, parks and water stay.
-    hideLabelSourceLayers: ["poi"],
-
-    // Raster fallback — used only if MapLibre GL fails to load. Plain
-    // Outdoors raster so the map is still usable (with its own labels).
-    url: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
-
-    // Satellite view: Stadia's Alidade Satellite raster imagery,
-    // toggled on/off by the on-map satellite button (see setSatelliteView
-    // in 11-boot). Global coverage, so it fills the viewport
-    // (satelliteBounds is left off). Uses the shared Stadia api_key and
-    // counts against that plan's quota.
-    satelliteUrl: "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=0b158bc8-1c5f-4d1d-b305-b51e386cce12",
-    satelliteAttribution: "© CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) © Stadia Maps © OpenMapTiles © OpenStreetMap contributors",
-
-    // Alternative satellite source — the local, pre-rendered 2023 RGB
-    // aerial of campus (SC_2023_RGB WMTS) in assets/tiles. To use it
-    // instead of Stadia, swap the two lines above for these and set
-    // satelliteBounds: true (it only covers the campus bounds, zoom
-    // 15–20; outside that the vector base shows through). Local = no quota.
-    //   satelliteUrl: "assets/tiles/{z}/{x}/{y}.png",
-    //   satelliteAttribution: "Aerial imagery: SC_2023_RGB WMTS",
-    //   satelliteBounds: true,
+    // Mapbox Satellite: separate 256px raster tiles and billing meter.
+    satelliteUrl: mapboxPublicToken
+      ? `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90${mapboxTokenQuery}`
+      : null,
+    satelliteAttribution: '<a href="https://www.mapbox.com/">© Mapbox</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a> · <a href="https://www.maxar.com/">© Maxar</a> · <a class="mapbox-feedback" href="https://apps.mapbox.com/feedback/" target="_blank" rel="noopener">Improve this map</a>',
 
     // Match the QGIS OUTPUT_HTML.html values.
     minZoom: 15,
@@ -101,7 +89,7 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
       [33.5051108680217027, -80.8355473474424997]
     ],
 
-    attribution: "© Stadia Maps © OpenMapTiles © OpenStreetMap contributors"
+    attribution: '<a href="https://www.mapbox.com/">© Mapbox</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a> · <a class="mapbox-feedback" href="https://apps.mapbox.com/feedback/" target="_blank" rel="noopener">Improve this map</a>'
   },
 
   /* -- Coordinate system of the GeoJSON data --------------- */
