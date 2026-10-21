@@ -1,12 +1,12 @@
 # SCSU Virtual Campus
 
-An interactive web map of the South Carolina State University campus, pairing a 2D Leaflet map with embedded Treedis 3D street-view tours. The app supports two modes — **Explore** (walk the campus, click buildings, drop into 360° sweeps) and **Learn** (a course catalog that links classroom content to immersive VR experiences). Desktop, tablet, mobile, and WebXR headsets (Meta Quest) are all first-class targets.
+An interactive web map of the South Carolina State University campus, pairing a Mapbox GL JS map with embedded Treedis 3D street-view tours. The app supports two modes — **Explore** (walk the campus, click buildings, drop into 360° sweeps) and **Learn** (a course catalog that links classroom content to immersive VR experiences). Desktop, tablet, mobile, and WebXR headsets (Meta Quest) are all first-class targets.
 
 ---
 
 ## Features
 
-- **Interactive Leaflet map** rendered from local tiles (zoom 15–20) over a 2023 RGB aerial of Orangeburg, SC.
+- **Interactive Mapbox GL JS map** using Mapbox Standard and satellite-v9 Static Tiles, with local GeoJSON overlays.
 - **Building & tour layers** loaded from GeoJSON, with hover previews, tooltips, and a clickable locations sidebar.
 - **Treedis 3D sweeps** embedded via iframe — click a building or tour stop to drop into 360° street view at the right sweep ID.
 - **Dual Treedis profiles** — separate desktop (`8e4ca3fc`) and VR (`scsu-campus-ade0f346`) models, auto-selected at boot by user-agent inspection and `navigator.xr.isSessionSupported('immersive-vr')`.
@@ -23,9 +23,9 @@ The application code lives in three folders — `js/` (13 numbered scripts), `cs
 
 | File | Purpose |
 |------|---------|
-| `map.html` | HTML shell — splash screen, app chrome, metabar, sidebar, Leaflet container, Treedis iframe slot, details panel (including the off-campus `addressBlock`). Deploys as `index.html`. |
-| `js/` | Main application, split across 13 numbered files (~3,800 lines total) that load in order via plain `<script>` tags. The split is purely organizational — every file shares the same global scope as if they were one file. See *JS file layout* below for what each file owns. |
-| `config.js` | Structural settings — brand strings, tile config, map bounds, Treedis SDK plumbing, Leaflet layer styles (including off-campus variants), UI flags. Loaded *after* the data files so it can merge into `window.CAMPUS_CONFIG`. |
+| `map.html` | HTML shell — splash screen, app chrome, metabar, sidebar, Mapbox GL container, Treedis iframe slot, details panel (including the off-campus `addressBlock`). Deploys as `index.html`. |
+| `js/` | Main application, split across 13 numbered files plus `map-bootstrap.js`. The bootstrap reads the map flags, then loads the numbered classic scripts in order. |
+| `config.js` | Structural settings — brand strings, tile config, map bounds, Treedis SDK plumbing, GeoJSON layer styles (including off-campus variants), UI flags. Loaded *after* the data files so it can merge into `window.CAMPUS_CONFIG`. |
 | `css/` | All visual styling, split across 11 numbered files (~3,500 lines total) that load in order via `<link>` tags. Order matters because of the CSS cascade — later files override earlier ones, mirroring the original single-file order. |
 | `data/buildings.geojson` | Building footprint polygons (EPSG:4326). Source of truth when served over HTTP. |
 | `data/tours.geojson` | Tour-stop polygons (EPSG:4326). Each feature carries `name`, `tour_group`, `order_num`, `description`, and optional `off_campus` / `off_campus_distance` properties. |
@@ -42,16 +42,16 @@ The `js/` directory holds 13 numbered files. They are plain `<script>`s (not ES 
 |------|---------|
 | `00-data-adapter.js` | Fetches the canonical JSON (`locations.json` / `treedis-sweeps.json` / `courses.json`) and flattens the per-location "documents" into the legacy lookup maps (`categoryMap`, `descriptionMap`, `imageMap`, `happensHereMap`, `departmentMap`, `addressMap`, `explorableMap`, `linksMap`). On fetch failure (`file://`, 404) it silently leaves the `data/*.js` shim values in place. This is the single seam where the data *shape* lives — a future CMS slots in here. |
 | `01-utils.js` | XR / VR detection, Treedis profile selection, EPSG:3857 → 4326 reprojection, name/category/description/image/explorable/address/links lookup helpers, `escapeHTML`. |
-| `02-state.js` | Creates the Leaflet `map` and its panes, the `el` object of DOM references, the `mqMobile` media query, `isMobile()`, `styleFor()` / `hoverStyleFor()` / `selectedStyleFor()` / `isOffCampusFeature()`, and every module-level `let` of mutable state (selected layer, tour stops, drawer mode, align state, etc.). |
+| `02-state.js` | Creates the Mapbox GL `map` (or the disabled-map shell when both cost flags are off), the `el` object of DOM references, the `mqMobile` media query, `isMobile()`, `styleFor()` / `hoverStyleFor()` / `selectedStyleFor()` / `isOffCampusFeature()`, and every module-level `let` of mutable state (selected layer, tour stops, drawer mode, align state, etc.). |
 | `03-tour-bridge.js` | `TourBridge` — the `postMessage` wrapper around the Treedis iframe. Handles Ping / Navigate / RequestSweeps outbound and TourReady / PoseChanged / SweepsChanged / Tag* events inbound. |
 | `04-street-view.js` | `openStreetView()` / `closeStreetView()`, the loading-veil escalation timers (8s → "slow connection" copy, 25s → Cancel button), pending-sweep queueing while Treedis is still booting, and `navigateStreetViewToLayer()` / `openSubLocationInStreetView()`. |
-| `05-map-helpers.js` | `refreshMapConstraints()`, `getCampusCoverZoom()`, `getCampusOffsetCenter()`, `resetCampusView()`, `scheduleMapRefresh()`. |
+| `05-map-helpers.js` | Mapbox GL bounds and camera helpers: `CampusBounds`, `refreshMapConstraints()`, `getCampusCoverZoom()`, `resetCampusView()`, and `scheduleMapRefresh()`. |
 | `06-details-panel.js` | `renderDetails()` and its sub-renderers (`renderHappensHere`, `renderImage`, `renderExplorable`, `renderAddress`), plus `selectFeature()` / `clearSelection()` and the open/close/mode switching for the right-side panel. `selectFeature()` skips the map fly-to for `off_campus` features so the user stays oriented on campus. |
-| `07-layer-builders.js` | `bindEvents()`, `buildLayer()`, `computeImageBounds()`, `buildTourPins()` (with off-campus pin variant), `highlightActivePin()`. |
+| `07-layer-builders.js` | GeoJSON sources, fill/line/point/label layers, map interactions, and tour pins. |
 | `08-tourbar.js` | `updateTourbar()` (adds an ↗ glyph + amber tint when the active stop is off-campus), `goToStop()`, `tourPrevAction()`, `tourNextAction()` — shared between the desktop sidebar footer and the mobile tour bar. |
 | `09-sidebar-search.js` | Desktop locations list (with off-campus distance badge), "All buildings" tab, mobile drawer, mobile details drag/slide, mobile search toggle, and the search input + results renderer. This is the first file with top-level event bindings — it requires `el` and `mqMobile` from `02`. |
 | `10-event-wiring.js` | Most remaining event listeners: explore CTA, VR button, tour-arrow buttons, fullscreen, help, etc., plus the dev-only image-alignment tool UI (the `alignUI` object, `nudge()`, `scaleBy()`, copy/save handlers). |
-| `11-boot.js` | `loadAllData()`, the `preloadImage` / `waitForTreedisReady` / `warmHomeSweep` / `preloadAllAssets` helpers, the `addBaseTileLayer()` helper, and the `boot()` function that wires everything together at startup. |
+| `11-boot.js` | Data loading, preload helpers, map style and cost flags, and the `boot()` function that wires everything together at startup. |
 | `12-start-screen.js` | First-run welcome modal, the 3-step coachmark walkthrough, the "Don't show again" preference plumbing, the navigation-instructions modal, and the burger-panel Settings reset. Ends with `boot().catch(...)` — this is what actually kicks the app off. |
 | `13-learn-mode.js` | Self-contained IIFE for the Learn-mode course catalog (list + detail view). Reads `window.SCSU_DATA.courses` and degrades gracefully if `data/courses.js` is missing. |
 
@@ -65,7 +65,7 @@ The `css/` directory holds 11 numbered files, loaded in order via `<link>` tags.
 | `02-header.css` | Metabar (top header), Explore / Learn mode-toggle pill, burger slide-in panel. |
 | `03-sidebar.css` | `.shell` layout, locations sidebar (dark theme), list rows, category headers, off-campus row badge & accents. |
 | `04-map-details.css` | Map area, right-side details panel (chips, sub-list, explore CTA, address block, off-campus notice), persistent button bar, tour-arrow buttons, bottom tourbar. |
-| `05-leaflet-responsive.css` | Leaflet overrides (including the `.tour-pin.is-offcampus` pill pin), desktop breakpoints, and the full mobile (≤ 880px) layout. |
+| `05-mapbox-responsive.css` | Mapbox GL overrides (including the `.tour-pin.is-offcampus` pill pin), desktop breakpoints, and the full mobile (≤ 880px) layout. |
 | `06-align-tool.css` | Image-alignment dev tool (kept as-is; only used when `mapMode !== "tiles"`). |
 | `07-streetview-xr.css` | Treedis street-view overlay and XR / VR mode rules (street view takes over the details column on Quest). |
 | `08-start-coachmark.css` | First-run start screen, coachmark spotlight + card system, "Don't show again" checkbox styling. |
@@ -81,13 +81,13 @@ The HTML loads stylesheets and scripts in this order, which matters for both rea
 - **JS** — the data files seed `window.CAMPUS_CONFIG` / `window.SCSU_DATA`, `config.js` merges into them, and then the 13 numbered `js/` files load in order. Because they're plain `<script>` tags (not modules), every file shares the same global script scope; each one can call functions and read state defined by any earlier-loaded file.
 
 ```
-leaflet.css  →  css/01-base.css → … → css/11-learn-mode.css
+mapbox-gl.css → css/01-base.css → … → css/11-learn-mode.css
 
-leaflet.js  →  data/buildings.js, data/tours.js, data/courses.js,
+mapbox-gl.js → data/buildings.js, data/tours.js, data/courses.js,
               data/locations.js, data/treedis-sweeps.js   (file:// shims)
            →  config.js
-           →  js/00-data-adapter.js → js/01-utils.js → js/02-state.js
-              → … → js/13-learn-mode.js
+           →  js/00-data-adapter.js → js/01-utils.js → js/map-bootstrap.js
+              → map flags preflight → js/02-state.js → … → js/13-learn-mode.js
 ```
 
 The `.js` data files run first and seed `window.CAMPUS_CONFIG` so the page
@@ -193,7 +193,7 @@ The repo layout matches the deployed layout (the entry point is conventionally r
 │   ├── 02-header.css
 │   ├── 03-sidebar.css
 │   ├── 04-map-details.css
-│   ├── 05-leaflet-responsive.css
+│   ├── 05-mapbox-responsive.css
 │   ├── 06-align-tool.css
 │   ├── 07-streetview-xr.css
 │   ├── 08-start-coachmark.css
@@ -219,7 +219,7 @@ Any static host (GitHub Pages, Netlify, Cloudflare Pages, S3 + CloudFront, plain
 
 ## Tech stack
 
-- **Leaflet 1.9.4** (CDN) — base map and vector layers.
+- **Mapbox GL JS v3** (CDN) — Standard vector basemap, satellite raster tiles, and local GeoJSON layers.
 - **Treedis SDK** — 3D street-view tours, embedded as an iframe at `https://spaces.dtsxr.com`.
 - **WebXR Device API** — VR-profile detection.
 - **Vanilla JS + CSS** — no framework, no build pipeline.

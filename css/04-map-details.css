@@ -30,7 +30,7 @@
 
 .map-action[hidden] { display: none !important; }
 
-.leaflet-container {
+.mapboxgl-map {
   font-family: var(--mono);
   background: transparent;
 }
@@ -40,8 +40,8 @@
    a big blue box around the shape. The selected-style fill already
    signals selection. A focus ring is kept for keyboard users via
    :focus-visible so accessibility isn't lost. */
-.leaflet-interactive:focus { outline: none; }
-.leaflet-interactive:focus-visible {
+.mapboxgl-canvas:focus { outline: none; }
+.mapboxgl-canvas:focus-visible {
   outline: 2px solid var(--brand-red, #B22222);
   outline-offset: 2px;
 }
@@ -277,7 +277,7 @@
    `!important` is required because several of these elements
    have explicit `display: flex` / `display: inline-flex` rules
    elsewhere in this file and in the responsive overrides
-   (05-leaflet-responsive.css). Plain `display: none` without
+   (05-mapbox-responsive.css). Plain `display: none` without
    `!important` would lose the specificity battle to those rules,
    especially the mobile media query that re-enables the inline
    variants. */

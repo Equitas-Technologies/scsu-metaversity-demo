@@ -1,126 +1,66 @@
-# Mapbox basemap trial
+# Mapbox GL JS migration
 
 Branch: `codex/mapbox-basemaps`
 
-## Goal
+The campus map now uses Mapbox GL JS v3 with Mapbox Standard for the normal
+view and Mapbox's satellite-v9 Static Tiles API for imagery. Building and tour GeoJSON stay
+local and render as fill, outline, point, and label layers. The existing
+sidebar, tour controls, details panel, Treedis links, and Learn mode retain
+their data and behavior. Leaflet is no longer used; both modes run in Mapbox GL JS.
 
-Try Mapbox for both the normal map and satellite mode while retaining Leaflet, the
-campus data, controls, and 3D tour behavior. Do not deploy the trial until both
-views have been checked against the current production map.
+## Token and account
 
-The Leaflet tile wiring and mode toggle are in this branch. A local demo token
-is configured; visual and attribution checks are still needed before deployment.
+Development reads a public `pk.` token from the Git-ignored
+`mapbox-token.local.js`. Copy `mapbox-token.example.js` to that path in a new
+checkout, enter the public token, and reload the page. Never put a secret
+`sk.` token in browser code. The production deployment needs its own
+URL-restricted public token.
 
-## Account ownership
+The current no-card demo token loads Mapbox Standard but returns HTTP 429 for
+the direct Raster Tiles source inside Standard Satellite. Earlier work on this
+branch confirmed that the same token receives HTTP 200 from the satellite-v9
+Static Tiles API. The GL JS satellite mode therefore uses that working endpoint
+as a raster source. It preserves the 1x mobile / 2x desktop choice from the
+Leaflet trial, while local building and tour layers remain vector. A 429 from
+this endpoint switches back to Standard for that page visit.
 
-Equitas is creating `dev.account@equitas-group.com` as a shared mailbox in
-Exchange admin. It will serve as the development service identity for creating
-project accounts and obtaining API keys, including the Mapbox trial account.
-The Mapbox demo token is configured locally in the Git-ignored file.
+## Cost controls
 
-## Entering the demo token
+`data/map-flags.json` has independent `normalMap` and `satelliteMap` booleans.
+The page reads them **before constructing a Mapbox GL map**. If both are false,
+the location list and other page content still load, but no Mapbox map object
+is created. This matters because Mapbox bills GL JS by map loads, including
+maps initialized with an empty style. An open page polls the flags every 30
+seconds and on return to the tab. Disabling its active mode switches to an
+allowed style or a blank style; newly enabling a mode on a page that started
+with both off reloads it and creates the map then.
 
-Open [`mapbox-token.local.js`](mapbox-token.local.js) and paste the Mapbox
-**public** `pk.` token between the quotes. This file is Git-ignored and is
-loaded by `map.html` before `config.js`; reload the local page after editing it.
-The normal and satellite Mapbox layers stay unavailable until a valid token is
-present. If working in a fresh checkout, copy `mapbox-token.example.js` to
-`mapbox-token.local.js` first. Never put a secret `sk.` token in browser code.
+One enabled mode still incurs a GL JS map load. Panning, zooming, and switching
+between enabled Mapbox styles within that map do not add map loads. The flags
+stop this site's new mode requests; they are not an account-wide spending cap.
+For an account-wide incident, SCSU IT can also rotate or revoke the public
+token in Mapbox Console. Use account usage alerts and a production token
+restricted to the deployed site.
 
-The demo account provides one default public token. Before production, create
-a separate, URL-restricted public token after upgrading the Mapbox account,
-and provide it through the deployment configuration. The ignored local file
-is only for the development trial; it is not published by GitHub Pages.
+## Validation before deployment
 
-## Proposed implementation
-
-1. Use Mapbox's Static Tiles API to render a normal raster basemap in Leaflet.
-   Start with the classic `mapbox/outdoors-v12` style because it is the closest
-   visual comparison to Stadia Outdoors. Use 512-pixel Leaflet tiles with
-   `zoomOffset: -1`. The mobile layout (up to 880px wide) requests 512-pixel
-   1x images; wider viewports request 1024-pixel `@2x` images for sharper
-   rendering. Resizing across the breakpoint updates the active tile layer.
-   The style is no longer actively maintained. Mapbox Standard cannot currently
-   be served by the Static Tiles API, so it is not a drop-in Leaflet option.
-2. Use the Static Tiles API's classic `mapbox/satellite-v9` style for satellite
-   mode, with the same 512-pixel tile settings and responsive resolution as
-   Outdoors. Higher-resolution images increase transferred bytes but do not
-   increase the number of tile requests for a given viewport. The direct Raster
-   Tiles API returned HTTP 429 with a rate-limit value of `-1` for the demo
-   token, while the satellite style tile returned HTTP 200.
-3. Ensure only the selected basemap requests tiles. The trial detaches the
-   inactive basemap when switching modes.
-4. Display Mapbox's required logo on the map and linked text attribution in
-   Leaflet's bottom attribution control. Check the satellite tileset metadata
-   for any additional imagery credits. Keep credits visible on desktop and
-   mobile, and switch them with the active layer.
-5. Use a Mapbox **public** (`pk.`) access token. The demo token is for local
-   development; use a separate, site-restricted public token in production.
-
-## Cost risk mitigation
-
-Unexpectedly high tile usage is unlikely, but SCSU IT can limit its cost impact
-by editing [`data/map-flags.json`](data/map-flags.json) in the deployed
-repository and publishing the change. The separate `normalMap` and
-`satelliteMap` flags let IT turn off either map mode. A disabled mode stops
-requesting new tiles. If one mode remains enabled, the map opens in that mode;
-if both are disabled, visitors see a map-unavailable message while the rest of
-the page remains available.
-
-The page reads this file before adding a tile layer and rechecks it every 30
-seconds and when a browser tab becomes visible. Invalid or unreachable flags
-disable both tile layers over HTTP(S). A direct `file://` preview uses both
-layers because it cannot fetch the control file. An update becomes effective
-only after GitHub Pages publishes the edited file, then after the next poll in
-each open browser tab. Older app versions that predate these switches will not
-poll.
-
-The flags control requests from this version of the site. If unexpected usage
-continues outside the site, IT can review Mapbox usage statistics and rotate or
-delete the public token in the Mapbox Console. Restrict the production token to
-the deployment URL as part of normal setup.
-
-## Visual and functional checks
-
-- Compare both views at zoom 17–20 over campus and at the map boundaries.
-- Inspect image clarity, imagery age, building alignment, mobile layout, and
-  the satellite toggle. Check for duplicate map labels: the existing Stadia
-  vector style hides POI labels in code, whereas Mapbox raster tiles have
-  baked-in labels. If duplication is significant, clone the classic style in
-  Mapbox Studio and hide those labels there, or reconsider the normal basemap.
-- Verify that no Stadia tile requests remain and that only the active Mapbox
-  layer requests tiles. Check attribution and logo in both modes.
-- Set each map flag off independently while the page is open, then set both
-  off. Confirm disabled layers stop making new tile requests and that the
-  unavailable message appears only when both modes are off.
-- Check Mapbox account statistics after a representative session to estimate
-  per-visit requests before production deployment.
-
-## Development and production use
-
-- Mapbox's no-card **demo access** is intended for development and has lower
-  account-specific usage and rate caps. It is not the production account
-  configuration. Production requires upgrading the account to **standard
-  pay-as-you-go access** by adding a payment method; monthly free allowances
-  continue to apply.
-- Both Leaflet modes use the **Static Tiles API** and share its request meter:
-  200,000 requests/month free, then $0.50 per 1,000 at the first paid tier.
-- Pay-as-you-go has no configurable hard spending cap. Set usage alerts and
-  monitor statistics; charges above free allowances are billed automatically.
-- Mapbox permits its tiles in third-party renderers such as Leaflet, subject
-  to its terms, billing, and attribution requirements. Do not mirror or
-  pre-download Mapbox tiles as part of this trial; rely on normal browser
-  caching headers.
+- Confirm normal Standard, both modes, and the cost-control flags on desktop
+  and mobile. Check selection from the map and from both location-list tabs,
+  tour navigation, building labels, search, Treedis, and Learn mode.
+- Verify satellite imagery and labels in a browser with the deployment token.
+  The direct Raster Tiles API 429 does not apply to the Static Tiles endpoint
+  used here.
+- Check overlay legibility and alignment at zoom 17–20. Existing geometry
+  offsets remain data issues and are not corrected by changing the renderer.
+- Verify Mapbox's logo and attribution remain visible in both map styles.
+  Mapbox GL JS supplies its own controls.
+- Compare usage in Mapbox Console after representative sessions. GL JS map
+  loads and satellite Static Tiles requests may appear under different usage
+  products; confirm account billing before deployment.
 
 ## References
 
-- [Mapbox demo and standard access](https://docs.mapbox.com/accounts/guides/demo-access/)
-- [Mapbox pricing](https://www.mapbox.com/pricing)
-- [Mapbox billing and usage alerts](https://docs.mapbox.com/accounts/guides/invoices/)
-- [Mapbox in Leaflet](https://docs.mapbox.com/accounts/guides/pricing/sections/third-party-tools/)
-- [Static Tiles API](https://docs.mapbox.com/api/maps/static-tiles/)
-- [Satellite style](https://docs.mapbox.com/map-styles/reference/satellite/)
-- [Classic Outdoors style](https://docs.mapbox.com/map-styles/reference/outdoors/)
-- [Token management](https://docs.mapbox.com/accounts/guides/tokens/)
-- [Attribution](https://docs.mapbox.com/help/dive-deeper/attribution/)
-- [Mapbox terms](https://www.mapbox.com/legal/tos)
+- [Mapbox Standard styles](https://docs.mapbox.com/map-styles/guides/standard-styles/)
+- [Mapbox GL JS pricing](https://docs.mapbox.com/mapbox-gl-js/guides/pricing/)
+- [Mapbox demo access](https://docs.mapbox.com/accounts/guides/demo-access/)
+- [Mapbox token guidance](https://docs.mapbox.com/accounts/guides/tokens/)

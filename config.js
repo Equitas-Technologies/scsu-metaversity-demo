@@ -3,7 +3,7 @@
    ------------------------------------------------------------
    This file holds the *structural* settings that wire the app
    together: brand strings, map tiles, the coordinate system,
-   data file paths, Treedis SDK plumbing, Leaflet styles, and
+   data file paths, Treedis SDK plumbing, GeoJSON styles, and
    UI flags. It rarely changes.
 
    Per-location *content* lives in sibling files so non-technical
@@ -41,8 +41,6 @@
 const mapboxPublicToken = /^pk\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(
   String(window.MAPBOX_PUBLIC_TOKEN || "").trim()
 ) ? String(window.MAPBOX_PUBLIC_TOKEN).trim() : "";
-const mapboxTokenQuery = mapboxPublicToken
-  ? `?access_token=${encodeURIComponent(mapboxPublicToken)}` : "";
 
 window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
   /* -- Branding ------------------------------------------- */
@@ -52,37 +50,25 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
     tagline: "Virtual Campus Tour"
   },
 
-  /* -- Base map tiles -------------------------------------- */
+  /* -- Mapbox GL styles ------------------------------------ */
   mapMode: "tiles",
 
   tiles: {
-    // Serve 1x (512px) tiles in the mobile layout and 2x (1024px) tiles on
-    // desktop. Both render into the same 512px Leaflet tile footprint.
-    // No Mapbox requests are made without a valid public token.
-    url: mapboxPublicToken
-      ? `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/512/{z}/{x}/{y}${mapboxTokenQuery}`
-      : null,
-    url2x: mapboxPublicToken
-      ? `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/512/{z}/{x}/{y}@2x${mapboxTokenQuery}`
-      : null,
-    tileSize: 512,
-    zoomOffset: -1,
-
-    // The satellite style uses the same Static Tiles API as Outdoors. The
-    // direct Raster Tiles API is unavailable to the demo token (HTTP 429).
+    // Standard renders vector streets and terrain in Mapbox GL JS. The demo
+    // token cannot use Standard Satellite's direct Raster Tiles source (429),
+    // so satellite uses the working satellite-v9 Static Tiles endpoint.
+    normalStyle: "mapbox://styles/mapbox/standard",
     satelliteUrl: mapboxPublicToken
-      ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}${mapboxTokenQuery}`
+      ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}?access_token=${encodeURIComponent(mapboxPublicToken)}`
       : null,
     satelliteUrl2x: mapboxPublicToken
-      ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x${mapboxTokenQuery}`
+      ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token=${encodeURIComponent(mapboxPublicToken)}`
       : null,
-    satelliteAttribution: '<a href="https://www.mapbox.com/">© Mapbox</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a> · <a href="https://www.maxar.com/">© Maxar</a> · <a class="mapbox-feedback" href="https://apps.mapbox.com/feedback/" target="_blank" rel="noopener">Improve this map</a>',
+    satelliteAttribution: '<a href="https://www.mapbox.com/">© Mapbox</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a> · <a href="https://www.maxar.com/">© Maxar</a> · <a href="https://apps.mapbox.com/feedback/" target="_blank" rel="noopener">Improve this map</a>',
 
     // Match the QGIS OUTPUT_HTML.html values.
     minZoom: 15,
     maxZoom: 20,
-    maxNativeZoom: 20,
-    tms: false,
 
     // QGIS preview center from OUTPUT_HTML.html.
     initialCenter: [33.4977, -80.8493],
@@ -97,7 +83,7 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
       [33.5051108680217027, -80.8355473474424997]
     ],
 
-    attribution: '<a href="https://www.mapbox.com/">© Mapbox</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a> · <a class="mapbox-feedback" href="https://apps.mapbox.com/feedback/" target="_blank" rel="noopener">Improve this map</a>'
+    attribution: "Mapbox GL JS displays the style's required attribution"
   },
 
   /* -- Coordinate system of the GeoJSON data --------------- */

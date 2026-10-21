@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.css" />
   <!-- MapLibre GL — renders the Stadia Outdoors VECTOR basemap so we
        can hide only the redundant POI/building labels. -->
 
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="css/02-header.css" />
   <link rel="stylesheet" href="css/03-sidebar.css" />
   <link rel="stylesheet" href="css/04-map-details.css" />
-  <link rel="stylesheet" href="css/05-leaflet-responsive.css" />
+  <link rel="stylesheet" href="css/05-mapbox-responsive.css" />
   <link rel="stylesheet" href="css/06-align-tool.css" />
   <link rel="stylesheet" href="css/07-streetview-xr.css" />
   <link rel="stylesheet" href="css/08-start-coachmark.css" />
@@ -1017,7 +1017,7 @@
   <!-- ============================================================
        SCRIPTS
        ============================================================ -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.js"></script>
 
   <script src="data/buildings.js"      onerror="this.remove()"></script>
   <script src="data/tours.js"          onerror="this.remove()"></script>
@@ -1026,25 +1026,12 @@
   <script src="data/treedis-sweeps.js" onerror="this.remove()"></script>
 
   <script src="mapbox-token.local.js" onerror="this.remove()"></script>
-  <script src="config.js"></script>
+  <script src="config.js?v=gl3"></script>
 
-  <!-- Split app — must load in this order. Globals are shared via the
-       window scope exactly as in the original single-file app.js, so
-       each piece sees the helpers/state/refs declared before it.
-       See the matching split.py for the line ranges each piece covers. -->
+  <!-- Load data helpers first; the remaining scripts start only after the
+       cost-control flags have been read, before Mapbox creates a map load. -->
   <script src="js/00-data-adapter.js"></script>
   <script src="js/01-utils.js"></script>
-  <script src="js/02-state.js"></script>
-  <script src="js/03-tour-bridge.js"></script>
-  <script src="js/04-street-view.js"></script>
-  <script src="js/05-map-helpers.js"></script>
-  <script src="js/06-details-panel.js"></script>
-  <script src="js/07-layer-builders.js"></script>
-  <script src="js/08-tourbar.js"></script>
-  <script src="js/09-sidebar-search.js"></script>
-  <script src="js/10-event-wiring.js"></script>
-  <script src="js/11-boot.js"></script>
-  <script src="js/12-start-screen.js"></script>
-  <script src="js/13-learn-mode.js"></script>
+  <script src="js/map-bootstrap.js?v=gl5"></script>
 </body>
 </html>

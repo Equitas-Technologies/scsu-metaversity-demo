@@ -1,24 +1,48 @@
 /* === SCSU app — Part 2: Map setup, DOM refs, state === */
-/* Includes: Leaflet map + panes (sec 3), DOM refs (sec 4),
+/* Includes: Mapbox GL map (sec 3), DOM refs (sec 4),
    styling helpers (sec 5), and all module-level state (sec 6). */
 /* -----------------------------------------------------------
-   3. Leaflet map + panes
+   3. Mapbox GL map
    ----------------------------------------------------------- */
-const map = L.map("map", {
-  zoomControl: false,
+mapboxgl.accessToken = mapboxPublicToken;
+const EMPTY_MAP_STYLE = { version: 8, sources: {}, layers: [] };
+const mapEnabledAtBoot = !!mapboxPublicToken && !!(
+  window.CAMPUS_PREFLIGHT_FLAGS?.normalMap || window.CAMPUS_PREFLIGHT_FLAGS?.satelliteMap
+);
+function disabledMapShell() {
+  const container = document.getElementById("map");
+  const canvas = { style: {} };
+  return {
+    isStyleLoaded: () => true,
+    on() { return this; },
+    once() { return this; },
+    getContainer: () => container,
+    getCanvas: () => canvas,
+    getMaxZoom: () => 20,
+    getZoom: () => 17,
+    cameraForBounds: () => ({ zoom: 17 }),
+    queryRenderedFeatures: () => [],
+    getSource: () => null,
+    getLayer: () => null,
+    resize() {}, setMaxBounds() {}, setMinZoom() {},
+    jumpTo() {}, fitBounds() {}, setStyle() {},
+    setLayoutProperty() {}, setFeatureState() {}
+  };
+}
+const map = mapEnabledAtBoot ? new mapboxgl.Map({
+  container: "map",
+  style: EMPTY_MAP_STYLE,
+  center: [-80.8493, 33.4977],
+  zoom: 17,
   attributionControl: true,
   maxZoom: 20,
-  zoomSnap: 0.25,
-  wheelPxPerZoomLevel: 120,
-  maxBoundsViscosity: 1.0
-});
-
-L.control.zoom({ position: "topright" }).addTo(map);
-
-map.createPane("imagePane");     map.getPane("imagePane").style.zIndex     = 200;
-map.createPane("buildingsPane"); map.getPane("buildingsPane").style.zIndex = 420;
-map.createPane("toursPane");     map.getPane("toursPane").style.zIndex     = 430;
-map.createPane("pinsPane");      map.getPane("pinsPane").style.zIndex      = 500;
+  pitchWithRotate: false,
+  dragRotate: false,
+  touchPitch: false
+}) : disabledMapShell();
+if (mapEnabledAtBoot) {
+  map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+}
 
 /* -----------------------------------------------------------
    4. DOM refs
@@ -187,7 +211,7 @@ let mapFlags        = { normalMap: false, satelliteMap: false };
 let dataBounds      = null;
 let buildingsLayer  = null;
 let toursLayer      = null;
-let tourPinsLayer   = L.layerGroup([], { pane: "pinsPane" });
+let tourPinsLayer   = [];
 
 let selectedLayer = null;
 let selectedKind  = null;

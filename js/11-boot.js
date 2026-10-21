@@ -31,7 +31,7 @@ async function tryFetchGeoJSON(url) {
  *  of the app doesn't need to know JSON is involved. */
 async function loadAllData() {
   // Kick off all four fetches in parallel. Geometry stays here
-  // because boot() needs the FeatureCollections to build Leaflet
+  // because boot() needs the FeatureCollections to build map
   // layers; content lives on window.CAMPUS_CONFIG / SCSU_DATA
   // so the adapter handles it side-effectfully.
   const contentP = (typeof loadDataJSON === "function")
@@ -181,7 +181,7 @@ async function warmHomeSweep() {
 function preloadAllAssets(onProgress) {
   const imageUrls = [];
 
-  // In tile mode, the base map loads tile-by-tile through Leaflet.
+  // In map mode, the basemap loads through Mapbox GL JS.
   // Do not block the splash screen by trying to preload one giant image.
   if (config.mapMode !== "tiles" && config.imageUrl) {
     imageUrls.push(config.imageUrl);
@@ -246,71 +246,41 @@ async function refreshMapFlags(apply = true) {
   if (apply) applyMapFlagsToLayers();
 }
 
-// The map's mobile layout starts at 880px; match its breakpoint for tile
-// resolution, and switch an open map if the viewport crosses it.
-const desktopTileMedia = window.matchMedia("(min-width: 881px)");
-function mapboxTileUrl(t, satellite = false) {
-  return desktopTileMedia.matches
-    ? (satellite ? t.satelliteUrl2x : t.url2x)
-    : (satellite ? t.satelliteUrl : t.url);
+// SCSU IT can disable either billable map mode independently. Switching to
+// an empty local style stops Mapbox map-data requests when both are off.
+let activeMapStyle = "empty";
+let satelliteAccessUnavailable = false;
+const satelliteDesktopQuery = window.matchMedia("(min-width: 881px)");
+function satelliteRasterStyle(use2x) {
+  const tiles = config.tiles || {};
+  return {
+    version: 8,
+    glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+    sources: {
+      "satellite-imagery": {
+        type: "raster",
+        tiles: [use2x ? tiles.satelliteUrl2x : tiles.satelliteUrl],
+        tileSize: 512,
+        attribution: tiles.satelliteAttribution
+      }
+    },
+    layers: [{ id: "satellite-imagery", type: "raster", source: "satellite-imagery" }]
+  };
 }
-
-function updateMapTileResolution() {
-  const t = config.tiles || {};
-  if (baseTileLayer) baseTileLayer.setUrl(mapboxTileUrl(t));
-  if (satelliteLayer) satelliteLayer.setUrl(mapboxTileUrl(t, true));
-}
-desktopTileMedia.addEventListener("change", updateMapTileResolution);
-
-function addBaseTileLayer() {
-  const t = config.tiles || {};
-  const url = mapboxTileUrl(t);
-  if (!url) {
-    console.warn("[metaversity] Mapbox public token is missing or invalid.");
-    return null;
-  }
-
-  return L.tileLayer(url, {
-    pane: "imagePane",
-    tileSize: t.tileSize ?? 256,
-    zoomOffset: t.zoomOffset ?? 0,
-    minZoom: t.minZoom ?? 15,
-    maxZoom: t.maxZoom ?? 20,
-    maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
-    tms: !!t.tms,
-    noWrap: true,
-    attribution: t.attribution || ""
-  });
-}
-// Lazily build the imagery layer used by the satellite toggle.
-function getSatelliteLayer() {
-  if (satelliteLayer) return satelliteLayer;
-  const t = config.tiles || {};
-  const url = mapboxTileUrl(t, true);
-  if (!url) return null;
-  satelliteLayer = L.tileLayer(url, {
-    pane: "imagePane",
-    tileSize: t.tileSize ?? 256,
-    zoomOffset: t.zoomOffset ?? 0,
-    minZoom: t.minZoom ?? 15,
-    maxZoom: t.maxZoom ?? 20,
-    maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
-    tms: !!t.tms,
-    noWrap: true,
-    // Mapbox satellite has global coverage, so the viewport is not clipped.
-    bounds: t.satelliteBounds && t.bounds ? L.latLngBounds(t.bounds) : undefined,
-    attribution: t.satelliteAttribution || ""
-  });
-  return satelliteLayer;
-}
-
-// Keep only the selected provider layer attached. Removing a disabled layer
-// stops new tile requests from both newly loaded and already-open pages.
 function applyMapFlagsToLayers() {
   if (config.mapMode !== "tiles") return;
-  if (mapFlags.normalMap && !baseTileLayer) baseTileLayer = addBaseTileLayer();
-  const normalAvailable = mapFlags.normalMap && !!baseTileLayer;
-  const satelliteAvailable = mapFlags.satelliteMap && !!(config.tiles || {}).satelliteUrl;
+  const normalAvailable = mapFlags.normalMap && !!mapboxPublicToken;
+  const satelliteAvailable = mapFlags.satelliteMap && !!mapboxPublicToken && !satelliteAccessUnavailable;
+
+  if (!mapEnabledAtBoot) {
+    // A newly enabled mode needs a real Mapbox GL map. Reload after the
+    // next flag poll; disabled visits never construct a billable map.
+    if (normalAvailable || satelliteAvailable) { location.reload(); return; }
+    if (el.satelliteBtn) el.satelliteBtn.hidden = true;
+    if (el.mapboxLogo) el.mapboxLogo.hidden = true;
+    if (el.mapUnavailable) el.mapUnavailable.hidden = false;
+    return;
+  }
 
   if (satelliteOn && !satelliteAvailable) satelliteOn = false;
   if (!satelliteOn && !normalAvailable && satelliteAvailable) satelliteOn = true;
@@ -318,17 +288,15 @@ function applyMapFlagsToLayers() {
   const showNormal = normalAvailable && !satelliteOn;
   const showSatellite = satelliteAvailable && satelliteOn;
 
-  if (baseTileLayer) {
-    if (showNormal && !map.hasLayer(baseTileLayer)) baseTileLayer.addTo(map);
-    if (!showNormal && map.hasLayer(baseTileLayer)) map.removeLayer(baseTileLayer);
-  }
-
-  if (showSatellite) {
-    const layer = getSatelliteLayer();
-    if (layer && !map.hasLayer(layer)) layer.addTo(map);
-    if (layer && layer.bringToFront) layer.bringToFront();
-  } else if (satelliteLayer && map.hasLayer(satelliteLayer)) {
-    map.removeLayer(satelliteLayer);
+  const nextStyle = showSatellite ? (satelliteDesktopQuery.matches ? "satellite-2x" : "satellite-1x")
+    : showNormal ? "normal" : "empty";
+  if (nextStyle !== activeMapStyle) {
+    activeMapStyle = nextStyle;
+    overlayStyleReady = false;
+    interactiveLayerIds.length = 0;
+    const styles = config.tiles || {};
+    map.setStyle(nextStyle.startsWith("satellite") ? satelliteRasterStyle(satelliteDesktopQuery.matches)
+      : nextStyle === "normal" ? styles.normalStyle : EMPTY_MAP_STYLE);
   }
 
   if (el.satelliteBtn) {
@@ -336,32 +304,40 @@ function applyMapFlagsToLayers() {
     el.satelliteBtn.classList.toggle("is-active", satelliteOn);
     el.satelliteBtn.setAttribute("aria-pressed", String(satelliteOn));
   }
-  if (el.mapboxLogo) el.mapboxLogo.hidden = !(showNormal || showSatellite);
+  // Mapbox GL JS supplies its own required logo and attribution controls.
+  if (el.mapboxLogo) el.mapboxLogo.hidden = true;
   if (el.mapUnavailable) el.mapUnavailable.hidden = showNormal || showSatellite;
   map.getContainer().classList.toggle("satellite-mode", satelliteOn);
-  updateMapboxFeedbackLink();
 }
 
-function updateMapboxFeedbackLink() {
-  if (!map._loaded) return;
-  const center = map.getCenter();
-  const url = `https://apps.mapbox.com/feedback/#/${center.lng.toFixed(5)}/${center.lat.toFixed(5)}/${map.getZoom()}`;
-  map.getContainer().querySelectorAll(".mapbox-feedback").forEach((link) => {
-    link.href = url;
-  });
-}
+satelliteDesktopQuery.addEventListener("change", () => {
+  if (satelliteOn) applyMapFlagsToLayers();
+});
 
-map.on("moveend zoomend", updateMapboxFeedbackLink);
+// A real Static Tiles failure should not leave a blank satellite background.
+map.on("error", (event) => {
+  const error = event?.error;
+  const message = String(error?.message || "");
+  const status = error?.status || error?.statusCode;
+  if (!activeMapStyle.startsWith("satellite") || satelliteAccessUnavailable) return;
+  if (status !== 429 && !/\b429\b/.test(message)) return;
+  satelliteAccessUnavailable = true;
+  console.warn("[metaversity] satellite Static Tiles request failed (HTTP 429)");
+  applyMapFlagsToLayers();
+});
 
 // The .satellite-mode class remains available for contrast adjustments.
 function setSatelliteView(on) {
-  if (on && !mapFlags.satelliteMap) return;
+  if (on && (!mapFlags.satelliteMap || satelliteAccessUnavailable)) return;
   if (!on && !mapFlags.normalMap) return;
   satelliteOn = !!on;
   applyMapFlagsToLayers();
 }
 
 async function boot() {
+  // Add sources only after the initial empty style is ready. The real
+  // Standard style is selected after the cost-control flags are fetched.
+  if (!map.isStyleLoaded()) await new Promise((resolve) => map.once("style.load", resolve));
   // If the sync UA check missed but the WebXR API confirms an
   // XR device, switch to the VR profile *before* preloading the
   // iframe — otherwise we'd point it at the desktop tour URL
@@ -409,7 +385,7 @@ async function boot() {
   toursLayer     = buildLayer(toursGeo,     "tour",     "toursPane");
 
   // Data extent (from both layers combined)
-  dataBounds = L.latLngBounds([]);
+  dataBounds = new CampusBounds();
   [buildingsLayer, toursLayer].forEach((l) => {
     try {
       const b = l.getBounds();
@@ -419,7 +395,7 @@ async function boot() {
 
   if (!dataBounds.isValid()) {
     console.warn("[metaversity] no valid geometry found; falling back");
-    dataBounds = L.latLngBounds([33.494, -80.855], [33.502, -80.843]);
+    dataBounds = new CampusBounds([33.494, -80.855], [33.502, -80.843]);
   }
 
 // Base map: tiles are preferred for production.
@@ -432,13 +408,14 @@ if (config.mapMode === "tiles") {
   // Use explicit tile bounds if provided; otherwise use the vector data
   // bounds with padding only for fit/reset/maxBounds behavior.
   if (config.tiles && config.tiles.bounds) {
-    imageBounds = L.latLngBounds(config.tiles.bounds);
+    imageBounds = new CampusBounds(config.tiles.bounds[0], config.tiles.bounds[1]);
   } else {
     imageBounds = dataBounds.pad((config.tiles && config.tiles.boundsPadding) ?? 0.35);
   }
 
   if (config.tiles && config.tiles.initialCenter && config.tiles.initialZoom) {
-    map.setView(config.tiles.initialCenter, config.tiles.initialZoom, { animate: false });
+    map.jumpTo({ center: [config.tiles.initialCenter[1], config.tiles.initialCenter[0]],
+      zoom: config.tiles.initialZoom });
   } else {
     resetCampusView(false);
   }
@@ -449,22 +426,8 @@ if (config.mapMode === "tiles") {
     if (!document.hidden) refreshMapFlags();
   });
 } else {
-  // Legacy single-image mode
-  imageBounds = computeImageBounds(
-    dataBounds,
-    config.imageWidthPx,
-    config.imageHeightPx,
-    config.imagePaddingPct,
-    align
-  );
-
-  imageOverlay = L.imageOverlay(config.imageUrl, imageBounds, {
-    pane: "imagePane",
-    interactive: false,
-    opacity: 1,
-    attribution: "© SC State University | Imagery: SC_2023_RGB WMTS"
-  }).addTo(map);
-
+  console.warn("[metaversity] legacy single-image mode is unsupported by the Mapbox GL build");
+  imageBounds = dataBounds.pad(0.35);
   resetCampusView(false);
 }
 
@@ -474,40 +437,12 @@ if (config.mapMode === "tiles") {
 
   // Tour pins
   buildTourPins();
-  tourPinsLayer.addTo(map);
 
-  // Zoom-gate permanent labels: toggle a class on the map container
-  // so the CSS hides labels when zoomed out below the configured
-  // threshold. Cheaper than binding/unbinding tooltips per feature.
-  if (config.ui.permanentLabels) {
-    const minZoom = config.ui.permanentLabelMinZoom ?? 18;
-    const updateLabelZoomVisibility = () => {
-      map.getContainer().classList.toggle(
-        "campus-labels-hidden", map.getZoom() < minZoom
-      );
-    };
-    map.on("zoomend", updateLabelZoomVisibility);
-    updateLabelZoomVisibility();
-  }
+  // GeoJSON symbol layers carry labels and handle their own minimum zoom.
 
   // Locations list
   renderLocationsList();
   renderAllLocationsList();
-
-  // Leaflet warm-up: force the first selected-style application
-  // and immediately revert it. This pays the cost of Leaflet's
-  // lazy internal setup now, while the user is still looking at
-  // the splash, so the first real click feels snappy instead of
-  // stuttery. We do the same for a hover style to warm that path
-  // too.
-  try {
-    const warm = tourStops[0] && tourStops[0].layer;
-    if (warm) {
-      warm.setStyle({ ...config.styles.selected });
-      warm.setStyle(hoverStyleFor("tour"));
-      warm.setStyle(styleFor("tour"));
-    }
-  } catch (_) { /* non-critical */ }
 
   // Search index
   const push = (layer, kind) => {
