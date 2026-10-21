@@ -81,21 +81,27 @@ run `az bicep build --file infra/azure/main.bicep --outfile output/azure-main.js
 
 1. Create GitHub environments `test` and `staging` in this repository. Add the
    Azure Static Web App deployment token as environment secret
-   `AZURE_STATIC_WEB_APPS_API_TOKEN` to both, and a distinct URL-restricted
-   public Mapbox token as environment variable `MAPBOX_PUBLIC_TOKEN` to each.
-   Allow the resulting Azure preview hostnames in the Mapbox token settings.
-2. Merge `.github/workflows/azure-nonprod.yml` into the repository default
-   branch so its manual run is available. Run it for `test` from a feature
-   branch. Push the approved release candidate to a `staging` branch to update
-   staging automatically. Review the URLs attached to the GitHub deployments.
+   `AZURE_STATIC_WEB_APPS_API_TOKEN` to both. The current `azure-deployments`
+   branch still uses the pre-Mapbox site, so `MAPBOX_PUBLIC_TOKEN` is optional
+   here. Before deploying the separate Mapbox feature branch, add a distinct
+   URL-restricted public Mapbox token as environment variable
+   `MAPBOX_PUBLIC_TOKEN` to each and allow the Azure preview hostnames in the
+   Mapbox token settings.
+2. Push the `azure-deployments` branch to run the workflow against `test`.
+   This branch contains deployment setup and remains separate from the
+   `codex/mapbox-basemaps` feature branch. Push an approved release candidate
+   to `staging` to update staging automatically. Manual workflow runs become
+   available after the workflow is also merged into the default branch.
+   Review the URLs attached to the GitHub deployments.
 3. Verify both map modes, location search, building selection, tour navigation,
    attribution, and the `data/map-flags.json` cost-control switches in test
    before promoting to staging. Do not point SCSU's production domain at this
    Equitas resource.
 
 `scripts/build-site.js` packages only the public runtime files (about 5 MB),
-excluding the old local tile archive and QGIS source material. The token is
-public browser data by design; environment-specific tokens keep usage and URL
+excluding the old local tile archive and QGIS source material. When a Mapbox
+token is configured, the script includes it in the browser bundle; the token is
+public browser data by design. Environment-specific tokens keep usage and URL
 restrictions separate. Azure Static Web Apps preview URLs are public unless
 access restrictions are configured, even when the GitHub source repository is
 private.

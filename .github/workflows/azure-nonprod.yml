@@ -2,7 +2,7 @@ name: Azure test and staging
 
 on:
   push:
-    branches: [staging]
+    branches: [azure-deployments, staging]
   workflow_dispatch:
     inputs:
       target:
@@ -15,14 +15,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: azure-${{ github.event_name == 'push' && 'staging' || inputs.target }}
+  group: azure-${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.ref_name == 'staging' && 'staging' || 'test') }}
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.event_name == 'push' && 'staging' || inputs.target }}
+      name: ${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.ref_name == 'staging' && 'staging' || 'test') }}
       url: ${{ steps.deploy.outputs.static_web_app_url }}
     env:
       MAPBOX_PUBLIC_TOKEN: ${{ vars.MAPBOX_PUBLIC_TOKEN }}
@@ -48,4 +48,4 @@ jobs:
           api_location: ''
           output_location: ''
           skip_app_build: true
-          deployment_environment: ${{ github.event_name == 'push' && 'staging' || inputs.target }}
+          deployment_environment: ${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.ref_name == 'staging' && 'staging' || 'test') }}
