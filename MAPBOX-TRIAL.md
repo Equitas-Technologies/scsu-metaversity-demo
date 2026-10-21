@@ -8,6 +8,16 @@ Try Mapbox for both the normal map and satellite mode while retaining Leaflet, t
 campus data, controls, and 3D tour behavior. Do not deploy the trial until both
 views have been checked against the current production map.
 
+## Account ownership
+
+Equitas is creating `dev.account@equitas-group.com` as a shared mailbox in
+Exchange admin. It will serve as the development service identity for creating
+project accounts and obtaining API keys, including the Mapbox trial account.
+This setup is in progress; the Mapbox account and token are not yet configured.
+
+The existing `github.admin@equitas-group.com` shared mailbox owns the Equitas
+GitHub organization. It is separate from the development account.
+
 ## Proposed implementation
 
 1. Use Mapbox's Static Tiles API to render a normal raster basemap in Leaflet.
