@@ -33,10 +33,16 @@ On October 21, 2026, the following resources were created in `SCSU_CMS_Test`:
 - Free Static Web App: `swa-scsu-metaversity-nonprod`
 - Azure default hostname: `wonderful-rock-0ec643c0f.3.azurestaticapps.net`
 
-The app has no repository integration or deployed content yet. Azure lists the
-original four CMS resources in `rg-scsu-cms` and the new Static Web App only in
-`rg-scsu-metaversity-nonprod`. The `test` and `staging` preview environments
-will be created by their first successful deployments.
+The Static Web App has no direct repository integration; GitHub Actions uses
+its deployment token. Azure lists the original four CMS resources in
+`rg-scsu-cms` and the Static Web App only in
+`rg-scsu-metaversity-nonprod`. Both named preview environments are now ready:
+
+- Test: https://wonderful-rock-0ec643c0f-test.eastus2.3.azurestaticapps.net/map.html
+- Staging: https://wonderful-rock-0ec643c0f-staging.eastus2.3.azurestaticapps.net/map.html
+
+Both serve the current pre-Mapbox branch. The Static Web App's default slot
+remains undeployed and returns 404 for `/map.html`.
 
 ## Infrastructure template
 
@@ -77,26 +83,23 @@ Plain ARM JSON avoids the Bicep compile step and may suit tooling that accepts
 only JSON, but it is more verbose to maintain. To generate ARM JSON when needed,
 run `az bicep build --file infra/azure/main.bicep --outfile output/azure-main.json`.
 
-## Deployment steps
+## GitHub deployment setup
 
-1. Create GitHub environments `test` and `staging` in this repository. Add the
-   Azure Static Web App deployment token as environment secret
-   `AZURE_STATIC_WEB_APPS_API_TOKEN` to both. The current `azure-deployments`
-   branch still uses the pre-Mapbox site, so `MAPBOX_PUBLIC_TOKEN` is optional
-   here. Before deploying the separate Mapbox feature branch, add a distinct
-   URL-restricted public Mapbox token as environment variable
-   `MAPBOX_PUBLIC_TOKEN` to each and allow the Azure preview hostnames in the
-   Mapbox token settings.
-2. Push the `azure-deployments` branch to run the workflow against `test`.
-   This branch contains deployment setup and remains separate from the
-   `codex/mapbox-basemaps` feature branch. Push an approved release candidate
-   to `staging` to update staging automatically. Manual workflow runs become
-   available after the workflow is also merged into the default branch.
-   Review the URLs attached to the GitHub deployments.
-3. Verify both map modes, location search, building selection, tour navigation,
-   attribution, and the `data/map-flags.json` cost-control switches in test
-   before promoting to staging. Do not point SCSU's production domain at this
-   Equitas resource.
+The GitHub environments `test` and `staging` each hold the Azure Static Web App
+deployment token as environment secret `AZURE_STATIC_WEB_APPS_API_TOKEN`.
+GitHub allows `azure-deployments` to use `test` and `staging` to use `staging`.
+The first workflow runs succeeded on both branches. Pushing either branch now
+updates its matching preview. Manual workflow runs become available after the
+workflow is also merged into the default branch.
+
+The current `azure-deployments` branch still uses the pre-Mapbox site and stays
+separate from `codex/mapbox-basemaps`. Before integrating Mapbox changes, add a
+distinct URL-restricted public Mapbox token as environment variable
+`MAPBOX_PUBLIC_TOKEN` to each environment and allow both Azure preview
+hostnames in the Mapbox token settings. Then verify both map modes, location
+search, building selection, tour navigation, attribution, and the
+`data/map-flags.json` cost-control switches in test before promoting to staging.
+Do not point SCSU's production domain at this Equitas resource.
 
 `scripts/build-site.js` packages only the public runtime files (about 5 MB),
 excluding the old local tile archive and QGIS source material. When a Mapbox
