@@ -92,6 +92,11 @@ The first workflow runs succeeded on both branches. Pushing either branch now
 updates its matching preview. Manual workflow runs become available after the
 workflow is also merged into the default branch.
 
+The workflow pins the Azure Static Web Apps action to a commit on its `v1`
+branch because the older `v1` tag does not declare the
+`deployment_environment` input in `action.yml`. Review that pin when updating
+the action.
+
 The current `azure-deployments` branch still uses the pre-Mapbox site and stays
 separate from `codex/mapbox-basemaps`. Before integrating Mapbox changes, add a
 distinct URL-restricted public Mapbox token as environment variable
