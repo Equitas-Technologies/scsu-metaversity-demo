@@ -1,0 +1,47 @@
+name: Azure test and staging
+
+on:
+  push:
+    branches: [main, codex/mapbox-basemaps]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: azure-${{ github.ref_name == 'main' && 'staging' || 'test' }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.ref_name == 'main' || github.ref_name == 'codex/mapbox-basemaps'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'main' && 'staging' || 'test' }}
+      url: ${{ steps.deploy.outputs.static_web_app_url }}
+    env:
+      MAPBOX_PUBLIC_TOKEN: ${{ vars.MAPBOX_PUBLIC_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Check JavaScript syntax
+        run: |
+          for script in config.js js/*.js scripts/build-site.js; do
+            node --check "$script"
+          done
+      - name: Package the public site
+        run: node scripts/build-site.js output/azure-site
+      - name: Deploy named preview environment
+        id: deploy
+        # The v1 tag lacks deployment_environment in action.yml; pin the newer v1 branch commit.
+        uses: Azure/static-web-apps-deploy@4d27395796ac319302594769cfe812bd207490b1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: output/azure-site
+          api_location: ''
+          output_location: ''
+          skip_app_build: true
+          deployment_environment: ${{ github.ref_name == 'main' && 'staging' || 'test' }}
