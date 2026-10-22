@@ -6,8 +6,8 @@ Metaversity nonproduction site. Its CMS prototype is already deployed in
 app). The Metaversity resources belong in a **separate resource group**,
 `rg-scsu-metaversity-nonprod`, and must not update or replace any CMS resource.
 
-The new resource group contains one Free Azure Static Web App. The planned named preview environments are:
-`test` for ad hoc branch trials and `staging` for the release candidate. The
+The new resource group contains one Free Azure Static Web App. Its named preview
+environments are `test` for the Mapbox feature branch and `staging` for `main`. The
 default production slot of that Azure resource is not used. SCSU will own the
 eventual production subscription and deployment. The existing GitHub Pages
 production site stays live during this work.
@@ -41,8 +41,8 @@ its deployment token. Azure lists the original four CMS resources in
 - Test: https://wonderful-rock-0ec643c0f-test.eastus2.3.azurestaticapps.net/map.html
 - Staging: https://wonderful-rock-0ec643c0f-staging.eastus2.3.azurestaticapps.net/map.html
 
-Both serve the current pre-Mapbox branch. The Static Web App's default slot
-remains undeployed and returns 404 for `/map.html`.
+The Static Web App's default slot remains undeployed and returns 404 for
+`/map.html`.
 
 ## Infrastructure template
 
@@ -87,24 +87,25 @@ run `az bicep build --file infra/azure/main.bicep --outfile output/azure-main.js
 
 The GitHub environments `test` and `staging` each hold the Azure Static Web App
 deployment token as environment secret `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-GitHub allows `azure-deployments` to use `test` and `staging` to use `staging`.
-The first workflow runs succeeded on both branches. Pushing either branch now
-updates its matching preview. Manual workflow runs become available after the
-workflow is also merged into the default branch.
+GitHub allows `codex/mapbox-basemaps` to use `test` and `main` to use
+`staging`. Pushing either branch updates its matching preview. The workflow is
+on the default branch, so manual runs can select either ref; it derives the
+Azure target from the selected ref.
 
 The workflow pins the Azure Static Web Apps action to a commit on its `v1`
 branch because the older `v1` tag does not declare the
 `deployment_environment` input in `action.yml`. Review that pin when updating
 the action.
 
-The current `azure-deployments` branch still uses the pre-Mapbox site and stays
-separate from `codex/mapbox-basemaps`. Before integrating Mapbox changes, add a
-distinct URL-restricted public Mapbox token as environment variable
-`MAPBOX_PUBLIC_TOKEN` to each environment and allow both Azure preview
-hostnames in the Mapbox token settings. Then verify both map modes, location
-search, building selection, tour navigation, attribution, and the
-`data/map-flags.json` cost-control switches in test before promoting to staging.
-Do not point SCSU's production domain at this Equitas resource.
+`main` contains the pre-Mapbox site and stays separate from
+`codex/mapbox-basemaps`. Before deploying the Mapbox branch, add a
+URL-restricted public Mapbox token as environment variable
+`MAPBOX_PUBLIC_TOKEN` to `test` and allow the test Azure hostname in the Mapbox
+token settings. Verify both map modes, location search, building selection,
+tour navigation, attribution, and the `data/map-flags.json` cost-control
+switches in test. The Mapbox branch does not move to staging until it is
+merged into `main`. Do not point SCSU's production domain at this Equitas
+resource.
 
 `scripts/build-site.js` packages only the public runtime files (about 5 MB),
 excluding the old local tile archive and QGIS source material. When a Mapbox
