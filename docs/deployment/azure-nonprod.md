@@ -98,19 +98,28 @@ branch because the older `v1` tag does not declare the
 the action.
 
 `main` contains the pre-Mapbox site and stays separate from
-`codex/mapbox-basemaps`. Before deploying the Mapbox branch, add a
-URL-restricted public Mapbox token as environment variable
-`MAPBOX_PUBLIC_TOKEN` to `test` and allow the test Azure hostname in the Mapbox
-token settings. Verify both map modes, location search, building selection,
-tour navigation, attribution, and the `data/map-flags.json` cost-control
-switches in test. The Mapbox branch does not move to staging until it is
-merged into `main`. Do not point SCSU's production domain at this Equitas
+`codex/mapbox-basemaps`. The `test` environment has `MAPBOX_PUBLIC_TOKEN` set
+to the account's default public demo token. Mapbox demo access permits only
+one token and does not allow URL restrictions or new tokens until a payment
+method is added. Demo access has a hard usage cap and rate limits; hitting the
+cap stops Mapbox APIs until the account is upgraded. This is
+acceptable for the public test preview, but replace the demo token with a
+dedicated, URL-restricted token before any production use. Do not add a payment
+method or upgrade the account as part of this deployment.
+
+On October 21, the `main` workflow deployed successfully to staging and the
+Mapbox branch workflow deployed successfully to test. Browser checks confirmed
+the pre-Mapbox staging map and both standard and satellite Mapbox modes in
+test. Continue checking location search, building selection, tour navigation,
+and the `data/map-flags.json` cost-control switches in test before promoting
+Mapbox to `main`. Do not point SCSU's production domain at this Equitas
 resource.
 
 `scripts/build-site.js` packages only the public runtime files (about 5 MB),
 excluding the old local tile archive and QGIS source material. When a Mapbox
 token is configured, the script includes it in the browser bundle; the token is
-public browser data by design. Environment-specific tokens keep usage and URL
-restrictions separate. Azure Static Web Apps preview URLs are public unless
+public browser data by design. Once standard Mapbox access is enabled,
+environment-specific restricted tokens can separate usage. Azure Static Web
+Apps preview URLs are public unless
 access restrictions are configured, even when the GitHub source repository is
 private.
