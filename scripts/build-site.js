@@ -34,8 +34,7 @@ for (const file of [
 ]) copy(`data/${file}`);
 if (fs.existsSync(path.join(root, "data/map-flags.json"))) copy("data/map-flags.json");
 
-// The deployment branch still uses the pre-Mapbox site. Once the Mapbox
-// branch is integrated, supply a URL-restricted public token per environment.
+// Include a public Mapbox token when the target environment is configured for it.
 if (token) {
   fs.writeFileSync(path.join(destination, "mapbox-token.local.js"),
     `window.MAPBOX_PUBLIC_TOKEN = ${JSON.stringify(token)};\n`);
