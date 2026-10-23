@@ -7,8 +7,9 @@ app). The Metaversity resources belong in a **separate resource group**,
 `rg-scsu-metaversity-nonprod`, and must not update or replace any CMS resource.
 
 The new resource group contains one Free Azure Static Web App. Its named preview
-environments are `test` for the Mapbox feature branch and `staging` for `main`. The
-default production slot of that Azure resource is not used. SCSU will own the
+environments are `test` for every push to `main` and `staging` for a manual
+deployment from `main`. The default production slot of that Azure resource is
+not used. SCSU will own the
 eventual production subscription and deployment. The existing GitHub Pages
 production site stays live during this work.
 
@@ -87,18 +88,21 @@ run `az bicep build --file infra/azure/main.bicep --outfile output/azure-main.js
 
 The GitHub environments `test` and `staging` each hold the Azure Static Web App
 deployment token as environment secret `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-GitHub allows `codex/mapbox-basemaps` to use `test` and `main` to use
-`staging`. Pushing either branch updates its matching preview. The workflow is
-on the default branch, so manual runs can select either ref; it derives the
-Azure target from the selected ref.
+GitHub allows only `main` to use either environment. Pushing or merging into
+`main` automatically updates `test`. To promote that branch to `staging`, use
+**Actions → Azure test and staging → Run workflow**, select `main`, and run it.
+The manual run always targets `staging`; a run from another ref fails. From a
+terminal, `gh workflow run azure-nonprod.yml --ref main` does the same thing.
 
 The workflow pins the Azure Static Web Apps action to a commit on its `v1`
 branch because the older `v1` tag does not declare the
 `deployment_environment` input in `action.yml`. Review that pin when updating
 the action.
 
-`main` contains the pre-Mapbox site and stays separate from
-`codex/mapbox-basemaps`. The `test` environment has `MAPBOX_PUBLIC_TOKEN` set
+`main` currently contains the pre-Mapbox site and stays separate from
+`codex/mapbox-basemaps`. Merging Mapbox into `main` will deploy it to `test`;
+the subsequent manual workflow run will deploy it to `staging`. Both
+environments have `MAPBOX_PUBLIC_TOKEN` set
 to the account's default public demo token. Mapbox demo access permits only
 one token and does not allow URL restrictions or new tokens until a payment
 method is added. Demo access has a hard usage cap and rate limits; hitting the
@@ -107,13 +111,14 @@ acceptable for the public test preview, but replace the demo token with a
 dedicated, URL-restricted token before any production use. Do not add a payment
 method or upgrade the account as part of this deployment.
 
-On October 21, the `main` workflow deployed successfully to staging and the
-Mapbox branch workflow deployed successfully to test. Browser checks confirmed
-the pre-Mapbox staging map and both standard and satellite Mapbox modes in
-test. Continue checking location search, building selection, tour navigation,
-and the `data/map-flags.json` cost-control switches in test before promoting
-Mapbox to `main`. Do not point SCSU's production domain at this Equitas
-resource.
+On October 21, the earlier workflow deployed the pre-Mapbox `main` to staging
+and the Mapbox branch to test. Browser checks confirmed the pre-Mapbox staging
+map and both standard and satellite Mapbox modes in test. The routing changed
+on October 23: the next `main` push replaces that Mapbox test preview with the
+current `main` site. After merging Mapbox into `main`, check location search,
+building selection, tour navigation, and the `data/map-flags.json` cost-control
+switches in test before manually promoting the same branch to staging. Do not
+point SCSU's production domain at this Equitas resource.
 
 `scripts/build-site.js` packages only the public runtime files (about 5 MB),
 excluding the old local tile archive and QGIS source material. When a Mapbox
