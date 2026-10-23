@@ -1,0 +1,41 @@
+{
+  "version": 8,
+  "name": "Campus Standard - Stadia Colors v3",
+  "metadata": {
+    "campus:description": "Land and building colors sampled from the supplied Stadia screenshot. Other colors are approximations. Original label visibility retained."
+  },
+  "imports": [
+    {
+      "id": "basemap",
+      "url": "mapbox://styles/mapbox/standard",
+      "config": {
+        "theme": "default",
+        "lightPreset": "day",
+        "show3dObjects": false,
+        "showPedestrianRoads": true,
+        "showPlaceLabels": true,
+        "showRoadLabels": true,
+        "showPointOfInterestLabels": true,
+        "showTransitLabels": false,
+        "colorModePointOfInterestLabels": "single",
+        "colorLand": "#F9F3EA",
+        "colorGreenspace": "#E7EDDC",
+        "colorWater": "#B8D8E8",
+        "colorBuildings": "#E9E9E7",
+        "colorRoads": "#FFFFFF",
+        "colorTrunks": "#E5D7A0",
+        "colorMotorways": "#E5D7A0",
+        "colorEducation": "#F9F3EA",
+        "colorCommercial": "#F2EAE2",
+        "colorMedical": "#F2EAE2",
+        "colorIndustrial": "#F2EAE2",
+        "colorPlaceLabels": "#596268",
+        "colorRoadLabels": "#737B80",
+        "colorPointOfInterestLabels": "#747F78",
+        "colorAdminBoundaries": "#CDD1CE"
+      }
+    }
+  ],
+  "sources": {},
+  "layers": []
+}
