@@ -21,6 +21,7 @@ function copy(relative) {
 }
 
 for (const file of ["index.html", "map.html", "config.js"]) copy(file);
+copy("assets/map-styles/standard-stadia-colors-v3.json");
 for (const entry of fs.readdirSync(path.join(root, "assets"), { withFileTypes: true })) {
   if (entry.isFile()) copy(`assets/${entry.name}`);
 }

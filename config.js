@@ -57,7 +57,7 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
     // Standard renders vector streets and terrain in Mapbox GL JS. The demo
     // token cannot use Standard Satellite's direct Raster Tiles source (429),
     // so satellite uses the working satellite-v9 Static Tiles endpoint.
-    normalStyle: "mapbox://styles/mapbox/standard",
+    normalStyle: "assets/map-styles/standard-stadia-colors-v3.json",
     satelliteUrl: mapboxPublicToken
       ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}?access_token=${encodeURIComponent(mapboxPublicToken)}`
       : null,
