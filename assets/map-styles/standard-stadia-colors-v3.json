@@ -2,7 +2,7 @@
   "version": 8,
   "name": "Campus Standard - Stadia Colors v3",
   "metadata": {
-    "campus:description": "Land and building colors sampled from the supplied Stadia screenshot. Other colors are approximations. Original label visibility retained."
+    "campus:description": "Land colors sampled from the supplied Stadia screenshot. Mapbox building fills and outlines are transparent so campus footprints come only from local GeoJSON. 3D objects remain disabled. Original label visibility retained."
   },
   "imports": [
     {
@@ -21,7 +21,7 @@
         "colorLand": "#F9F3EA",
         "colorGreenspace": "#E7EDDC",
         "colorWater": "#B8D8E8",
-        "colorBuildings": "#E9E9E7",
+        "colorBuildings": "rgba(0, 0, 0, 0)",
         "colorRoads": "#FFFFFF",
         "colorTrunks": "#E5D7A0",
         "colorMotorways": "#E5D7A0",
