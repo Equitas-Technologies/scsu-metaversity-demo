@@ -113,9 +113,10 @@ method or upgrade the account as part of this deployment.
 
 On October 21, the earlier workflow deployed the pre-Mapbox `main` to staging
 and the Mapbox branch to test. Browser checks confirmed the pre-Mapbox staging
-map and both standard and satellite Mapbox modes in test. The routing changed
-on October 23: the next `main` push replaces that Mapbox test preview with the
-current `main` site. After merging Mapbox into `main`, check location search,
+map and both standard and satellite Mapbox modes in test. On October 23, the
+new workflow deployed `main` to test automatically, replacing the Mapbox
+preview there; staging remained on its previous `main` deployment. After
+merging Mapbox into `main`, check location search,
 building selection, tour navigation, and the `data/map-flags.json` cost-control
 switches in test before manually promoting the same branch to staging. Do not
 point SCSU's production domain at this Equitas resource.
