@@ -36,7 +36,7 @@
     for (const script of scripts) {
       await new Promise((resolve, reject) => {
         const element = document.createElement("script");
-        element.src = `js/${script}.js?v=gl5`;
+        element.src = `js/${script}.js?v=gl6`;
         element.onload = resolve;
         element.onerror = () => reject(new Error(`Could not load ${script}`));
         document.body.appendChild(element);

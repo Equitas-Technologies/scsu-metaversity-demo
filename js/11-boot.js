@@ -314,8 +314,11 @@ function applyMapFlagsToLayers() {
     overlayStyleReady = false;
     interactiveLayerIds.length = 0;
     const styles = config.tiles || {};
+    // Rebuild the style so style.load reliably reinstalls our local sources,
+    // layers and selection state. A diff can update the imported Standard
+    // basemap without emitting the style.load event we are waiting for.
     map.setStyle(nextStyle.startsWith("satellite") ? satelliteRasterStyle(satelliteDesktopQuery.matches)
-      : nextStyle === "normal" ? styles.normalStyle : EMPTY_MAP_STYLE);
+      : nextStyle === "normal" ? styles.normalStyle : EMPTY_MAP_STYLE, { diff: false });
   }
 
   if (el.satelliteBtn) {

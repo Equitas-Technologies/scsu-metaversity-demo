@@ -3,7 +3,7 @@ const geoCollections = [];
 const interactiveLayerIds = [];
 let hoveredGeoLayer = null;
 let featureTooltip = null;
-let overlayStyleReady = false;
+let overlayStyleReady = mapEnabledAtBoot && map.isStyleLoaded();
 
 function featureBounds(feature) {
   const bounds = new CampusBounds();
