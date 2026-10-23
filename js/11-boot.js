@@ -31,7 +31,7 @@ async function tryFetchGeoJSON(url) {
  *  of the app doesn't need to know JSON is involved. */
 async function loadAllData() {
   // Kick off all four fetches in parallel. Geometry stays here
-  // because boot() needs the FeatureCollections to build Leaflet
+  // because boot() needs the FeatureCollections to build map
   // layers; content lives on window.CAMPUS_CONFIG / SCSU_DATA
   // so the adapter handles it side-effectfully.
   const contentP = (typeof loadDataJSON === "function")
@@ -181,7 +181,7 @@ async function warmHomeSweep() {
 function preloadAllAssets(onProgress) {
   const imageUrls = [];
 
-  // In tile mode, the base map loads tile-by-tile through Leaflet.
+  // In map mode, the basemap loads through Mapbox GL JS.
   // Do not block the splash screen by trying to preload one giant image.
   if (config.mapMode !== "tiles" && config.imageUrl) {
     imageUrls.push(config.imageUrl);
@@ -214,118 +214,149 @@ function updateSplashProgress(done, total) {
   const node = document.getElementById("splashProgress");
   if (node) node.textContent = "Loading " + done + "/" + total + "…";
 }
-function addBaseTileLayer() {
-  const t = config.tiles || {};
+// This file is deliberately separate from the app bundle so SCSU IT can
+// disable either billable map mode with a one-file deployment. Fail closed
+// on HTTP errors or invalid JSON: an unavailable control file must not
+// continue generating tile requests.
+async function refreshMapFlags(apply = true) {
+  if (location.protocol === "file:") {
+    mapFlags = { normalMap: true, satelliteMap: true };
+    if (apply) applyMapFlagsToLayers();
+    return;
+  }
 
-  // Preferred path: a vector basemap rendered by MapLibre GL. This
-  // lets us hide just the redundant POI/building label layers while
-  // keeping streets, place names, and landmarks for orientation.
-  if (t.vectorStyleUrl && typeof L.maplibreGL === "function") {
-    const gl = L.maplibreGL({
-      pane: "imagePane",
-      style: t.vectorStyleUrl,
-      attribution: t.attribution || ""
-    }).addTo(map);
-
-    const hideSources = t.hideLabelSourceLayers || [];
-    if (hideSources.length) {
-      const hideLabelLayers = (mlMap) => {
-        if (!mlMap || !mlMap.getStyle) return;
-        const layers = (mlMap.getStyle() || {}).layers || [];
-        layers.forEach((ly) => {
-          if (ly.type === "symbol" && hideSources.includes(ly["source-layer"])) {
-            try {
-              // Only flip layers that are still visible. setLayoutProperty
-              // itself fires "styledata", so this guard keeps the
-              // styledata handler from looping on already-hidden layers.
-              if (mlMap.getLayoutProperty(ly.id, "visibility") !== "none") {
-                mlMap.setLayoutProperty(ly.id, "visibility", "none");
-              }
-            } catch (_) { /* layer id gone after a style change — ignore */ }
-          }
-        });
-      };
-
-      // Wire the hide passes once the GL map exists. getMaplibreMap()
-      // is null until Leaflet runs the layer's onAdd, which is deferred
-      // until the map has a view — so set up on the layer's "add" event
-      // (or immediately if the GL map is already there).
-      const wire = () => {
-        const mlMap = gl.getMaplibreMap && gl.getMaplibreMap();
-        if (!mlMap) return;
-        const run = () => hideLabelLayers(mlMap);
-        if (mlMap.isStyleLoaded && mlMap.isStyleLoaded()) run();
-        else mlMap.on("load", run);
-        // Re-apply if the style ever reloads (e.g. on error/retry).
-        mlMap.on("styledata", run);
-      };
-
-      if (gl.getMaplibreMap && gl.getMaplibreMap()) wire();
-      else gl.on("add", wire);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const url = new URL("data/map-flags.json", document.baseURI);
+    url.searchParams.set("checked", String(Date.now()));
+    const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const flags = await response.json();
+    if (typeof flags.normalMap !== "boolean" || typeof flags.satelliteMap !== "boolean") {
+      throw new Error("normalMap and satelliteMap must be booleans");
     }
-    return gl;
+    mapFlags = { normalMap: flags.normalMap, satelliteMap: flags.satelliteMap };
+  } catch (err) {
+    console.warn("[metaversity] map flags unavailable; disabling map tiles:", err);
+    mapFlags = { normalMap: false, satelliteMap: false };
+  } finally {
+    clearTimeout(timeout);
   }
-
-  // Fallback: raster tiles (used if MapLibre GL didn't load).
-  if (!t.url) {
-    console.warn("[metaversity] no vector style and config.tiles.url is missing.");
-    return null;
-  }
-
-  return L.tileLayer(t.url, {
-    pane: "imagePane",
-    minZoom: t.minZoom ?? 15,
-    maxZoom: t.maxZoom ?? 20,
-    maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
-    tms: !!t.tms,
-    noWrap: true,
-    bounds: t.bounds ? L.latLngBounds(t.bounds) : undefined,
-    attribution: t.attribution || "Created by QGIS"
-  }).addTo(map);
-}
-// Lazily build the local-aerial overlay used by the satellite toggle.
-// It lives in the same imagePane as the base map but is added on TOP,
-// so when present its opaque tiles hide the vector base over campus.
-function getSatelliteLayer() {
-  if (satelliteLayer) return satelliteLayer;
-  const t = config.tiles || {};
-  if (!t.satelliteUrl) return null;
-  satelliteLayer = L.tileLayer(t.satelliteUrl, {
-    pane: "imagePane",
-    minZoom: t.minZoom ?? 15,
-    maxZoom: t.maxZoom ?? 20,
-    maxNativeZoom: t.maxNativeZoom ?? t.maxZoom ?? 20,
-    tms: !!t.tms,
-    noWrap: true,
-    // Only clip to the campus rectangle for a campus-only source (the
-    // local aerial). A global source like Stadia satellite fills the view.
-    bounds: t.satelliteBounds && t.bounds ? L.latLngBounds(t.bounds) : undefined,
-    attribution: t.satelliteAttribution || ""
-  });
-  return satelliteLayer;
+  if (apply) applyMapFlagsToLayers();
 }
 
-// Show/hide the aerial overlay and keep the button + container in sync.
-// The .satellite-mode class on the map container is a hook for any
-// label/footprint contrast tweaks over imagery (CSS, if needed later).
-function setSatelliteView(on) {
-  const layer = getSatelliteLayer();
-  if (!layer) return;
-  satelliteOn = !!on;
-  if (satelliteOn) {
-    if (!map.hasLayer(layer)) layer.addTo(map);
-    if (layer.bringToFront) layer.bringToFront(); // above the vector base
-  } else if (map.hasLayer(layer)) {
-    map.removeLayer(layer);
+// SCSU IT can disable either billable map mode independently. Switching to
+// an empty local style stops Mapbox map-data requests when both are off.
+let activeMapStyle = "empty";
+let satelliteAccessUnavailable = false;
+let mapboxPoiLabelsShown = null;
+const satelliteDesktopQuery = window.matchMedia("(min-width: 881px)");
+function satelliteRasterStyle(use2x) {
+  const tiles = config.tiles || {};
+  return {
+    version: 8,
+    glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+    sources: {
+      "satellite-imagery": {
+        type: "raster",
+        tiles: [use2x ? tiles.satelliteUrl2x : tiles.satelliteUrl],
+        tileSize: 512,
+        attribution: tiles.satelliteAttribution
+      }
+    },
+    layers: [{ id: "satellite-imagery", type: "raster", source: "satellite-imagery" }]
+  };
+}
+
+// Mapbox POIs supply context at overview zoom. At the zoom where our own
+// canonical building names appear, remove the overlapping Mapbox POIs. If the
+// visitor turns off our labels, restore POIs so the map does not go unlabeled.
+// Roads, places, and transit labels are separate Standard configuration keys.
+function syncMapboxPoiLabels() {
+  if (!mapEnabledAtBoot || activeMapStyle !== "normal" || !overlayStyleReady) return;
+  const customLabelsVisible = config.ui.permanentLabels
+    && !map.getContainer().classList.contains("campus-labels-off")
+    && map.getZoom() >= (config.ui.permanentLabelMinZoom ?? 18);
+  const showPoi = !customLabelsVisible;
+  if (showPoi === mapboxPoiLabelsShown) return;
+  map.setConfigProperty("basemap", "showPointOfInterestLabels", showPoi);
+  mapboxPoiLabelsShown = showPoi;
+}
+map.on("zoom", syncMapboxPoiLabels);
+
+function applyMapFlagsToLayers() {
+  if (config.mapMode !== "tiles") return;
+  const normalAvailable = mapFlags.normalMap && !!mapboxPublicToken;
+  const satelliteAvailable = mapFlags.satelliteMap && !!mapboxPublicToken && !satelliteAccessUnavailable;
+
+  if (!mapEnabledAtBoot) {
+    // A newly enabled mode needs a real Mapbox GL map. Reload after the
+    // next flag poll; disabled visits never construct a billable map.
+    if (normalAvailable || satelliteAvailable) { location.reload(); return; }
+    if (el.satelliteBtn) el.satelliteBtn.hidden = true;
+    if (el.mapboxLogo) el.mapboxLogo.hidden = true;
+    if (el.mapUnavailable) el.mapUnavailable.hidden = false;
+    return;
   }
+
+  if (satelliteOn && !satelliteAvailable) satelliteOn = false;
+  if (!satelliteOn && !normalAvailable && satelliteAvailable) satelliteOn = true;
+
+  const showNormal = normalAvailable && !satelliteOn;
+  const showSatellite = satelliteAvailable && satelliteOn;
+
+  const nextStyle = showSatellite ? (satelliteDesktopQuery.matches ? "satellite-2x" : "satellite-1x")
+    : showNormal ? "normal" : "empty";
+  if (nextStyle !== activeMapStyle) {
+    activeMapStyle = nextStyle;
+    mapboxPoiLabelsShown = null;
+    overlayStyleReady = false;
+    interactiveLayerIds.length = 0;
+    const styles = config.tiles || {};
+    map.setStyle(nextStyle.startsWith("satellite") ? satelliteRasterStyle(satelliteDesktopQuery.matches)
+      : nextStyle === "normal" ? styles.normalStyle : EMPTY_MAP_STYLE);
+  }
+
   if (el.satelliteBtn) {
+    el.satelliteBtn.hidden = !(normalAvailable && satelliteAvailable);
     el.satelliteBtn.classList.toggle("is-active", satelliteOn);
     el.satelliteBtn.setAttribute("aria-pressed", String(satelliteOn));
   }
+  // Mapbox GL JS supplies its own required logo and attribution controls.
+  if (el.mapboxLogo) el.mapboxLogo.hidden = true;
+  if (el.mapUnavailable) el.mapUnavailable.hidden = showNormal || showSatellite;
   map.getContainer().classList.toggle("satellite-mode", satelliteOn);
 }
 
+satelliteDesktopQuery.addEventListener("change", () => {
+  if (satelliteOn) applyMapFlagsToLayers();
+});
+
+// A real Static Tiles failure should not leave a blank satellite background.
+map.on("error", (event) => {
+  const error = event?.error;
+  const message = String(error?.message || "");
+  const status = error?.status || error?.statusCode;
+  if (!activeMapStyle.startsWith("satellite") || satelliteAccessUnavailable) return;
+  if (status !== 429 && !/\b429\b/.test(message)) return;
+  satelliteAccessUnavailable = true;
+  console.warn("[metaversity] satellite Static Tiles request failed (HTTP 429)");
+  applyMapFlagsToLayers();
+});
+
+// The .satellite-mode class remains available for contrast adjustments.
+function setSatelliteView(on) {
+  if (on && (!mapFlags.satelliteMap || satelliteAccessUnavailable)) return;
+  if (!on && !mapFlags.normalMap) return;
+  satelliteOn = !!on;
+  applyMapFlagsToLayers();
+}
+
 async function boot() {
+  // Add sources only after the initial empty style is ready. The real
+  // Standard style is selected after the cost-control flags are fetched.
+  if (!map.isStyleLoaded()) await new Promise((resolve) => map.once("style.load", resolve));
   // If the sync UA check missed but the WebXR API confirms an
   // XR device, switch to the VR profile *before* preloading the
   // iframe — otherwise we'd point it at the desktop tour URL
@@ -373,7 +404,7 @@ async function boot() {
   toursLayer     = buildLayer(toursGeo,     "tour",     "toursPane");
 
   // Data extent (from both layers combined)
-  dataBounds = L.latLngBounds([]);
+  dataBounds = new CampusBounds();
   [buildingsLayer, toursLayer].forEach((l) => {
     try {
       const b = l.getBounds();
@@ -383,47 +414,39 @@ async function boot() {
 
   if (!dataBounds.isValid()) {
     console.warn("[metaversity] no valid geometry found; falling back");
-    dataBounds = L.latLngBounds([33.494, -80.855], [33.502, -80.843]);
+    dataBounds = new CampusBounds([33.494, -80.855], [33.502, -80.843]);
   }
 
 // Base map: tiles are preferred for production.
 // In tile mode, the raster map is already georeferenced by the XYZ tile grid.
 // We do NOT compute image bounds from the polygons anymore.
 if (config.mapMode === "tiles") {
-  baseTileLayer = addBaseTileLayer();
+  await refreshMapFlags(false);
+  applyMapFlagsToLayers();
 
   // Use explicit tile bounds if provided; otherwise use the vector data
   // bounds with padding only for fit/reset/maxBounds behavior.
   if (config.tiles && config.tiles.bounds) {
-    imageBounds = L.latLngBounds(config.tiles.bounds);
+    imageBounds = new CampusBounds(config.tiles.bounds[0], config.tiles.bounds[1]);
   } else {
     imageBounds = dataBounds.pad((config.tiles && config.tiles.boundsPadding) ?? 0.35);
   }
 
   if (config.tiles && config.tiles.initialCenter && config.tiles.initialZoom) {
-    map.setView(config.tiles.initialCenter, config.tiles.initialZoom, { animate: false });
+    map.jumpTo({ center: [config.tiles.initialCenter[1], config.tiles.initialCenter[0]],
+      zoom: config.tiles.initialZoom });
   } else {
     resetCampusView(false);
   }
 
   refreshMapConstraints({ recenterIfNeeded: false });
+  setInterval(refreshMapFlags, 30000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshMapFlags();
+  });
 } else {
-  // Legacy single-image mode
-  imageBounds = computeImageBounds(
-    dataBounds,
-    config.imageWidthPx,
-    config.imageHeightPx,
-    config.imagePaddingPct,
-    align
-  );
-
-  imageOverlay = L.imageOverlay(config.imageUrl, imageBounds, {
-    pane: "imagePane",
-    interactive: false,
-    opacity: 1,
-    attribution: "© SC State University | Imagery: SC_2023_RGB WMTS"
-  }).addTo(map);
-
+  console.warn("[metaversity] legacy single-image mode is unsupported by the Mapbox GL build");
+  imageBounds = dataBounds.pad(0.35);
   resetCampusView(false);
 }
 
@@ -433,40 +456,12 @@ if (config.mapMode === "tiles") {
 
   // Tour pins
   buildTourPins();
-  tourPinsLayer.addTo(map);
 
-  // Zoom-gate permanent labels: toggle a class on the map container
-  // so the CSS hides labels when zoomed out below the configured
-  // threshold. Cheaper than binding/unbinding tooltips per feature.
-  if (config.ui.permanentLabels) {
-    const minZoom = config.ui.permanentLabelMinZoom ?? 18;
-    const updateLabelZoomVisibility = () => {
-      map.getContainer().classList.toggle(
-        "campus-labels-hidden", map.getZoom() < minZoom
-      );
-    };
-    map.on("zoomend", updateLabelZoomVisibility);
-    updateLabelZoomVisibility();
-  }
+  // GeoJSON symbol layers carry labels and handle their own minimum zoom.
 
   // Locations list
   renderLocationsList();
   renderAllLocationsList();
-
-  // Leaflet warm-up: force the first selected-style application
-  // and immediately revert it. This pays the cost of Leaflet's
-  // lazy internal setup now, while the user is still looking at
-  // the splash, so the first real click feels snappy instead of
-  // stuttery. We do the same for a hover style to warm that path
-  // too.
-  try {
-    const warm = tourStops[0] && tourStops[0].layer;
-    if (warm) {
-      warm.setStyle({ ...config.styles.selected });
-      warm.setStyle(hoverStyleFor("tour"));
-      warm.setStyle(styleFor("tour"));
-    }
-  } catch (_) { /* non-critical */ }
 
   // Search index
   const push = (layer, kind) => {

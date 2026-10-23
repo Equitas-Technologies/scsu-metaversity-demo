@@ -117,6 +117,7 @@
     map.getContainer().classList.toggle(
       "campus-labels-off", !readShowBuildingLabels()
     );
+    if (typeof updateCampusLabelVisibility === "function") updateCampusLabelVisibility();
   }
 
   // Push current preferences into all four controls. Called

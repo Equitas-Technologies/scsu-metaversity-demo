@@ -15,7 +15,22 @@
   background: #1a1a1a;
 }
 
-.leaflet-container {
+.map-unavailable:not([hidden]) {
+  position: absolute;
+  z-index: 500;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
+  font: 600 1rem/1.5 sans-serif;
+  text-align: center;
+}
+
+.map-action[hidden] { display: none !important; }
+
+.mapboxgl-map {
   font-family: var(--mono);
   background: transparent;
 }
@@ -25,8 +40,8 @@
    a big blue box around the shape. The selected-style fill already
    signals selection. A focus ring is kept for keyboard users via
    :focus-visible so accessibility isn't lost. */
-.leaflet-interactive:focus { outline: none; }
-.leaflet-interactive:focus-visible {
+.mapboxgl-canvas:focus { outline: none; }
+.mapboxgl-canvas:focus-visible {
   outline: 2px solid var(--brand-red, #B22222);
   outline-offset: 2px;
 }
@@ -88,6 +103,18 @@
   object-fit: contain;
   pointer-events: none;
 }
+.mapbox-logo {
+  position: absolute;
+  bottom: 28px;
+  left: 14px;
+  z-index: 500;
+  display: block;
+  padding: 4px 6px;
+  background: #fff;
+  border-radius: 3px;
+}
+.mapbox-logo[hidden] { display: none !important; }
+.mapbox-logo img { display: block; width: 82px; height: auto; }
 /* On state: inverted (dark) so it reads as "satellite is active". */
 .map-action--satellite.is-active {
   background: #1f2937;
@@ -250,7 +277,7 @@
    `!important` is required because several of these elements
    have explicit `display: flex` / `display: inline-flex` rules
    elsewhere in this file and in the responsive overrides
-   (05-leaflet-responsive.css). Plain `display: none` without
+   (05-mapbox-responsive.css). Plain `display: none` without
    `!important` would lose the specificity battle to those rules,
    especially the mobile media query that re-enables the inline
    variants. */

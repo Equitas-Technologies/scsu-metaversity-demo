@@ -15,9 +15,7 @@
   border-radius: inherit;
 }
 
-body.streetview-open .leaflet-control-container,
-body.streetview-open .leaflet-control-zoom,
-body.streetview-open .leaflet-control-attribution {
+body.streetview-open .mapboxgl-control-container {
   display: none !important;
 }
 

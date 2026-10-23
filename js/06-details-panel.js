@@ -402,7 +402,7 @@ function resetLayerStyle(layer, kind) {
    the shell area, so we inflate the *bottom* padding so that the
    feature's center ends up in the visible upper half of the map. */
 function focusPaddingFor(layer) {
-  if (!isMobile()) return { padding: [80, 80] };
+  if (!isMobile()) return { padding: 80 };
 
   const shell = el.shell;
   const shellH = shell ? shell.clientHeight : 600;
@@ -412,8 +412,7 @@ function focusPaddingFor(layer) {
   const bottomPad = Math.min(Math.max(panelH, 140), shellH - 80);
 
   return {
-    paddingTopLeft:     [24, 24],
-    paddingBottomRight: [24, bottomPad]
+    padding: { top: 24, left: 24, right: 24, bottom: bottomPad }
   };
 }
 
@@ -460,9 +459,11 @@ function selectFeature(layer, kind, { focus = false } = {}) {
     // latest shell width after the details panel state changes.
     const fly = () => {
       refreshMapConstraints({ recenterIfNeeded: false });
-      const bounds = layer.getBounds ? layer.getBounds()
-        : L.latLngBounds([layer.getLatLng(), layer.getLatLng()]);
-      map.flyToBounds(bounds, fitOpts);
+      const bounds = layer.getBounds();
+      map.fitBounds(bounds.toGL(), {
+        ...fitOpts,
+        duration: 550
+      });
     };
     if (isMobile()) {
       requestAnimationFrame(() => requestAnimationFrame(fly));

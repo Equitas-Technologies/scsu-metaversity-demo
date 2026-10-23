@@ -339,12 +339,15 @@ document.addEventListener("keydown", (e) => {
 
 // Clicking the bare map clears selection
 map.on("click", (e) => {
-  if (e.originalEvent.target.closest(".leaflet-interactive")) return;
   // Don't steal the tap that closes the drawer
   if (drawerOpen) { closeMobileLocations(); return; }
-  // When the street view is covering the map, clicks that still
-  // somehow reach the Leaflet canvas (e.g., synthetic events)
-  // shouldn't dismiss the current selection.
+  // The renderer supplies the clicked GeoJSON feature directly.
+  const layer = featureAtPoint(e.point);
+  if (layer) {
+    selectFeature(layer, layer.kind, { focus: true });
+    return;
+  }
+  // Ignore stray map clicks while the 3D tour covers the map.
   if (streetViewActive) return;
   clearSelection();
 });

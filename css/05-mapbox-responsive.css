@@ -1,15 +1,15 @@
-/* === SCSU styles — Part 5: Leaflet overrides + responsive === */
+/* === SCSU styles — Part 5: Mapbox GL overrides + responsive === */
 /* ===========================================================
-   LEAFLET OVERRIDES
+   MAPBOX GL OVERRIDES
    =========================================================== */
-.leaflet-control-zoom {
+.mapboxgl-ctrl-group {
   border: 1px solid var(--line) !important;
   border-radius: 4px !important;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,.25) !important;
 }
 
-.leaflet-control-zoom a {
+.mapboxgl-ctrl-group button {
   background: var(--paper) !important;
   color: var(--ink) !important;
   width: 32px !important;
@@ -20,10 +20,10 @@
   border-bottom: 1px solid var(--line-soft) !important;
 }
 
-.leaflet-control-zoom a:hover     { background: var(--fog) !important; }
-.leaflet-control-zoom a:last-child { border-bottom: none !important; }
+.mapboxgl-ctrl-group button:hover { background: var(--fog) !important; }
+.mapboxgl-ctrl-group button:last-child { border-bottom: none !important; }
 
-.leaflet-control-attribution {
+.mapboxgl-ctrl-attrib {
   font-family: var(--mono) !important;
   font-size: 10px !important;
   background: rgba(0,0,0,.65) !important;
@@ -31,7 +31,19 @@
   padding: 2px 6px !important;
   border-radius: 3px !important;
 }
-.leaflet-control-attribution a { color: var(--on-dark) !important; }
+.mapboxgl-ctrl-attrib a { color: var(--on-dark) !important; }
+
+.mapboxgl-ctrl-logo { margin: 0 0 4px 10px !important; }
+.mapboxgl-popup.campus-popup .mapboxgl-popup-content {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 9px;
+}
 
 /* Leaflet tooltips (campus labels) */
 .leaflet-tooltip.campus-label {
@@ -351,6 +363,7 @@
   .map-action               { bottom: 12px; right: 12px; }
   .map-action--satellite    { bottom: 74px; }
   .map-logo                 { bottom: 24px; right: 10px; width: 44px; height: 44px; }
+  .mapbox-logo              { bottom: 24px; left: 10px; }
 
   /* Search results popover sits within the sidebar drawer
      (not below the bar) since the bar is now inside the drawer. */
@@ -368,24 +381,24 @@
     display: none;
   }
   /* Mobile — keep Leaflet controls clear of the bottom sheet */
-  .leaflet-top.leaflet-right {
+  .mapboxgl-ctrl-top-right {
     top: 12px;
     right: 12px;
   }
 
-  .leaflet-bottom.leaflet-right,
-  .leaflet-bottom.leaflet-left {
+  .mapboxgl-ctrl-bottom-right,
+  .mapboxgl-ctrl-bottom-left {
     bottom: 8px;
     transition: bottom .25s ease, opacity .2s ease;
   }
 
-  .shell.has-details:not(.details-full) .leaflet-bottom.leaflet-right,
-  .shell.has-details:not(.details-full) .leaflet-bottom.leaflet-left {
+  .shell.has-details:not(.details-full) .mapboxgl-ctrl-bottom-right,
+  .shell.has-details:not(.details-full) .mapboxgl-ctrl-bottom-left {
     bottom: calc(var(--mobile-half-h) + 8px);
   }
 
-  .shell.has-details.details-full .leaflet-bottom.leaflet-right,
-  .shell.has-details.details-full .leaflet-bottom.leaflet-left {
+  .shell.has-details.details-full .mapboxgl-ctrl-bottom-right,
+  .shell.has-details.details-full .mapboxgl-ctrl-bottom-left {
     opacity: 0;
     pointer-events: none;
   }
