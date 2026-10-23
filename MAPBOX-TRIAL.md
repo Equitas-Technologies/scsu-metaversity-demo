@@ -30,6 +30,16 @@ shown, avoiding duplicate building names. Turning off **Show building labels**
 restores Mapbox POIs. Road, place, and transit labels remain visible. The
 satellite-v9 imagery contains no Mapbox POI labels, so our labels stand alone.
 
+## Campus building footprints
+
+The normal style sets `colorBuildings` to `rgba(0, 0, 0, 0)` and keeps
+`show3dObjects` disabled. Standard uses the building color's alpha for both
+its flat building fills and outlines, so only our local GeoJSON supplies
+visible footprints. This avoids duplicate, offset building shapes without
+changing the GeoJSON coordinates or the basemap roads and land colors.
+Satellite imagery still contains photographed buildings; this setting only
+affects vector buildings in the normal style.
+
 ## Cost controls
 
 `data/map-flags.json` has independent `normalMap` and `satelliteMap` booleans.
