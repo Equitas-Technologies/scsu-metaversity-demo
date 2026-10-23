@@ -2,26 +2,30 @@ name: Azure test and staging
 
 on:
   push:
-    branches: [main, codex/mapbox-basemaps]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: azure-${{ github.ref_name == 'main' && 'staging' || 'test' }}
+  group: azure-${{ github.event_name == 'workflow_dispatch' && 'staging' || 'test' }}
   cancel-in-progress: true
 
 jobs:
   deploy:
-    if: github.ref_name == 'main' || github.ref_name == 'codex/mapbox-basemaps'
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref_name == 'main' && 'staging' || 'test' }}
+      name: ${{ github.event_name == 'workflow_dispatch' && 'staging' || 'test' }}
       url: ${{ steps.deploy.outputs.static_web_app_url }}
     env:
       MAPBOX_PUBLIC_TOKEN: ${{ vars.MAPBOX_PUBLIC_TOKEN }}
     steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo 'Deployments must run from main.' >&2
+          exit 1
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
@@ -44,4 +48,4 @@ jobs:
           api_location: ''
           output_location: ''
           skip_app_build: true
-          deployment_environment: ${{ github.ref_name == 'main' && 'staging' || 'test' }}
+          deployment_environment: ${{ github.event_name == 'workflow_dispatch' && 'staging' || 'test' }}
