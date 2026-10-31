@@ -109,12 +109,17 @@ body.streetview-open .map-logo { display: none !important; }
 }
 
 /* Caption pill: where the 3D view is (building, or "Building — Room"
-   after a room jump). Bottom-left, clear of the close button, and
-   click-through so it never blocks the tour underneath. */
+   after a room jump). Bottom-right, just above Treedis's grey logo bar
+   (its buttons sit at the bottom left), and click-through so it never
+   blocks the tour underneath. The bar lives inside the cross-origin
+   iframe and can't be measured, so --treedis-bar-h is an estimate:
+   adjust it here (desktop) and in the mobile block below if the pill
+   lands too high or overlaps the bar. */
 .streetview-caption {
+  --treedis-bar-h: 44px;
   position: absolute;
-  left: 16px;
-  bottom: 16px;
+  right: 16px;
+  bottom: calc(var(--treedis-bar-h) + 8px);
   z-index: 3;
   max-width: min(420px, calc(100% - 32px));
   display: flex;
@@ -128,6 +133,7 @@ body.streetview-open .map-logo { display: none !important; }
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   font-family: var(--sans);
+  text-align: right;
   pointer-events: none;
 }
 .streetview-caption-kicker {
@@ -258,8 +264,9 @@ body.streetview-open .map-logo { display: none !important; }
     right: calc(22px + env(safe-area-inset-right, 0px));
   }
   .streetview-caption {
-    left: calc(12px + env(safe-area-inset-left, 0px));
-    bottom: 12px;
+    --treedis-bar-h: 26px;
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    bottom: calc(var(--treedis-bar-h) + 8px);
     max-width: calc(100% - 24px);
     padding: 6px 12px 7px;
   }

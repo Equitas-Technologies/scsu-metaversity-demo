@@ -443,6 +443,37 @@
 @media (max-height: 520px) and (orientation: landscape) {
   :root { --topbar-h: 52px; --tourbar-h: 60px; }
   .details { max-height: 85vh; }
+
+  /* Locations panel: too short for a fixed heading over a scrolling
+     list (the list got under one row). The whole panel scrolls as one
+     instead, so every location can be reached at any height, and the
+     heading, tabs, search and count are tightened. The guided-tour
+     footer (desktop layout, e.g. Pro Max landscape) stays pinned to
+     the bottom. */
+  .locations {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .locations-list {
+    flex: none;
+    overflow: visible;
+    padding-bottom: 12px;
+  }
+  .locations-head    { padding: 10px var(--gutter) 6px; align-items: center; }
+  .locations-kicker  { display: none; }
+  .locations-title   { font-size: 20px; }
+  .loc-tabs          { margin-bottom: 8px; }
+  .loc-tab           { padding: 4px 0 6px; }
+  .metabar-search    { margin-bottom: 8px; }
+  .locations-meta    { padding-bottom: 6px; }
+  .loc-sort          { padding-bottom: 8px; }
+  .sidebar-tour {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    margin-top: auto;
+  }
 }
 
 /* Touch: disable hover styles that feel laggy */
