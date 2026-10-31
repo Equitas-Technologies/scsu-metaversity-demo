@@ -336,6 +336,9 @@
   }
   .details.is-dragging .details-handle { cursor: grabbing; }
 
+  /* The whole sheet content scrolls at both heights; the Explore button
+     stays at the top of the content. overscroll-behavior keeps a
+     scroll that hits the end from moving the page behind. */
   .details-content {
     padding: 8px 18px 24px;
     flex: 1;
@@ -343,20 +346,31 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 
   .details-peek,
-  .details-extra { display: block; }
-  .details-extra { display: none; }
-  .details.is-full .details-extra { display: block; }
+  .details-extra { display: block; flex-shrink: 0; }
 
   /* Mobile keeps the inline Explore CTA + VR row in the scrolling
      content area (original behavior). The persistent desktop/iPad
      footer is hidden here so it never appears on small screens.
      Chained `.explore-cta.explore-cta-inline` matches the chained
      hide selector at the top of this file. */
-  .explore-cta.explore-cta-inline { display: inline-flex; }
+  .explore-cta.explore-cta-inline { display: inline-flex; vertical-align: middle; }
   .details-vr-inline              { display: flex; }
+
+  /* VR-Enabled sits on the Explore line at the top of the sheet. */
+  .details-vr.details-vr-inline {
+    display: inline-flex;
+    vertical-align: middle;
+    margin: 0 0 18px 14px;
+    padding-top: 0;
+    border-top: none;
+  }
   .details-footer                 { display: none; }
 
   .details-close { top: 14px; right: 14px; }
