@@ -274,3 +274,89 @@ function saveAlign(a) {
   try { localStorage.setItem(ALIGN_KEY, JSON.stringify(a)); } catch (_) {}
 }
 let align = loadAlign();
+
+/* -----------------------------------------------------------
+   Session snapshot (crash recovery)
+   -----------------------------------------------------------
+   iOS Safari can kill and reload the tab when it runs low on memory
+   (e.g. rotating the phone while the Treedis WebGL view is loaded).
+   The reload would otherwise land on a fresh map. A small snapshot of
+   the UI state is kept in sessionStorage (per tab, survives reloads)
+   and restored by boot() — but only when the previous page never
+   reached "pagehide", i.e. it was killed rather than closed, reloaded
+   or navigated away from on purpose.
+   ----------------------------------------------------------- */
+const SESSION_STATE_KEY = "scsu:sessionState";
+const SESSION_STATE_MAX_AGE_MS = 30 * 60 * 1000;
+
+/* Off until boot() has tried to restore, so the boot-time map setup
+   can't overwrite the snapshot it is about to read. */
+let sessionStateReady = false;
+
+function readSessionState() {
+  try {
+    const raw = sessionStorage.getItem(SESSION_STATE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (_) { return null; }
+}
+
+function writeSessionState(state) {
+  try { sessionStorage.setItem(SESSION_STATE_KEY, JSON.stringify(state)); }
+  catch (_) {}
+}
+
+/* Capture the current UI state. Cheap enough to call on every change. */
+function saveSessionState() {
+  if (!sessionStateReady) return;
+
+  const props = selectedLayer && selectedLayer.feature &&
+                selectedLayer.feature.properties;
+  // The disabled-map shell (map flags off) has no camera to save.
+  const center = mapEnabledAtBoot ? map.getCenter() : null;
+  const sweepId = streetViewActive
+    ? (TourBridge._currentSweepId || lastStreetViewSweepId ||
+       (pendingSweep && pendingSweep.sweepId) || null)
+    : null;
+
+  writeSessionState({
+    t: Date.now(),
+    clean: false,
+    mode: document.body.classList.contains("mode-learn") ? "learn" : "explore",
+    sel: props ? { name: cleanName(props.name), kind: selectedKind } : null,
+    details: detailsMode,
+    sv: streetViewActive ? {
+      sweepId,
+      title: el.streetviewTitle ? el.streetviewTitle.textContent : "",
+      sub:   el.streetviewSub   ? el.streetviewSub.textContent   : ""
+    } : null,
+    view: center ? { lat: center.lat, lng: center.lng, zoom: map.getZoom() } : null
+  });
+}
+
+/* Mark the snapshot as a deliberate exit so the next load starts
+   fresh. pageshow (bfcache return) clears the mark again. */
+function markSessionStateClean(clean) {
+  const s = readSessionState();
+  if (!s) return;
+  s.clean = clean;
+  writeSessionState(s);
+}
+
+/* Unloading fires visibilitychange after pagehide, so saving is
+   switched off once the clean mark is written or that late save would
+   overwrite it. */
+window.addEventListener("pagehide", () => {
+  saveSessionState();
+  markSessionStateClean(true);
+  sessionStateReady = false;
+});
+window.addEventListener("pageshow", (e) => {
+  if (!e.persisted) return;
+  sessionStateReady = true;
+  markSessionStateClean(false);
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveSessionState();
+});
+window.addEventListener("orientationchange", () => saveSessionState());
+map.on("moveend", () => saveSessionState());

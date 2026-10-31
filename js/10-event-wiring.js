@@ -241,11 +241,13 @@ el.modeBtns.forEach((btn) => {
     // to hide the .shell (Explore) and reveal the .learn-shell.
     const mode = btn.dataset.mode;          // "explore" | "learn"
     setAppMode(mode);
+    saveSessionState();
   });
 });
 
 window.addEventListener("resize", () => {
   scheduleMapRefresh({ delay: 80 });
+  saveSessionState();
 });
 
 // Help button — simple info overlay for now

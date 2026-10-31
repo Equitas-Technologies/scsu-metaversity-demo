@@ -43,6 +43,7 @@ function setDetailsMode(next) {
   el.shell.classList.toggle("details-full", next === "full" && !streetViewActive);
 
   scheduleMapRefresh({ recenterIfNeeded: false, delay: 260 });
+  saveSessionState();
 }
 
 /* Render the "WHAT HAPPENS HERE?" chip row. Hides the whole
@@ -531,6 +532,8 @@ function selectFeature(layer, kind, { focus = false, syncStreetView = true } = {
   if (streetViewActive && syncStreetView) {
     navigateStreetViewToLayer(layer);
   }
+
+  saveSessionState();
 }
 
 function clearSelection() {
@@ -549,4 +552,5 @@ function clearSelection() {
   updateTourbar();
   highlightActivePin();
   syncLocationsList();
+  saveSessionState();
 }

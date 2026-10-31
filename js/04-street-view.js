@@ -80,6 +80,7 @@ function syncWrapperToSweep(sweepId) {
   if (hit && hit.layer !== selectedLayer) {
     selectFeature(hit.layer, hit.kind, { syncStreetView: false });
   }
+  saveSessionState();
 }
 
 /* Open the street view overlay at the given sweep. `title` and
@@ -174,6 +175,8 @@ function openStreetView(sweepId, title, sub, options) {
     // Close any open mobile drawer too.
     if (drawerOpen) closeMobileLocations({ silent: true });
   }
+
+  saveSessionState();
 }
 
 /* Build the options object for TourBridge.navigateToSweep, omitting
@@ -212,6 +215,8 @@ function closeStreetView(opts) {
     }
     focusMapOnLayer(selectedLayer);
   }
+
+  saveSessionState();
 }
 
 

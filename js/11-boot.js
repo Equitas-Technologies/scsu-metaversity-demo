@@ -356,6 +356,50 @@ function setSatelliteView(on) {
   applyMapFlagsToLayers();
 }
 
+/* Re-apply the snapshot saved by saveSessionState() (02-state.js)
+   after the tab was killed and reloaded (see the notes there). Returns
+   true when something was restored, so boot() can skip the welcome
+   screen. Deliberate reloads and navigations are marked clean on
+   pagehide and are not restored. */
+function restoreSessionState() {
+  const s = readSessionState();
+  if (!s || s.clean) return false;
+  if (!s.t || Date.now() - s.t > SESSION_STATE_MAX_AGE_MS) return false;
+
+  let restored = false;
+
+  if (s.view && Number.isFinite(s.view.lat) && Number.isFinite(s.view.zoom)) {
+    map.jumpTo({ center: [s.view.lng, s.view.lat], zoom: s.view.zoom });
+  }
+
+  const hit = s.sel && findFeatureByName(s.sel.name, s.sel.kind);
+  if (hit) {
+    selectFeature(hit.layer, hit.kind, { focus: !s.view });
+    if (s.details === "full") setDetailsMode("full");
+    restored = true;
+  }
+
+  if (s.sv && s.sv.sweepId) {
+    // Rotation lives on the treedisMap entry that owns the sweep.
+    const entry = Object.values(config.treedisMap || {})
+                        .find((e) => e && e.sweepId === s.sv.sweepId);
+    openStreetView(s.sv.sweepId, s.sv.title, s.sv.sub, {
+      rotation:       (entry && entry.rotation)       || null,
+      transitionTime: (entry && entry.transitionTime) || null
+    });
+    restored = true;
+  }
+
+  if (s.mode === "learn") {
+    const learnBtn = document.querySelector('.mode-btn[data-mode="learn"]');
+    if (learnBtn) learnBtn.click();
+    restored = true;
+  }
+
+  if (restored) console.info("[metaversity] restored state after tab reload", s);
+  return restored;
+}
+
 async function boot() {
   // Add sources only after the initial empty style is ready. The real
   // Standard style is selected after the cost-control flags are fetched.
@@ -511,11 +555,18 @@ if (config.mapMode === "tiles") {
     setTimeout(() => { el.splash.style.display = "none"; }, 500);
     scheduleMapRefresh({ delay: 80 });
 
+    let restored = false;
+    try { restored = restoreSessionState(); }
+    catch (err) { console.warn("[metaversity] state restore failed:", err); }
+    sessionStateReady = true;
+    saveSessionState();
+
     // Show the welcome / start screen modal. The user picks
     // between "Enter Experience" (just dismiss) and "How to Use"
     // (start the coachmark walkthrough). Only show on the first
-    // boot — re-opens are driven from the burger menu.
-    if (typeof showStartScreen === "function") {
+    // boot — re-opens are driven from the burger menu — and not
+    // when the tab is coming back from a crash with state to restore.
+    if (!restored && typeof showStartScreen === "function") {
       // Small delay so the splash fade-out doesn't visually clash
       // with the start screen fade-in.
       setTimeout(() => showStartScreen(), 220);
