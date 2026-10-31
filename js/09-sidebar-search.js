@@ -114,7 +114,7 @@ function renderLocationsList() {
             "[locations] no Treedis sweep for", locationName,
             "— falling back to map view"
           );
-          closeStreetView();
+          closeStreetView({ refocus: false });
           selectFeature(stop.layer, "tour", { focus: true });
         }
         // Keep the underlying map selection in sync so the tour
