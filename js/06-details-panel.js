@@ -319,11 +319,15 @@ function renderDetails(feature, kind) {
       const distLine = offCampusDistance
         ? ` Approximately <strong>${offCampusDistance}</strong>.`
         : "";
+      // Only point at Explore when the location has a tour to open.
+      const exploreLine = hasSweep(name)
+        ? ` Use <strong>Explore</strong> to open the virtual tour.`
+        : "";
       note.innerHTML =
         `<span class="offcampus-icon" aria-hidden="true">📍</span>` +
         `<span><strong>Off-campus location.</strong> ` +
-        `This site isn't shown on the campus map.${distLine} ` +
-        `Use <strong>Explore</strong> to open the virtual tour.</span>`;
+        `This site isn't shown on the campus map.${distLine}` +
+        `${exploreLine}</span>`;
     }
   } else if (note && note.parentNode) {
     note.parentNode.removeChild(note);
