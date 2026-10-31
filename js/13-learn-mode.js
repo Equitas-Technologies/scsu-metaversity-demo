@@ -24,6 +24,7 @@
     list:         document.getElementById("courseList"),
     count:        document.getElementById("coursesCount"),
     empty:        document.getElementById("courseEmpty"),
+    detail:       document.getElementById("courseDetail"),
     body:         document.getElementById("courseBody"),
     actions:      document.getElementById("courseActions"),
     heroStamp:    document.getElementById("courseHeroStamp"),
@@ -269,6 +270,11 @@
     }
 
     renderCourseDetail(course);
+
+    // Each course opens at the top. The article scrolls on desktop and
+    // the whole detail pane scrolls on mobile, so reset both.
+    if (L.body)   L.body.scrollTop = 0;
+    if (L.detail) L.detail.scrollTop = 0;
 
     // Mobile: slide the detail pane in over the list.
     L.shell.classList.toggle("has-detail", !!course);

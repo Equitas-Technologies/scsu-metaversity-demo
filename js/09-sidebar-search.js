@@ -294,16 +294,27 @@ function renderAllLocationsList() {
   });
 }
 
-/* Re-render the All list when the user toggles the sort radio.
-   Bound once at module load — the inputs may not exist on very
-   old saved DOM but the optional-chaining guard keeps this
-   harmless if so. */
+/* Re-render the All list when the sort radio changes, starting the
+   re-ordered list from the top. */
+function onLocationsSortChange() {
+  renderAllLocationsList();
+  if (el.allLocationsList) el.allLocationsList.scrollTop = 0;
+}
 if (el.locSortAlpha) {
-  el.locSortAlpha.addEventListener("change", renderAllLocationsList);
+  el.locSortAlpha.addEventListener("change", onLocationsSortChange);
 }
 if (el.locSortDept) {
-  el.locSortDept.addEventListener("change", renderAllLocationsList);
+  el.locSortDept.addEventListener("change", onLocationsSortChange);
 }
+
+/* Switching between the Featured and All tabs shows the newly picked
+   list from the top rather than wherever it was last scrolled. */
+document.querySelectorAll('input[name="locTab"]').forEach((tab) => {
+  tab.addEventListener("change", () => {
+    if (el.locationsList)    el.locationsList.scrollTop = 0;
+    if (el.allLocationsList) el.allLocationsList.scrollTop = 0;
+  });
+});
 
 /* -----------------------------------------------------------
    14. Mobile locations drawer

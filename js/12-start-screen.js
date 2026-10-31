@@ -188,7 +188,7 @@
           title: "Locations Sidebar",
           body: "Browse all campus locations here. Search for buildings or " +
                 "courses and tap to find out more about them, or simply take " +
-                "a guided tour at bottom left. ",
+                "a guided tour at bottom left.",
           getRect: () => {
             const node = document.getElementById("locations");
             return node ? node.getBoundingClientRect() : null;
@@ -199,7 +199,7 @@
           title: "Locations Menu",
           body: "Tap the Locations button to open the full list of all campus " +
                 "locations here. Search for buildings or courses and tap to find " +
-                "out more about them, or simply take a guided tour at bottom left. ",
+                "out more about them, or simply take a guided tour at bottom left.",
           getRect: () => {
             const node = document.getElementById("locationsToggle");
             return node ? node.getBoundingClientRect() : null;
@@ -211,8 +211,8 @@
         id: "top-bar",
         desktop: {
           title: "Experience Toggle",
-          body:"Choose Explore to discover SCSU or to find something specific; " +
-               "choose Learn to access all immersive coursework available to you.",
+          body: "Choose Explore to discover SCSU or to find something specific. " +
+                "Choose Learn to access all immersive coursework available to you.",
 
           getRect: () => {
             // Highlight the Explore/Learn toggle itself (centered in
@@ -225,8 +225,8 @@
         },
         mobile: {
           title: "Experience Toggle",
-          body:"Choose Explore to discover SCSU or to find something specific; " +
-               "choose Learn to access all immersive coursework available to you.",
+          body: "Choose Explore to discover SCSU or to find something specific. " +
+                "Choose Learn to access all immersive coursework available to you.",
           getRect: () => {
             const node = document.querySelector(".mode-toggle-header");
             return node ? node.getBoundingClientRect() : null;
@@ -240,7 +240,7 @@
           title: "Location Details",
           body: "Choose any location to see its details here. Tap Explore " +
                 "to drop into an immersive street view (where available). " +
-                "Explorable locations are shortcuts. ",
+                "Explorable locations are shortcuts.",
 
           getRect: () => {
             const node = document.getElementById("details");
@@ -252,7 +252,7 @@
           title: "Location Details",
           body: "Choose any location to see its details here. Tap Explore " +
                 "to drop into an immersive street view (where available). " +
-                "Explorable locations are shortcuts. ",
+                "Explorable locations are shortcuts.",
           getRect: () => {
             const node = document.getElementById("details");
             return node ? node.getBoundingClientRect() : null;

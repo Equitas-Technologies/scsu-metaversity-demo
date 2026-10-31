@@ -417,7 +417,17 @@
     pointer-events: none;
   }
 
+  .course-detail { overflow-x: hidden; }
 
+}
+
+/* Vertical scrollers never scroll sideways (long words, wide images). */
+.details-content,
+.locations-list,
+.burger-panel-list,
+.search-results,
+.course-list {
+  overflow-x: hidden;
 }
 
 /* Very small phones */

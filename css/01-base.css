@@ -101,6 +101,7 @@ html, body {
   padding: 0;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   font-family: var(--sans);
   color: var(--ink);
   background: var(--header-bg);
@@ -182,11 +183,15 @@ img    { user-select: none; -webkit-user-drag: none; }
      row 3 — LOCATIONS | MAP | DETAILS
      row 4 — TOURBAR (mobile only; hidden on desktop)
    =========================================================== */
+/* contain: paint clips everything to the app box, including the
+   fixed-position burger panel parked off-screen to the right; without
+   it iOS Safari lets the page scroll sideways to reveal it. */
 .app {
   display: grid;
   grid-template-rows: var(--flair-h) var(--topbar-h) 1fr;
   height: 100vh;
   height: 100dvh;
+  contain: paint;
   background: var(--header-bg);
   opacity: 0;
   transition: opacity .3s .2s;

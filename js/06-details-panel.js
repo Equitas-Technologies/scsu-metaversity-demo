@@ -279,6 +279,14 @@ function renderDetails(feature, kind) {
   const isOffCampus = !!props.off_campus;
   const offCampusDistance = props.off_campus_distance || "";
 
+  // A new location starts at the top of the panel instead of keeping
+  // the previous location's scroll position.
+  const content = el.details.querySelector(".details-content");
+  if (content && el.details.dataset.location !== name) {
+    content.scrollTop = 0;
+  }
+  el.details.dataset.location = name;
+
   if (isOffCampus) {
     el.detailsTag.textContent = "OFF-CAMPUS STOP";
     el.detailsTag.classList.add("is-offcampus");
