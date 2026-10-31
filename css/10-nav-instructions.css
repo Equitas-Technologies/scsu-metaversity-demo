@@ -31,10 +31,10 @@
 }
 
 .nav-instructions-card {
-  width: min(720px, 100%);
+  width: min(1100px, 100%);
   max-height: calc(100vh - 32px);
-  background: #333333;            /* dark backdrop for the white-text image */
-  color: var(--on-dark);
+  background: #fff;              /* was #333333 */
+  color: var(--ink);            /* was var(--on-dark) */
   padding: clamp(28px, 4vw, 40px) clamp(28px, 4vw, 48px);
   display: flex;
   flex-direction: column;
@@ -87,7 +87,41 @@
    manually flip variants for testing on a regular browser, run
    `document.body.classList.toggle('xr-mode')` in the console. */
 .nav-instructions-image .nav-instructions-img-xr { display: none; }
+.nav-instructions-image .nav-instructions-img-touch { display: none; }
+
+/* Touch device (not in VR): show the touch-controls variant
+   instead of the desktop/mouse one. Driven by body.touch-mode,
+   set by applyTreedisProfile() in 01-utils.js at boot. */
+body.touch-mode .nav-instructions-image .nav-instructions-img-desktop { display: none; }
+body.touch-mode .nav-instructions-image .nav-instructions-img-touch   { display: block; }
+
+/* The touch-controls image is tall (portrait). Without this it
+   overflows and slides underneath the checkbox + "Got it" button.
+   Make the image wrapper a flexible, scrollable region so the
+   image scrolls inside the card while the checkbox and button
+   stay pinned and fully visible at the bottom. */
+body.touch-mode .nav-instructions-image {
+  flex: 1 1 auto;
+  min-height: 0;          /* allow the flex item to shrink */
+  overflow-y: auto;
+  align-items: flex-start;
+  -webkit-overflow-scrolling: touch;
+}
+/* Keep the checkbox and actions from being squeezed away. */
+body.touch-mode .nav-instructions-checkbox,
+body.touch-mode .nav-instructions-actions {
+  flex: 0 0 auto;
+}
+/* In touch mode the card itself should clip (the image scrolls
+   internally), rather than the whole card scrolling — that keeps
+   the button locked to the bottom edge. */
+body.touch-mode .nav-instructions-card {
+  overflow: hidden;
+}
+
+/* VR always wins, even if the device also reports touch points. */
 body.xr-mode .nav-instructions-image .nav-instructions-img-desktop { display: none; }
+body.xr-mode .nav-instructions-image .nav-instructions-img-touch   { display: none; }
 body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: block; }
 .nav-instructions-fallback {
   font-family: var(--sans);
@@ -106,7 +140,7 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
   cursor: pointer;
   font-family: var(--sans);
   font-size: 13.5px;
-  color: var(--on-dark-muted);
+  color: var(--muted-ink);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -126,7 +160,7 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
   height: 18px;
   display: inline-grid;
   place-items: center;
-  border: 1.5px solid rgba(255,255,255,.5);
+  border: 1.5px solid rgba(0, 0, 0, .4);
   background: transparent;
   color: transparent;
   transition: background .14s, border-color .14s, color .14s;
@@ -134,7 +168,7 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
 }
 .nav-instructions-checkbox-box svg { width: 14px; height: 14px; }
 .nav-instructions-checkbox:hover .nav-instructions-checkbox-box {
-  border-color: var(--on-dark);
+  border-color: var(--ink);
 }
 .nav-instructions-checkbox input:checked
 ~ .nav-instructions-checkbox-box {
@@ -144,7 +178,7 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
 }
 .nav-instructions-checkbox input:focus-visible
 ~ .nav-instructions-checkbox-box {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -169,7 +203,7 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
   background: var(--brand-red-2);
 }
 .nav-instructions-btn:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 

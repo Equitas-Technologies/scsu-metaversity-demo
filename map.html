@@ -985,6 +985,12 @@
              src="assets/Icons/nav-instructions-xr.png"
              alt="Navigation instructions for 360° tour using a VR headset"
              onerror="this.style.display='none'; this.parentElement.querySelector('.nav-instructions-fallback').style.display='block';" />
+        <!-- Touch-screen version (shown when body.touch-mode is set,
+             i.e. a touch device that is NOT in VR) -->
+        <img class="nav-instructions-img nav-instructions-img-touch"
+             src="assets/Icons/nav-instructions-mobile.png"
+             alt="Navigation instructions for 360° tour using touch controls"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.nav-instructions-fallback').style.display='block';" />
         <!-- Fallback shown if the image is missing. Specs are
              still being finalized; replace this with the real
              content when it lands. -->
