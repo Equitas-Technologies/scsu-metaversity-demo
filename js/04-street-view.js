@@ -232,13 +232,13 @@ function _showStreetViewLoading() {
     if (el.streetviewLoadingLabel) {
       el.streetviewLoadingLabel.textContent = STREETVIEW_LOADING_SLOW;
     }
-  }, 8000));
+  }, 15000));
 
   _streetviewLoadingTimers.push(setTimeout(() => {
     if (el.streetviewLoadingCancel) {
       el.streetviewLoadingCancel.hidden = false;
     }
-  }, 25000));
+  }, 30000));
 }
 
 function _hideStreetViewLoading() {
@@ -412,4 +412,3 @@ function openSubLocationInStreetView(parentName, subLocationName) {
   );
   setStreetViewCaption(displayParent || subLocationName, subLocationName);
 }
-
