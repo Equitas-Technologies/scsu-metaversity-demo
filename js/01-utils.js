@@ -197,7 +197,7 @@ function isPlausibleHeadsetUA() {
       (/X11/.test(ua) && !/Quest|OculusBrowser|Pico/i.test(ua));
     if (looksDesktop) return false;
     // Headset-platform markers
-    return /OculusBrowser|Quest|Pico|Android|Mobile VR| VR /i.test(ua);
+    return /OculusBrowser|Quest|Pico|Mobile VR| VR /i.test(ua);
   } catch (_) {
     return false;
   }
