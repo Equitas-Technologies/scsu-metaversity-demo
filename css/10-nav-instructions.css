@@ -10,6 +10,11 @@
    practice they never overlap because street view can only
    be opened after the start screen is dismissed.
    =========================================================== */
+/* The overlay's padding includes the safe-area insets, and the card is
+   capped at 100% of what's left, so the whole card (title through
+   "Got it") always fits the visible viewport — iPhone portrait with
+   browser toolbars, landscape phones and the Quest browser window.
+   Only the picture shrinks or scrolls. */
 .nav-instructions {
   position: fixed;
   inset: 0;
@@ -17,7 +22,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(16px, 4vw, 48px);
+  padding:
+    calc(clamp(12px, 3vw, 40px) + env(safe-area-inset-top, 0px))
+    calc(clamp(12px, 3vw, 40px) + env(safe-area-inset-right, 0px))
+    calc(clamp(12px, 3vw, 40px) + env(safe-area-inset-bottom, 0px))
+    calc(clamp(12px, 3vw, 40px) + env(safe-area-inset-left, 0px));
   background: rgba(0, 0, 0, .65);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -32,21 +41,22 @@
 
 .nav-instructions-card {
   width: min(1100px, 100%);
-  max-height: calc(100vh - 32px);
-  background: #fff;              /* was #333333 */
-  color: var(--ink);            /* was var(--on-dark) */
-  padding: clamp(28px, 4vw, 40px) clamp(28px, 4vw, 48px);
+  max-height: 100%;
+  min-height: 0;
+  background: #fff;
+  color: var(--ink);
+  padding: clamp(18px, 3vw, 36px) clamp(18px, 4vw, 48px);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 20px;
+  gap: clamp(12px, 2vh, 20px);
   box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
   font-family: var(--sans);
   border-radius: 0;               /* match start-screen square corners */
   transform: translateY(8px);
   transition: transform .32s ease;
-  overflow: auto;
+  overflow: hidden;
 }
 .nav-instructions[aria-hidden="false"] .nav-instructions-card {
   transform: translateY(0);
@@ -54,29 +64,44 @@
 
 .nav-instructions-title {
   margin: 0;
-  font-size: clamp(20px, 2.2vw, 26px);
+  font-size: clamp(18px, 2.2vw, 26px);
   font-weight: 700;
-  color: var(--on-dark);
+  color: var(--ink);
   letter-spacing: -0.01em;
 }
 
-/* The placeholder image. Stretches to fill the card width
-   and preserves aspect ratio. The image already has white
-   text on a transparent background so the dark card behind
-   it provides contrast. */
+/* Title, checkbox and button keep their size; the picture takes the
+   remaining height and scrolls inside the card if it can't fit. */
+.nav-instructions-title,
+.nav-instructions-checkbox,
+.nav-instructions-actions {
+  flex: 0 0 auto;
+}
+
+/* The instructions picture. Stretches to fill the card width
+   and preserves aspect ratio. */
 .nav-instructions-image {
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Reserve some minimum height so the modal doesn't collapse
-     awkwardly while the image is loading. */
-  min-height: 200px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
+
+/* Mouse and VR pictures are landscape: scale them down to fit the
+   space left for them instead of scrolling. */
 .nav-instructions-image img {
   display: block;
   max-width: 100%;
+  width: auto;
   height: auto;
+  max-height: max(160px, calc(100vh - 300px));
+  max-height: max(160px, calc(100dvh - 300px));
+  object-fit: contain;
 }
 
 /* Two-variant image swap. The .nav-instructions-image wrapper
@@ -95,39 +120,32 @@
 body.touch-mode .nav-instructions-image .nav-instructions-img-desktop { display: none; }
 body.touch-mode .nav-instructions-image .nav-instructions-img-touch   { display: block; }
 
-/* The touch-controls image is tall (portrait). Without this it
-   overflows and slides underneath the checkbox + "Got it" button.
-   Make the image wrapper a flexible, scrollable region so the
-   image scrolls inside the card while the checkbox and button
-   stay pinned and fully visible at the bottom. */
+/* The touch picture is tall (portrait): show it full width and let it
+   scroll inside its region while the checkbox and button stay put. */
 body.touch-mode .nav-instructions-image {
-  flex: 1 1 auto;
-  min-height: 0;          /* allow the flex item to shrink */
-  overflow-y: auto;
   align-items: flex-start;
-  -webkit-overflow-scrolling: touch;
 }
-/* Keep the checkbox and actions from being squeezed away. */
-body.touch-mode .nav-instructions-checkbox,
-body.touch-mode .nav-instructions-actions {
-  flex: 0 0 auto;
-}
-/* In touch mode the card itself should clip (the image scrolls
-   internally), rather than the whole card scrolling — that keeps
-   the button locked to the bottom edge. */
-body.touch-mode .nav-instructions-card {
-  overflow: hidden;
+body.touch-mode .nav-instructions-image img {
+  width: 100%;
+  max-width: 520px;
+  max-height: none;
+  margin: 0 auto;
 }
 
 /* VR always wins, even if the device also reports touch points. */
 body.xr-mode .nav-instructions-image .nav-instructions-img-desktop { display: none; }
 body.xr-mode .nav-instructions-image .nav-instructions-img-touch   { display: none; }
 body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: block; }
+body.xr-mode .nav-instructions-image img {
+  width: auto;
+  max-height: max(160px, calc(100vh - 300px));
+  max-height: max(160px, calc(100dvh - 300px));
+}
 .nav-instructions-fallback {
   font-family: var(--sans);
   font-size: 16px;
   font-weight: 500;
-  color: var(--on-dark-muted);
+  color: var(--ink-2);
   letter-spacing: .04em;
 }
 
@@ -140,7 +158,7 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
   cursor: pointer;
   font-family: var(--sans);
   font-size: 13.5px;
-  color: var(--muted-ink);
+  color: var(--ink-2);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -209,4 +227,12 @@ body.xr-mode .nav-instructions-image .nav-instructions-img-xr      { display: bl
 
 @media (max-width: 480px) {
   .nav-instructions-btn { width: 100%; min-width: 0; }
+}
+
+/* Short viewports (landscape phones, small headset windows): tighten
+   the card so the picture keeps a usable share of the height. */
+@media (max-height: 520px) {
+  .nav-instructions-card { padding: 14px 18px; gap: 10px; }
+  .nav-instructions-title { font-size: 17px; }
+  .nav-instructions-btn { padding: 10px 32px; }
 }
