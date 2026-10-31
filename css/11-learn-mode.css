@@ -742,9 +742,12 @@ body.mode-learn .details               { display: none; }
 
   /* When the detail is showing, hide the list from the a11y
      tree and visually push it out so it doesn't render under
-     the (translucent-edged) detail. */
+     the (translucent-edged) detail. The hide waits until the
+     detail has finished sliding over it (delay matches the .26s
+     slide); Back shows it again at once. */
   .learn-shell.has-detail .courses {
     visibility: hidden;
+    transition: visibility 0s .26s;
   }
 
   .course-back {

@@ -91,6 +91,33 @@
 
   let activeCourseId = null;
 
+  /* One <img> per course, created on first entry to Learn so the
+     artwork is already downloaded and decoded when a course opens.
+     Re-attaching the same element avoids a blank hero while a fresh
+     <img> loads. A failed image is flagged and the placeholder stays. */
+  const heroImages = {};
+
+  function heroImageFor(course) {
+    if (!heroImages[course.id]) {
+      const img = new Image();
+      img.alt = course.title || "";
+      img.onerror = () => {
+        img.failed = true;
+        if (img.parentNode) {
+          img.parentNode.classList.remove("has-image");
+          img.remove();
+        }
+      };
+      img.src = course.image;
+      heroImages[course.id] = img;
+    }
+    return heroImages[course.id];
+  }
+
+  function preloadHeroImages() {
+    courses.forEach((c) => { if (c.image) heroImageFor(c); });
+  }
+
   /* ---- Render: course list ---- */
   function renderCourseList() {
     if (!L.list) return;
@@ -174,16 +201,11 @@
       if (oldImg) oldImg.remove();
 
       if (course.image) {
-        const img = document.createElement("img");
-        img.src = course.image;
-        img.alt = course.title || "";
-        // If the file 404s, drop back to the placeholder.
-        img.onerror = () => {
-          L.hero.classList.remove("has-image");
-          img.remove();
-        };
-        L.hero.appendChild(img);
-        L.hero.classList.add("has-image");
+        const img = heroImageFor(course);
+        if (!img.failed) {
+          L.hero.appendChild(img);
+          L.hero.classList.add("has-image");
+        }
       }
     }
 
@@ -283,9 +305,12 @@
     // users coming from the list. Only on small screens — on
     // desktop the list stays in focus so arrow-keying through
     // courses is smooth.
+    // preventScroll: the title is still off-screen mid-slide, and
+    // scrolling it into view shifts the whole shell sideways
+    // against the slide animation (visible flicker).
     if (course && isMobile() && L.title) {
       L.title.setAttribute("tabindex", "-1");
-      L.title.focus({ preventScroll: false });
+      L.title.focus({ preventScroll: true });
     }
   }
 
@@ -342,6 +367,8 @@
 
     // Mirror sane defaults each time we enter Learn.
     if (learn) {
+      preloadHeroImages();
+
       // On desktop, auto-pick the first course so the right
       // pane isn't empty. On mobile we keep the list view.
       if (!activeCourseId && !isMobile() && courses.length) {
