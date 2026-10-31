@@ -120,6 +120,35 @@
     if (typeof updateCampusLabelVisibility === "function") updateCampusLabelVisibility();
   }
 
+  /* -- Per-tab "already seen" flags --------------------------
+     sessionStorage is scoped to the browser tab and survives reloads
+     in that tab, so each modal shows at most once per tab even when
+     its preference is on:
+       scsu:welcomeSeen         — set when the user picks "How to Use"
+                                  or "Enter Experience"
+       scsu:navInstructionsSeen — set when the 3D nav modal is shown
+     A memory copy covers browsers that block sessionStorage; there the
+     welcome modal falls back to showing on every load. */
+  const WELCOME_SEEN_KEY = "scsu:welcomeSeen";
+  const NAV_SEEN_KEY     = "scsu:navInstructionsSeen";
+  const seenFallback = {};
+
+  function readSeen(key) {
+    try {
+      return sessionStorage.getItem(key) === "1";
+    } catch (_) {
+      return !!seenFallback[key];
+    }
+  }
+
+  function writeSeen(key, seen) {
+    seenFallback[key] = seen;
+    try {
+      if (seen) sessionStorage.setItem(key, "1");
+      else      sessionStorage.removeItem(key);
+    } catch (_) { /* ignore */ }
+  }
+
   // Push current preferences into all four controls. Called
   // at init and whenever any control changes so its mirror
   // stays in sync.
@@ -644,11 +673,11 @@
   }
 
   function showStartScreen(opts) {
-    // If the user has previously checked "Don't show again",
-    // skip the modal on natural boots. Burger-menu re-opens
-    // pass { force: true } to override.
+    // If the user has previously checked "Don't show again", or
+    // the modal was already seen in this tab, skip it on natural
+    // boots. Burger-menu re-opens pass { force: true } to override.
     const force = !!(opts && opts.force);
-    if (!force && !readShowOnStartup()) return;
+    if (!force && (!readShowOnStartup() || readSeen(WELCOME_SEEN_KEY))) return;
 
     // Always re-sync the controls before showing — the user
     // might have toggled the burger-panel switch in a previous
@@ -703,6 +732,7 @@
     if (!force && !readShowNavInstructions()) return false;
 
     syncPrefControls();
+    writeSeen(NAV_SEEN_KEY, true);
     navModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
 
@@ -725,15 +755,16 @@
 
   /* -- openStreetView gating wrapper ------------------------
      The 3D nav-instructions modal must show on the first
-     street-view open within a session. There are several call
-     sites that open street view (the Explore CTA, the sub-list
-     "Room 100"/etc rows, the locations list while inside SV,
-     internal warm-ups), so the cleanest seam is the function
-     itself: we monkey-patch window.openStreetView once, and
-     every caller automatically goes through the gate.
+     street-view open within a session (browser tab). There are
+     several call sites that open street view (the Explore CTA,
+     the sub-list "Room 100"/etc rows, the locations list while
+     inside SV, internal warm-ups), so the cleanest seam is
+     the function itself: we monkey-patch window.openStreetView
+     once, and every caller automatically goes through the gate.
 
      Skipped when:
        • the preference is off
+       • the modal was already shown in this tab
        • street view is already active (mid-session navigation
          between sweeps shouldn't re-prompt)
      ------------------------------------------------------- */
@@ -755,8 +786,9 @@
         return originalOpenStreetView.apply(this, args);
       }
 
-      // Preference says skip → straight through.
-      if (!readShowNavInstructions()) {
+      // Preference says skip, or already shown in this tab →
+      // straight through.
+      if (!readShowNavInstructions() || readSeen(NAV_SEEN_KEY)) {
         return originalOpenStreetView.apply(this, args);
       }
 
@@ -784,14 +816,17 @@
 
   /* -- Wire up event listeners ----------------------------- */
 
+  // Either choice counts as having seen the welcome modal in this tab.
   if (startEnterBtn) {
     startEnterBtn.addEventListener("click", () => {
+      writeSeen(WELCOME_SEEN_KEY, true);
       hideStartScreen();
     });
   }
 
   if (startHowBtn) {
     startHowBtn.addEventListener("click", () => {
+      writeSeen(WELCOME_SEEN_KEY, true);
       hideStartScreen();
       // Brief pause so the start-screen fade-out completes
       // before the coachmark fade-in begins.
@@ -849,9 +884,12 @@
       syncPrefControls();
     });
   }
+  // Turning the switch on re-arms the modal for the next 3D open in
+  // this tab, matching the switch's "next time you enter" hint.
   if (navInstructionsSwitch) {
     navInstructionsSwitch.addEventListener("change", () => {
       writeShowNavInstructions(navInstructionsSwitch.checked);
+      if (navInstructionsSwitch.checked) writeSeen(NAV_SEEN_KEY, false);
       syncPrefControls();
     });
   }
