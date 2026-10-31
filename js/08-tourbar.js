@@ -5,6 +5,9 @@
 function setText(node, value) { if (node) node.textContent = value; }
 
 function updateTourbar() {
+  // The 3D caption hides when it would repeat the stop shown here.
+  refreshStreetViewCaption();
+
   if (tourIndex < 0 || !tourStops[tourIndex]) {
     const label = tourStops.length ? "Start your tour" : "No stops configured";
     setText(el.tourName,       label);

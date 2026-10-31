@@ -26,6 +26,30 @@ function preloadTreedisIframe() {
 function setStreetViewCaption(title, sub) {
   if (el.streetviewTitle) el.streetviewTitle.textContent = title || "—";
   if (el.streetviewSub)   el.streetviewSub.textContent   = sub || "";
+  refreshStreetViewCaption();
+}
+
+/* The caption only shows what the tour bar doesn't already say:
+     - room after a jump ("Room 110")  → is-room: room name only
+     - tour stop shown in the tour bar → is-redundant: hidden
+     - anything else (All list, search,
+       non-tour buildings)             → full caption
+   Its text is always kept current (the session snapshot reads it), so
+   only its visibility changes. Also called from updateTourbar(), which
+   runs after the selection settles. */
+function refreshStreetViewCaption() {
+  const caption = el.streetviewCaption;
+  if (!caption) return;
+  const title = el.streetviewTitle ? el.streetviewTitle.textContent : "";
+  const sub   = el.streetviewSub   ? el.streetviewSub.textContent   : "";
+
+  const isRoom = !!sub && sub !== title && sub !== getCategory(title);
+  const stop = tourIndex >= 0 && tourStops[tourIndex];
+  const stopName = stop ? cleanName(stop.feature.properties.name) : "";
+  const isTourStop = !!stopName && stopName.toLowerCase() === title.toLowerCase();
+
+  caption.classList.toggle("is-room", isRoom);
+  caption.classList.toggle("is-redundant", !isRoom && isTourStop);
 }
 
 /* When the user navigates inside Treedis (clicking a hotspot,
