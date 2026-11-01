@@ -32,8 +32,8 @@ window.SCSU_DATA.courses = [
       "Field case studies, cost-benefit analysis, and communicating site-specific nutrient plans"
     ],
     "eon": {
-      "desktopUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/341-11599",
-      "vrUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/341-11599"
+      "desktopUrl": "https://infinite.eonaiventures.com/login",
+      "vrUrl": "https://infinite.eonaiventures.com/login"
     },
     "immersive": {
       "note": "In your headset, sign in to EON Reality to enter the immersive case fields and lab simulations for this course."
@@ -57,8 +57,8 @@ window.SCSU_DATA.courses = [
       "Precision agriculture, nutrient recycling, and climate-resilient management strategies"
     ],
     "eon": {
-      "desktopUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/325-11396",
-      "vrUrl": "https://customvirtualcampus.eon-xr.com/i/936/courses/325-11396"
+      "desktopUrl": "https://infinite.eonaiventures.com/login",
+      "vrUrl": "https://infinite.eonaiventures.com/login"
     },
     "immersive": {
       "note": "In your headset, sign in to EON Reality to enter the immersive case fields and lab simulations for this course."
