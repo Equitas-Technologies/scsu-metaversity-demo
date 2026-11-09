@@ -28,17 +28,22 @@ function closeDetails() {
 
 function setDetailsMode(next) {
   // next ∈ { "half", "full" }. On mobile, toggles the CSS state flags.
+  // While street view is open the sheet stays tucked away (is-hidden)
+  // so selections made from the drawer or tour bar don't cover the 3D
+  // view; closeStreetView() brings it back.
   if (!isMobile()) return;
   if (next !== "half" && next !== "full") return;
 
   detailsMode = next;
   el.details.classList.add("is-open");
   el.details.classList.toggle("is-full", next === "full");
-  el.details.classList.remove("is-hidden", "is-dragging");
+  el.details.classList.remove("is-dragging");
+  el.details.classList.toggle("is-hidden", streetViewActive);
   el.details.style.transform = "";
-  el.shell.classList.toggle("details-full", next === "full");
+  el.shell.classList.toggle("details-full", next === "full" && !streetViewActive);
 
   scheduleMapRefresh({ recenterIfNeeded: false, delay: 260 });
+  saveSessionState();
 }
 
 /* Render the "WHAT HAPPENS HERE?" chip row. Hides the whole
@@ -274,6 +279,14 @@ function renderDetails(feature, kind) {
   const isOffCampus = !!props.off_campus;
   const offCampusDistance = props.off_campus_distance || "";
 
+  // A new location starts at the top of the panel instead of keeping
+  // the previous location's scroll position.
+  const content = el.details.querySelector(".details-content");
+  if (content && el.details.dataset.location !== name) {
+    content.scrollTop = 0;
+  }
+  el.details.dataset.location = name;
+
   if (isOffCampus) {
     el.detailsTag.textContent = "OFF-CAMPUS STOP";
     el.detailsTag.classList.add("is-offcampus");
@@ -319,11 +332,15 @@ function renderDetails(feature, kind) {
       const distLine = offCampusDistance
         ? ` Approximately <strong>${offCampusDistance}</strong>.`
         : "";
+      // Only point at Explore when the location has a tour to open.
+      const exploreLine = hasSweep(name)
+        ? ` Use <strong>Explore</strong> to open the virtual tour.`
+        : "";
       note.innerHTML =
         `<span class="offcampus-icon" aria-hidden="true">📍</span>` +
         `<span><strong>Off-campus location.</strong> ` +
-        `This site isn't shown on the campus map.${distLine} ` +
-        `Use <strong>Explore</strong> to open the virtual tour.</span>`;
+        `This site isn't shown on the campus map.${distLine}` +
+        `${exploreLine}</span>`;
     }
   } else if (note && note.parentNode) {
     note.parentNode.removeChild(note);
@@ -416,24 +433,24 @@ function focusPaddingFor(layer) {
   };
 }
 
-function selectFeature(layer, kind, { focus = false } = {}) {
-  if (selectedLayer && selectedLayer !== layer) {
-    resetLayerStyle(selectedLayer, selectedKind);
-    if (selectedLayer.closeTooltip) selectedLayer.closeTooltip();
-  }
-  selectedLayer = layer;
-  selectedKind  = kind;
+/* Find a loaded feature ({ kind, layer, props } from allFeatures) by
+   display name, case-insensitive. Tour stops win over same-named
+   buildings unless preferKind says otherwise. */
+function findFeatureByName(name, preferKind) {
+  const k = String(name || "").toLowerCase();
+  if (!k) return null;
+  const hits = allFeatures.filter(
+    (f) => cleanName(f.props.name).toLowerCase() === k
+  );
+  return hits.find((f) => f.kind === (preferKind || "tour")) || hits[0] || null;
+}
 
-  const isOffCampus = isOffCampusFeature(layer && layer.feature);
-
-  if (selectedLayer && typeof selectedLayer.setStyle === "function") {
-    selectedLayer.setStyle(selectedStyleFor(layer && layer.feature));
-    if (selectedLayer.bringToFront) selectedLayer.bringToFront();
-  }
-
-  renderDetails(layer.feature, kind);
-  openDetails();
-  if (layer.openTooltip) layer.openTooltip();
+/* Fly the map to a feature. Used by selectFeature({ focus: true })
+   and by closeStreetView(), which brings the map to the selection
+   after the user moved around in 3D. */
+function focusMapOnLayer(layer) {
+  if (!layer) return;
+  const isOffCampus = isOffCampusFeature(layer.feature);
 
   /* Off-campus tour stops (e.g. Olar Farm) carry a placeholder
      polygon at the campus edge as a directional indicator only.
@@ -449,7 +466,7 @@ function selectFeature(layer, kind, { focus = false } = {}) {
      view (streetViewActive) — there's no visible map to refresh,
      and snapping it underneath would just spend an animation the
      user can't see. */
-  if (focus && (layer.getBounds || layer.getLatLng) && !isOffCampus) {
+  if ((layer.getBounds || layer.getLatLng) && !isOffCampus) {
     const fitOpts = {
       ...focusPaddingFor(layer),
       maxZoom: config.tour.focusZoom,
@@ -470,7 +487,7 @@ function selectFeature(layer, kind, { focus = false } = {}) {
     } else {
       requestAnimationFrame(fly);
     }
-  } else if (focus && isOffCampus && !streetViewActive && imageBounds) {
+  } else if (isOffCampus && !streetViewActive && imageBounds) {
     // Off-campus path: animate the map back to the full campus
     // view. Uses the same RAF settle pattern as the normal fly so
     // Leaflet measures the post-panel-open shell width correctly.
@@ -484,6 +501,28 @@ function selectFeature(layer, kind, { focus = false } = {}) {
       requestAnimationFrame(reset);
     }
   }
+}
+
+/* syncStreetView: false when the selection is following Treedis
+   (the user walked there in 3D) rather than leading it. */
+function selectFeature(layer, kind, { focus = false, syncStreetView = true } = {}) {
+  if (selectedLayer && selectedLayer !== layer) {
+    resetLayerStyle(selectedLayer, selectedKind);
+    if (selectedLayer.closeTooltip) selectedLayer.closeTooltip();
+  }
+  selectedLayer = layer;
+  selectedKind  = kind;
+
+  if (selectedLayer && typeof selectedLayer.setStyle === "function") {
+    selectedLayer.setStyle(selectedStyleFor(layer && layer.feature));
+    if (selectedLayer.bringToFront) selectedLayer.bringToFront();
+  }
+
+  renderDetails(layer.feature, kind);
+  openDetails();
+  if (layer.openTooltip) layer.openTooltip();
+
+  if (focus) focusMapOnLayer(layer);
 
   // Update the left-side locations list
   syncLocationsList();
@@ -498,9 +537,11 @@ function selectFeature(layer, kind, { focus = false } = {}) {
   // the Treedis camera to the newly-selected location. This makes
   // the left Locations list / tour arrows / search results all
   // drive the 3D experience while it's open, per the spec.
-  if (streetViewActive) {
+  if (streetViewActive && syncStreetView) {
     navigateStreetViewToLayer(layer);
   }
+
+  saveSessionState();
 }
 
 function clearSelection() {
@@ -519,4 +560,5 @@ function clearSelection() {
   updateTourbar();
   highlightActivePin();
   syncLocationsList();
+  saveSessionState();
 }

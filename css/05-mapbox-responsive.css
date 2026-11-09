@@ -336,6 +336,9 @@
   }
   .details.is-dragging .details-handle { cursor: grabbing; }
 
+  /* The whole sheet content scrolls at both heights; the Explore button
+     stays at the top of the content. overscroll-behavior keeps a
+     scroll that hits the end from moving the page behind. */
   .details-content {
     padding: 8px 18px 24px;
     flex: 1;
@@ -343,20 +346,31 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 
   .details-peek,
-  .details-extra { display: block; }
-  .details-extra { display: none; }
-  .details.is-full .details-extra { display: block; }
+  .details-extra { display: block; flex-shrink: 0; }
 
   /* Mobile keeps the inline Explore CTA + VR row in the scrolling
      content area (original behavior). The persistent desktop/iPad
      footer is hidden here so it never appears on small screens.
      Chained `.explore-cta.explore-cta-inline` matches the chained
      hide selector at the top of this file. */
-  .explore-cta.explore-cta-inline { display: inline-flex; }
+  .explore-cta.explore-cta-inline { display: inline-flex; vertical-align: middle; }
   .details-vr-inline              { display: flex; }
+
+  /* VR-Enabled sits on the Explore line at the top of the sheet. */
+  .details-vr.details-vr-inline {
+    display: inline-flex;
+    vertical-align: middle;
+    margin: 0 0 18px 14px;
+    padding-top: 0;
+    border-top: none;
+  }
   .details-footer                 { display: none; }
 
   .details-close { top: 14px; right: 14px; }
@@ -403,7 +417,17 @@
     pointer-events: none;
   }
 
+  .course-detail { overflow-x: hidden; }
 
+}
+
+/* Vertical scrollers never scroll sideways (long words, wide images). */
+.details-content,
+.locations-list,
+.burger-panel-list,
+.search-results,
+.course-list {
+  overflow-x: hidden;
 }
 
 /* Very small phones */
@@ -419,6 +443,37 @@
 @media (max-height: 520px) and (orientation: landscape) {
   :root { --topbar-h: 52px; --tourbar-h: 60px; }
   .details { max-height: 85vh; }
+
+  /* Locations panel: too short for a fixed heading over a scrolling
+     list (the list got under one row). The whole panel scrolls as one
+     instead, so every location can be reached at any height, and the
+     heading, tabs, search and count are tightened. The guided-tour
+     footer (desktop layout, e.g. Pro Max landscape) stays pinned to
+     the bottom. */
+  .locations {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .locations-list {
+    flex: none;
+    overflow: visible;
+    padding-bottom: 12px;
+  }
+  .locations-head    { padding: 10px var(--gutter) 6px; align-items: center; }
+  .locations-kicker  { display: none; }
+  .locations-title   { font-size: 20px; }
+  .loc-tabs          { margin-bottom: 8px; }
+  .loc-tab           { padding: 4px 0 6px; }
+  .metabar-search    { margin-bottom: 8px; }
+  .locations-meta    { padding-bottom: 6px; }
+  .loc-sort          { padding-bottom: 8px; }
+  .sidebar-tour {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    margin-top: auto;
+  }
 }
 
 /* Touch: disable hover styles that feel laggy */

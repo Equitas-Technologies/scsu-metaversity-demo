@@ -241,11 +241,13 @@ el.modeBtns.forEach((btn) => {
     // to hide the .shell (Explore) and reveal the .learn-shell.
     const mode = btn.dataset.mode;          // "explore" | "learn"
     setAppMode(mode);
+    saveSessionState();
   });
 });
 
 window.addEventListener("resize", () => {
   scheduleMapRefresh({ delay: 80 });
+  saveSessionState();
 });
 
 // Help button — simple info overlay for now
@@ -280,6 +282,15 @@ document.addEventListener("fullscreenchange", () => {
 
 // Keyboard shortcuts
 document.addEventListener("keydown", (e) => {
+  // An open burger menu is the topmost panel: Escape closes it first,
+  // even when focus is on one of its switches.
+  const burger = $("burgerToggle");
+  if (e.key === "Escape" && burger && burger.checked) {
+    burger.checked = false;
+    e.preventDefault();
+    return;
+  }
+
   if (e.target && ["INPUT", "TEXTAREA"].includes(e.target.tagName)) {
     // Allow Escape inside the search field to close / blur
     if (e.key === "Escape" && e.target === el.searchInput) {

@@ -482,6 +482,30 @@
               <span>Explore</span>
             </button>
 
+            <!-- Inline VR-Enabled indicator — shown on MOBILE only.
+                 The persistent footer below carries the desktop/iPad
+                 version. Both link to the same Quest deep-link URL. -->
+            <div class="details-vr details-vr-inline">
+              <a class="vr-label vr-link"
+                 href="https://www.oculus.com/open_url/?url=https://sroberto27.github.io/Wrapper/map/Experimental/map.html"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 title="Open this tour in your Meta Quest headset (requires a signed-in Meta account in your browser)"
+                 aria-label="Open this tour in your Meta Quest headset">
+                <span class="vr-dot" aria-hidden="true"></span> VR-Enabled
+              </a>
+              <!-- The standalone "Explore" / VR button that used to live
+                   here was a duplicate of the red Explore CTA at the top
+                   of the panel. It's been removed per the redesign.
+                   The button stays in the DOM — visually hidden — because
+                   the existing JS still binds click + dataset hooks to
+                   #vrBtn and would otherwise throw a null-deref. -->
+              <button class="vr-btn vr-btn-hidden" id="vrBtn" type="button"
+                      tabindex="-1" aria-hidden="true">
+                <span>Explore</span>
+              </button>
+            </div>
+
             <figure class="details-image" id="detailsImage">
               <div class="details-image-x" aria-hidden="true"></div>
               <figcaption>LOCATION IMAGE</figcaption>
@@ -513,30 +537,6 @@
               <div class="details-block-h">ADDRESS</div>
               <div class="details-address" id="detailsAddress"></div>
               <div class="details-address-links" id="detailsAddressLinks"></div>
-            </div>
-
-            <!-- Inline VR-Enabled indicator — shown on MOBILE only.
-                 The persistent footer below carries the desktop/iPad
-                 version. Both link to the same Quest deep-link URL. -->
-            <div class="details-vr details-vr-inline">
-              <a class="vr-label vr-link"
-                 href="https://www.oculus.com/open_url/?url=https://sroberto27.github.io/Wrapper/map/Experimental/map.html"
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 title="Open this tour in your Meta Quest headset (requires a signed-in Meta account in your browser)"
-                 aria-label="Open this tour in your Meta Quest headset">
-                <span class="vr-dot" aria-hidden="true"></span> VR-Enabled
-              </a>
-              <!-- The standalone "Explore" / VR button that used to live
-                   here was a duplicate of the red Explore CTA at the top
-                   of the panel. It's been removed per the redesign.
-                   The button stays in the DOM — visually hidden — because
-                   the existing JS still binds click + dataset hooks to
-                   #vrBtn and would otherwise throw a null-deref. -->
-              <button class="vr-btn vr-btn-hidden" id="vrBtn" type="button"
-                      tabindex="-1" aria-hidden="true">
-                <span>Explore</span>
-              </button>
             </div>
 
             <!-- External links (e.g. bookstore / department sites).
@@ -984,6 +984,12 @@
         <img class="nav-instructions-img nav-instructions-img-xr"
              src="assets/Icons/nav-instructions-xr.png"
              alt="Navigation instructions for 360° tour using a VR headset"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.nav-instructions-fallback').style.display='block';" />
+        <!-- Touch-screen version (shown when body.touch-mode is set,
+             i.e. a touch device that is NOT in VR) -->
+        <img class="nav-instructions-img nav-instructions-img-touch"
+             src="assets/Icons/nav-instructions-mobile.png"
+             alt="Navigation instructions for 360° tour using touch controls"
              onerror="this.style.display='none'; this.parentElement.querySelector('.nav-instructions-fallback').style.display='block';" />
         <!-- Fallback shown if the image is missing. Specs are
              still being finalized; replace this with the real

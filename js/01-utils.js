@@ -38,6 +38,35 @@ const config = window.CAMPUS_CONFIG;
    Either signal alone is enough to flip the app into VR mode.
    ----------------------------------------------------------- */
 
+/* True for phones and tablets — NOT desktops, NOT VR headsets.
+   Drives the "touch-mode" body class (which selects the touch
+   variant of the nav-instructions image). We deliberately do NOT
+   use raw touch capability (ontouchstart / maxTouchPoints) for
+   this: touchscreen laptops and many Windows desktops report
+   touch support yet should still get the desktop instructions.
+   Classification is therefore by device *type* via the UA.
+
+   Headset tokens are excluded first so a Quest/Pico (which can
+   also look "mobile") is never treated as a tablet — those get
+   the VR profile and the xr-mode class instead. */
+function isMobileOrTablet() {
+  try {
+    const ua = (navigator.userAgent || "").toString();
+    // Never classify a headset as mobile/tablet.
+    if (/OculusBrowser|Quest|Pico|Mobile VR| VR /i.test(ua)) return false;
+    // Phone / tablet platform markers.
+    if (/Android|iPhone|iPod|iPad|Windows Phone|IEMobile|BlackBerry/i.test(ua)) {
+      return true;
+    }
+    // iPadOS 13+ reports as "Macintosh" but is touch-capable —
+    // distinguish it from a real Mac by the presence of touch.
+    if (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1) return true;
+    return false;
+  } catch (_) {
+    return false;
+  }
+}
+
 /* Synchronous, user-agent-only check. Set once at module load
    so the very first call to resolveTreedisProfile() picks the
    right map before the iframe src is set. Re-evaluated as part
@@ -107,6 +136,13 @@ function applyTreedisProfile(profileName) {
   // VR-mode streetview rules in mapstyles.css key off this).
   try {
     document.body.classList.toggle("xr-mode", profileName === "vr");
+    // Touch-mode: a phone or tablet that is NOT in VR. Drives the
+    // touch-controls variant of the nav-instructions modal. We key
+    // off device *type* (isMobileOrTablet), NOT raw touch support,
+    // so touchscreen laptops / touch-capable desktops still get the
+    // desktop instructions.
+    document.body.classList.toggle("touch-mode",
+      profileName !== "vr" && isMobileOrTablet());
   } catch (_) {
     // <body> not parsed yet on module load — that's fine, the
     // class gets re-applied below when this runs again from boot.
@@ -161,7 +197,7 @@ function isPlausibleHeadsetUA() {
       (/X11/.test(ua) && !/Quest|OculusBrowser|Pico/i.test(ua));
     if (looksDesktop) return false;
     // Headset-platform markers
-    return /OculusBrowser|Quest|Pico|Android|Mobile VR| VR /i.test(ua);
+    return /OculusBrowser|Quest|Pico|Mobile VR| VR /i.test(ua);
   } catch (_) {
     return false;
   }
