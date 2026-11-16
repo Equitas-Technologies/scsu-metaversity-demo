@@ -108,7 +108,70 @@ body.streetview-open .map-logo { display: none !important; }
   outline-offset: 2px;
 }
 
-.streetview-caption { display: none; }
+/* Caption pill: where the 3D view is (building, or "Building — Room"
+   after a room jump). Bottom-right, just above Treedis's grey logo bar
+   (its buttons sit at the bottom left), and click-through so it never
+   blocks the tour underneath. The bar lives inside the cross-origin
+   iframe and can't be measured, so --treedis-bar-h is an estimate:
+   adjust it here (desktop) and in the mobile block below if the pill
+   lands too high or overlaps the bar. */
+.streetview-caption {
+  --treedis-bar-h: 44px;
+  position: absolute;
+  right: 16px;
+  bottom: calc(var(--treedis-bar-h) + 8px);
+  z-index: 3;
+  max-width: min(420px, calc(100% - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px 9px;
+  background: rgba(11,11,11,.62);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-family: var(--sans);
+  text-align: right;
+  pointer-events: none;
+}
+.streetview-caption-kicker {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  color: var(--on-dark-muted);
+}
+.streetview-caption-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.streetview-caption-sub {
+  font-size: 12.5px;
+  color: var(--on-dark-muted);
+  line-height: 1.3;
+}
+.streetview-caption-sub:empty { display: none; }
+
+/* Shown only when it adds to the tour bar (refreshStreetViewCaption):
+   hidden on the tour stop the bar already names, and just the room
+   name after a room jump. */
+.streetview-caption.is-redundant { display: none; }
+.streetview-caption.is-room .streetview-caption-kicker,
+.streetview-caption.is-room .streetview-caption-title { display: none; }
+.streetview-caption.is-room .streetview-caption-sub {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+}
+.streetview-caption-title,
+.streetview-caption-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .streetview-loading {
   display: none;
@@ -213,6 +276,15 @@ body.streetview-open .map-logo { display: none !important; }
     top: calc(22px + env(safe-area-inset-top, 0px));
     right: calc(22px + env(safe-area-inset-right, 0px));
   }
+  .streetview-caption {
+    --treedis-bar-h: 26px;
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    bottom: calc(var(--treedis-bar-h) + 8px);
+    max-width: calc(100% - 24px);
+    padding: 6px 12px 7px;
+  }
+  .streetview-caption-title,
+  .streetview-caption.is-room .streetview-caption-sub { font-size: 14px; }
 
   .shell .locations-toggle { z-index: 901; }
   body.streetview-open .shell .locations-toggle {

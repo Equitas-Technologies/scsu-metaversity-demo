@@ -128,16 +128,16 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
        treedis.modelId / treedis.tourUrl. */
     profiles: {
       desktop: {
-        modelId: "8e4ca3fc",
-        tourUrl: "https://spaces.dtsxr.com/tour/8e4ca3fc",
+        modelId: "6243b323",
+        tourUrl: "https://spaces.dtsxr.com/tour/6243b323",
         /* Campus "home" sweep — null = open the iframe at the
            model's default sweep. Set this to a real sweep id
            later if a campus landing is desired. */
         homeSweepId: null
       },
       vr: {
-        modelId: "scsu-campus-ade0f346",
-        tourUrl: "https://spaces.dtsxr.com/tour/scsu-campus-ade0f346",
+        modelId: "scsu-campus-b49e93eb",
+        tourUrl: "https://spaces.dtsxr.com/tour/scsu-campus-b49e93eb",
         homeSweepId: null
       }
     },
@@ -146,8 +146,8 @@ window.CAMPUS_CONFIG = Object.assign(window.CAMPUS_CONFIG || {}, {
        profile and get overwritten by app.js (resolveTreedisProfile)
        at boot if XR is detected. Older code paths that read
        config.treedis.modelId / .tourUrl keep working. */
-    modelId: "8e4ca3fc",
-    tourUrl: "https://spaces.dtsxr.com/tour/8e4ca3fc",
+    modelId: "6243b323",
+    tourUrl: "https://spaces.dtsxr.com/tour/6243b323",
     homeSweepId: null,
 
     /* Origin used by the Treedis SDK for postMessage safety.
